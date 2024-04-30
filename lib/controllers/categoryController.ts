@@ -70,7 +70,7 @@ export const getCategoryBySlug = async (slug: string) => {
   }
 }
 
-export const createCategory = async (params: TRegisterCategorySchema) => {
+export const createNewCategory = async (params: TRegisterCategorySchema) => {
   try {
     connectToMongodb()
     const category = await Category.create({ ...params })

@@ -33,6 +33,7 @@ function LoginUsernameForm() {
     })
 
     const onSubmit = async (values: TLoginUsernameSchema) => {
+        console.log(values);
 
         startTransition(async () => {
             const res = await signIn('UsernameCredentials', { ...values, callbackUrl: params || '/dashboard' })

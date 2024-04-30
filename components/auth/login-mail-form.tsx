@@ -75,6 +75,7 @@ function LoginMailForm() {
                                 disabled={isPending}
                                 error={fieldState.error ? true : false}
                                 type={'text'}
+                                autoComplete='email'
                                 label="ایمیل"
                                 fullWidth
                                 startAdornment={
@@ -110,7 +111,7 @@ function LoginMailForm() {
                             <OutlinedInput
                                 id='password'
                                 {...field}
-                                autoComplete='email'
+                                autoComplete='off'
                                 disabled={isPending}
                                 error={fieldState.error ? true : false}
                                 type={showPassword ? 'text' : 'password'}

@@ -1,10 +1,9 @@
 'use server'
 
 import { CategorySchema, RegisterCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
-import { getCategory } from "@/lib/controllers/categoryController"
+import { createNewCategory, getCategory } from "@/lib/controllers/categoryController"
 
 export const createCategory = async (values: TRegisterCategorySchema) => {
-    console.log('values', values);
 
     const validatedFields = RegisterCategorySchema.safeParse(values)
 
@@ -12,14 +11,13 @@ export const createCategory = async (values: TRegisterCategorySchema) => {
         return { error: true, msg: 'ارتباط با سرور برقرار نشد !' }
     }
 
-    await createCategory({
+    await createNewCategory({
         ...validatedFields.data
     })
 
     return { success: true, msg: 'حساب کاربری با موفقیت ایجاد شد' }
 
 }
-
 
 export const getCat = async (_id: string) => {
 

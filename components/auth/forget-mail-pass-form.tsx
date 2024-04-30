@@ -68,6 +68,7 @@ function ForgetMailPassForm() {
                                 error={fieldState.error ? true : false}
                                 type={'text'}
                                 label="ایمیل"
+                                autoComplete='email'
                                 fullWidth
                                 startAdornment={
                                     <InputAdornment position="start">

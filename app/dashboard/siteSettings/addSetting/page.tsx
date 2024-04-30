@@ -22,11 +22,8 @@ import queryString from 'query-string'
 import React, { startTransition, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Switch from '@mui/material/Switch'
-import {
-    VariantType,
-    enqueueSnackbar
-} from 'notistack'
 import { createCategory } from '@/actions/category'
+import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
 
 type Props = {
     params: {},
@@ -99,38 +96,36 @@ function AddSettings({ searchParams }: Props) {
 
     if (!cat && parent !== '') cancel = parent || ''
 
-    const handleClickVariant = (variant: VariantType, meg: string) => {
-        // variant could be success, error, warning, info, or default
-        enqueueSnackbar(meg, { variant })
-    }
-
     const form = useForm<TRegisterCategorySchema>({
         resolver: zodResolver(RegisterCategorySchema),
         defaultValues: {
             name: '',
             slug: '',
-            colorIcon: '',
-            icon: '',
-            images: '',
-            type: '0',
-            parent: '',
-            propertys: []
+            // colorIcon: '',
+            // icon: '',
+            // images: '',
+            type: '',
+            // parent: '',
+            // propertys: []
         }
     })
 
     const onSubmit = (values: TRegisterCategorySchema) => {
-        console.log('values', form.getValues())
+        // console.log('valuesMain', values)
         startTransition(() => {
             createCategory(values)
                 .then((data) => {
-                    data.success ? handleClickVariant('success', data.msg) : handleClickVariant('error', data.msg)
+                    data.success ?
+                        HandleEnqueueSnackbar({ variant: 'success', msg: data.msg }) :
+                        HandleEnqueueSnackbar({ msg: data.msg, variant: 'error' })
                     // router.push('/username')
                     // router.refresh()
                 })
 
         })
     }
-    console.log('valuesMain', form.getValues());
+
+    // console.log('valuesMain', form.getValues());
     return (
         <Box
             component="div"
@@ -172,7 +167,7 @@ function AddSettings({ searchParams }: Props) {
                                     id='name'
                                     // inputComponent={TextMaskCustom as any}
                                     {...field}
-                                    autoComplete='tel-national'
+                                    autoComplete='name'
                                     disabled={isPending}
                                     // onInvalid={true}
                                     error={fieldState.error ? true : false}
@@ -265,15 +260,15 @@ function AddSettings({ searchParams }: Props) {
                                 sx={{ my: 1 }}
                                 variant="outlined"
                             >
-                                <InputLabel htmlFor="type">نام لاتین دسته بندی</InputLabel>
+                                <InputLabel htmlFor="type">دسته بندی</InputLabel>
                                 <OutlinedInput
                                     id='type'
                                     {...field}
-                                    autoComplete='slug'
+                                    autoComplete='type'
                                     // disabled={isPending}
                                     error={fieldState.error ? true : false}
                                     type={'text'}
-                                    label="نام لاتین دسته بندی"
+                                    label="دسته بندی"
                                     fullWidth
                                     startAdornment={
                                         <InputAdornment position="start">
@@ -331,7 +326,7 @@ function AddSettings({ searchParams }: Props) {
                         ثبت
                     </Button>
                 </form>
-
+                <button type='button' onClick={() => HandleEnqueueSnackbar({ msg: 'aa', variant: 'info' })} >set</button>
             </Box>
         </Box>
     )

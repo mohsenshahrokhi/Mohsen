@@ -4,6 +4,7 @@ import { Box, Button } from '@mui/material'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import queryString from 'query-string'
+
 type Props = {
     searchParams: { [key: string]: string | string[] | undefined }
 }

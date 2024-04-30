@@ -162,6 +162,7 @@ function ResetPasswordForm({ jwtUserId }: { jwtUserId: string }) {
                     بازنشانی گذرواژه
                 </Button>
             </form>
+
         </Box>
     )
 }
