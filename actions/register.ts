@@ -26,7 +26,7 @@ export const register = async (values: TRegisterUserSchema) => {
     console.log(values);
     // const validatedFields = { data: values, success: true }
     const validatedFields = RegisterUserSchema.safeParse(values)
-    console.log(validatedFields)
+    console.log(validatedFields.error)
 
     if (!validatedFields.success) {
         return { error: true, msg: 'ارتباط با سرور برقرار نشد !' }

@@ -27,10 +27,6 @@ import {
 import {
     zodResolver
 } from '@hookform/resolvers/zod'
-import {
-    VariantType,
-    enqueueSnackbar
-} from 'notistack'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Visibility from '@mui/icons-material/Visibility'
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded'
@@ -38,10 +34,11 @@ import SendToMobileRoundedIcon from '@mui/icons-material/SendToMobileRounded'
 import { register } from '@/actions/register'
 import { IMaskInput } from 'react-imask'
 import { passwordStrength } from "check-password-strength"
+import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
 
 interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
+    onChange: (event: { target: { name: string; value: string } }) => void
+    name: string
 }
 
 const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
@@ -58,9 +55,9 @@ const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
                 onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
                 overwrite
             />
-        );
+        )
     },
-);
+)
 
 function RegisterForm() {
     const [isPending, startTransition] = useTransition()
@@ -84,34 +81,22 @@ function RegisterForm() {
         }
     })
 
-    // useEffect(() => {
-    //     setPasswordStrengt(passwordStrength(form.watch().password).id)
-    // }, [form.watch().password, form])
-
-    const handleClickVariant = (variant: VariantType, meg: string) => {
-        // variant could be success, error, warning, info, or default
-        enqueueSnackbar(meg, { variant })
-    }
-
     const onSubmit = (values: TRegisterUserFormSchema) => {
-        console.log('valuesMain', values);
+
         startTransition(() => {
             register(values)
                 .then((data) => {
-                    data.success ? handleClickVariant('success', data.msg) : handleClickVariant('error', data.msg)
+                    data.success ? HandleEnqueueSnackbar({ variant: 'success', msg: data.msg }) : HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })
                     // router.push('/username')
                     // router.refresh()
                 })
 
         })
     }
-    // console.log(isPending);
-    // console.log(passwordStrengt, form.watch().password)
 
     return (
         <Box sx={{ width: '100%' }}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-
                 <Controller
                     name="phone"
                     control={form.control}
