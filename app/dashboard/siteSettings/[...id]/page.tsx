@@ -9,7 +9,7 @@ import queryString from 'query-string'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 import CatList from '@/components/adminComponent/Categories/CatList'
 import { getAllCategoryOption } from '@/lib/controllers/categoryOptionController'
-
+import UndoIcon from '@mui/icons-material/Undo';
 
 type Props = {
     params: {
@@ -80,7 +80,7 @@ async function Category({ params }: Props) {
                     href={`/dashboard/siteSettings/${back}`}
                 >
                     برگشت
-                    <AddIcon sx={{ ml: 1 }} />
+                    <UndoIcon sx={{ ml: 1 }} />
                 </Link>
             </Fab>
             <Box
@@ -94,10 +94,10 @@ async function Category({ params }: Props) {
                 }}
             >
                 {
-                    // categories && categories.length > 0 && categories.map((cat: TCategorySchema) => (
-
-                    categories && <CatList parsed={encodeURIComponent(parsed.parent)} categories={categories} />
-                    // ))
+                    categories && <CatList
+                        parsed={encodeURIComponent(parsed.parent)}
+                        categories={categories}
+                    />
                 }
             </Box>
         </Box>

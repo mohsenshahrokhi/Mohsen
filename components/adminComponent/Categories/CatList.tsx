@@ -72,7 +72,7 @@ function CatList({ categories, parsed }: Props) {
                                 <Link
                                     href={`${parsed}/${encodeURIComponent(cat._id)}`}
                                 >
-                                    <Fab color="secondary" size="small" aria-label="add">
+                                    <Fab color="secondary" size="small" aria-label="view">
                                         <EditNoteIcon />
                                     </Fab>
                                 </Link>

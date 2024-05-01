@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Yekan';
+  src: url('/fonts/Yekan.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Vazir';
+  src: url('/fonts/Vazir.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'VazirmatnRegular';
+  src: url('/font/VazirmatnRegular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Nokia';
+  src: url('/fonts/NokiaKokia.ttf') format('ttf');
+}

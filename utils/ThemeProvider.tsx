@@ -20,103 +20,15 @@ const cacheRtl = createCache({
     stylisPlugins: [prefixer, rtlPlugin]
 });
 
-
-const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
-
 export default function ThemeDirection({
     children,
 }: {
     children: React.ReactNode
 }) {
-
     // const themeMode = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'
     const searchParams = useSearchParams()
-    const themeSystem = useMediaQuery('(prefers-color-scheme: dark)');
     // const themeMode = 'dark'
     const themeMode = searchParams.get('theme') === 'dark' ? 'dark' : 'light'
-    const theme = useTheme()
-    // console.log('themeMode', themeMode, theme, searchParams.get('theme'))
-    // localStorage.setItem('theme', themeMode);
-
-    // const theme = React.useMemo(() => createTheme({
-    //     palette: {
-    //         mode: themeMode
-    //     },
-    //     typography: {
-    //         fontFamily: 'Vazir',
-    //     },
-    //     components: {
-    //         MuiTypography: {
-    //             defaultProps: {
-    //                 variantMapping: {
-    //                     h1: 'h2',
-    //                     h2: 'h2',
-    //                     h3: 'h2',
-    //                     h4: 'h2',
-    //                     h5: 'h2',
-    //                     h6: 'h2',
-    //                     subtitle1: 'h2',
-    //                     subtitle2: 'h2',
-    //                     body1: 'span',
-    //                     body2: 'span',
-    //                 },
-    //             },
-    //         },
-    //         MuiCssBaseline: {
-    //             styleOverrides: `
-    //         @font-face {
-    //           font-family: 'Vazir';
-    //           font-style: normal;
-    //           font-display: swap;
-    //           font-weight: 400;
-    //           src: local('Vazir'), local('Vazir'), url(/fonts/Vazir.woff2) format('woff2');
-    //           unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
-    //         }
-    //       `,
-    //         },
-    //     },
-    //     direction: "rtl"
-    // }), [themeMode])
-    // const getDesignTokens = (mode: PaletteMode) => ({
-    //     palette: {
-    //         mode
-    //     },
-    //     typography: {
-    //         fontFamily: 'Vazir',
-    //     },
-    //     components: {
-    //         MuiTypography: {
-    //             defaultProps: {
-    //                 variantMapping: {
-    //                     h1: 'h2',
-    //                     h2: 'h2',
-    //                     h3: 'h2',
-    //                     h4: 'h2',
-    //                     h5: 'h2',
-    //                     h6: 'h2',
-    //                     subtitle1: 'h2',
-    //                     subtitle2: 'h2',
-    //                     body1: 'span',
-    //                     body2: 'span',
-    //                 },
-    //             },
-    //         },
-    //         MuiCssBaseline: {
-    //             styleOverrides: `
-    //             @font-face {
-    //               font-family: 'Vazir';
-    //               font-style: normal;
-    //               font-display: swap;
-    //               font-weight: 400;
-    //               src: local('Vazir'), local('Vazir'), url(/fonts/Vazir.woff2) format('woff2');
-    //               unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
-    //             }
-    //           `,
-    //         },
-    //     },
-    //     direction: "rtl"
-    // });
-
     const getDesignTokens = (mode: PaletteMode) => ({
         palette: {
             mode,
@@ -149,41 +61,15 @@ export default function ThemeDirection({
                 }),
         },
         typography: {
-            fontFamily: 'Vazir',
+            fontFamily: 'VazirmatnRegular',
         },
-        // components: {
-        //     MuiCssBaseline: {
-        //         styleOverrides: `
-        //             @font-face {
-        //               font-family: 'Vazir';
-        //               font-style: normal;
-        //               font-display: swap;
-        //               font-weight: 400;
-        //               src: local('Vazir'), local('Vazir'), url(../public/fonts/Vazir.woff2) format('woff2');
-        //               unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
-        //             }
-        //           `,
-        //     },
-        // }
     });
 
-    // const allTheme = React.useMemo(
-    //     () =>
-    //         createTheme({
-    //             palette: {
-    //                 mode,
-    //             },
-    //         }),
-    //     [mode],
-    // );
-    // console.log('mode', mode);
 
     const allTheme = React.useMemo(() => createTheme(getDesignTokens(themeMode)), [themeMode]);
     return (
         <CacheProvider value={cacheRtl} >
-            {/* <ColorModeContext.Provider value={colorMode}> */}
             <ThemeProvider theme={allTheme}>
-                {/* <MyApp /> */}
                 <Box
                     sx={{
                         display: 'flex',
@@ -194,15 +80,13 @@ export default function ThemeDirection({
                         color: 'text.primary',
                     }}
                 >
-
                     {children}
                 </Box>
             </ThemeProvider>
-            {/* </ColorModeContext.Provider> */}
         </CacheProvider>
     )
 }
 
-function useMemo(arg0: () => import("@mui/material/styles").Theme, arg1: string[]) {
-    throw new Error("Function not implemented.")
-}
+// function useMemo(arg0: () => import("@mui/material/styles").Theme, arg1: string[]) {
+//     throw new Error("Function not implemented.")
+// }

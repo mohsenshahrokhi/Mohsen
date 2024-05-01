@@ -7,7 +7,13 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    // fontFamily: {
+    //   vazirMatn: ["var(--font-VazirmatnRegular)"],
+    // },
     extend: {
+      // fontFamily: {
+      //   deacon: ['VazirmatnRegular', 'sans-serif'],
+      // },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

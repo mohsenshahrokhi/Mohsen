@@ -9,13 +9,17 @@ import React from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import { Box, Grid } from '@mui/material'
 import { getAllCategoryOption } from '@/lib/controllers/categoryOptionController'
+import CatList from '@/components/adminComponent/Categories/CatList'
 
 async function getData() {
     const category = await getAllCategory('parent=null')
     return category as TCategorySchema[]
 }
 
-
+const parsed = {
+    parent: '',
+    cat: ''
+}
 
 async function SiteSettings() {
     const session = await getServerSession(authOptions)

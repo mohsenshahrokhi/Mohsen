@@ -1,14 +1,14 @@
 'use client'
 
-import SubmitButton from '@/components/ui/components/Button/SubmitButton'
+// import SubmitButton from '@/components/ui/components/Button/SubmitButton'
 import axios from 'axios'
-import Select from 'react-select'
-import TEInput from "@/components/ui/components/Input/Input"
+// import Select from 'react-select'
+// import TEInput from "@/components/ui/components/Input/Input"
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import ButtonWithRipple from '@/components/ui/components/Button/ButtonWithRipple'
+// import ButtonWithRipple from '@/components/ui/components/Button/ButtonWithRipple'
 import { useSession } from 'next-auth/react'
-import TETextarea from '@/components/ui/components/Textarea/TETextarea'
+// import TETextarea from '@/components/ui/components/Textarea/TETextarea'
 import { CAT, SelectValue, Property } from '@/type'
 
 function CategoryForm({ categoryInfo }: { categoryInfo: CAT }) {
@@ -218,7 +218,7 @@ function CategoryForm({ categoryInfo }: { categoryInfo: CAT }) {
                 <div className=' flex flex-col w-full h-full gap-2'>
 
                     <div className="flex flex-col w-full gap-2 h-full pt-5">
-                        <TEInput
+                        {/* <TEInput
                             type="text"
                             size='lg'
                             value={form?.name}
@@ -227,9 +227,9 @@ function CategoryForm({ categoryInfo }: { categoryInfo: CAT }) {
                             name="name"
                             label="نام دسته بندی"
                             required
-                        ></TEInput>
+                        ></TEInput> */}
 
-                        <Select
+                        {/* <Select
                             name='parent'
                             onChange={e => handleStateChange('parent', e)}
                             isLoading={isSelectLoading}
@@ -243,7 +243,7 @@ function CategoryForm({ categoryInfo }: { categoryInfo: CAT }) {
                             className="basic-single"
                             placeholder={"دسته اصلی"}
 
-                        />
+                        /> */}
                     </div>
                     <div className=' flex flex-col max-h-64 overflow-y-auto gap-2 border-t-2 p-2 w-full '>
                         <h1>ویژگی ها</h1>
@@ -254,7 +254,7 @@ function CategoryForm({ categoryInfo }: { categoryInfo: CAT }) {
                                 key={index}
                             >
 
-                                <TEInput
+                                {/* <TEInput
                                     type="text"
                                     // size='lg'
                                     value={propertys[index].name}
@@ -263,9 +263,9 @@ function CategoryForm({ categoryInfo }: { categoryInfo: CAT }) {
                                     // name={`name_${index}`}
                                     label="نام ویژگی"
                                     required
-                                ></TEInput>
+                                ></TEInput> */}
 
-                                <TETextarea
+                                {/* <TETextarea
                                     type="text"
                                     size='lg'
                                     className=''
@@ -275,49 +275,49 @@ function CategoryForm({ categoryInfo }: { categoryInfo: CAT }) {
                                     // name={`value_${index}`}
                                     label="نام مقدار ویژگی"
                                     required
-                                ></TETextarea>
+                                ></TETextarea> */}
 
-                                <ButtonWithRipple
+                                {/* <ButtonWithRipple
                                     name='remove'
                                     onClick={() => handleDeleteProperty(index)}
                                 >
                                     حذف
-                                </ButtonWithRipple>
+                                </ButtonWithRipple> */}
 
                             </div>
                         ))}
                         <div className=' flex w-full mt-4'>
 
-                            <ButtonWithRipple
+                            {/* <ButtonWithRipple
                                 name='addPropertis'
                                 size='large'
                                 onClick={handleProperty}
                             >
                                 اضافه کردن ویژگی جدید
-                            </ButtonWithRipple>
+                            </ButtonWithRipple> */}
                         </div>
 
                     </div>
 
                     <div className=' flex flex-col justify-between w-full gap-3 items-center border-t-2 p-2' >
 
-                        <SubmitButton
+                        {/* <SubmitButton
                             size='large'
                             name='submit'
                         >
                             {
                                 !_id ? !isLoading ? <span>ثبت دسته بندی جدید </span> : <span> در حال اضافه کردن دسته بندی جدید... </span> : !isLoading ? <span>ویرایش</span> : <span>در حال ویرایش...</span>
                             }
-                        </SubmitButton>
+                        </SubmitButton> */}
 
-                        <ButtonWithRipple
+                        {/* <ButtonWithRipple
                             name='cancel'
                             color='purple'
                             size='large'
                             onClick={handleCancel}
                         >
                             انصراف
-                        </ButtonWithRipple>
+                        </ButtonWithRipple> */}
                     </div>
 
                 </div>
