@@ -24,11 +24,15 @@ import { Controller, useForm } from 'react-hook-form'
 import Switch from '@mui/material/Switch'
 import { createCategory } from '@/actions/category'
 import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
+import { useRouter } from 'next/navigation'
 
+// type Props = {
+//     params: {},
+//     // searchParams: string
+//     searchParams: { [key: string]: string | undefined }
+// }
 type Props = {
-    params: {},
-    // searchParams: string
-    searchParams: { [key: string]: string | undefined }
+    searchParams: { [id: string]: [string] | undefined }
 }
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -81,51 +85,65 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 function AddSettings({ searchParams }: Props) {
 
     const [isPending, startTransition] = useTransition()
-
+    const router = useRouter()
     const {
-        cat,
-        path,
-        parent
+        id
     } = searchParams
 
-    const stringified = queryString.stringify(searchParams)
 
-    let cancel = path || ''
+    console.log('searchParams', searchParams)
+    let url = ''
+    let parent = ''
+    // id!.join('/')
+    if (id) {
 
-    if (cat && cat !== '') cancel = `${parent}/${cat}`
+        if (Array.isArray(id)) {
+            url = id.join('/')
+            parent = id.slice(-1)[0]
+        }
+        else {
+            url = id
+            parent = id
+        }
+    }
 
-    if (!cat && parent !== '') cancel = parent || ''
+    // const parent = url
+    // const parent = id!.slice(-1)[0] || ''
+    console.log('searchParams1', searchParams, url);
 
     const form = useForm<TRegisterCategorySchema>({
         resolver: zodResolver(RegisterCategorySchema),
         defaultValues: {
             name: '',
+            latinName: '',
             slug: '',
             // colorIcon: '',
             // icon: '',
             // images: '',
-            type: '',
+            type: false,
             // parent: '',
             // propertys: []
         }
     })
 
     const onSubmit = (values: TRegisterCategorySchema) => {
-        // console.log('valuesMain', values)
+        form.setValue('parent', encodeURIComponent(parent || ''))
+        values.parent = parent || ''
+        console.log('valuesMain', form.getValues(), values)
         startTransition(() => {
             createCategory(values)
                 .then((data) => {
                     data.success ?
                         HandleEnqueueSnackbar({ variant: 'success', msg: data.msg }) :
                         HandleEnqueueSnackbar({ msg: data.msg, variant: 'error' })
-                    // router.push('/username')
+                    parent ?
+                        router.push(`/dashboard/siteSettings/${url}`) :
+                        router.push(`/dashboard/siteSettings`)
                     // router.refresh()
                 })
-
         })
     }
 
-    // console.log('valuesMain', form.getValues());
     return (
         <Box
             component="div"
@@ -138,7 +156,7 @@ function AddSettings({ searchParams }: Props) {
                 aria-label="add"
             >
                 <Link
-                    href={`/dashboard/siteSettings/${cancel}`}
+                    href={`/dashboard/siteSettings/${url}`}
                 >
                     انصراف
                 </Link>
@@ -207,7 +225,7 @@ function AddSettings({ searchParams }: Props) {
                     />
 
                     <Controller
-                        name="slug"
+                        name="latinName"
                         control={form.control}
                         render={({ field, fieldState }) => (
                             <FormControl
@@ -216,11 +234,11 @@ function AddSettings({ searchParams }: Props) {
                                 sx={{ my: 1 }}
                                 variant="outlined"
                             >
-                                <InputLabel htmlFor="slug">نام لاتین دسته بندی</InputLabel>
+                                <InputLabel htmlFor="latinName">نام لاتین دسته بندی</InputLabel>
                                 <OutlinedInput
-                                    id='slug'
+                                    id='latinName'
                                     {...field}
-                                    autoComplete='slug'
+                                    autoComplete='name'
                                     disabled={isPending}
                                     error={fieldState.error ? true : false}
                                     type={'text'}
@@ -250,62 +268,28 @@ function AddSettings({ searchParams }: Props) {
                         )}
                     />
 
+
                     <Controller
                         name="type"
                         control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                <InputLabel htmlFor="type">دسته بندی</InputLabel>
-                                <OutlinedInput
-                                    id='type'
-                                    {...field}
-                                    autoComplete='type'
-                                    // disabled={isPending}
-                                    error={fieldState.error ? true : false}
-                                    type={'text'}
-                                    label="دسته بندی"
-                                    fullWidth
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                edge="start"
-                                            >
-                                                {/* {<EmailRoundedIcon />} */}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-
+                        render={({ field: { onChange, value } }) => (
+                            <FormControlLabel
+                                label="فعال کردن"
+                                labelPlacement='start'
+                                control={
+                                    <Switch
+                                        onChange={onChange}
+                                        checked={value}
+                                        {...{ inputProps: { 'aria-label': 'Switch demo' } }}
+                                        color="info"
+                                    />
+                                }
+                            />
                         )}
                     />
 
-                    {/* <FormControlLabel
-                        label="Label"
-                        labelPlacement='start'
-                        control={
-                            <Switch
-                                {...{ inputProps: { 'aria-label': 'Switch demo' } }}
-                                color="info"
-                            />
-                        }
-                    />
 
-                    <FormControlLabel
+                    {/* <FormControlLabel
                         labelPlacement='start'
                         control={
                             <MaterialUISwitch
@@ -326,7 +310,7 @@ function AddSettings({ searchParams }: Props) {
                         ثبت
                     </Button>
                 </form>
-                <button type='button' onClick={() => HandleEnqueueSnackbar({ msg: 'aa', variant: 'info' })} >set</button>
+
             </Box>
         </Box>
     )

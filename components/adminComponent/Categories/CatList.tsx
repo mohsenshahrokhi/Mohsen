@@ -20,6 +20,7 @@ type Props = {
 function CatList({ categories, parsed }: Props) {
 
     const [expanded, setExpanded] = React.useState<string | false>(false)
+    console.log('parsed', parsed);
 
     const handleChange = (panel: string) => async (event: React.SyntheticEvent, isExpanded: boolean) => {
         // const res = await getAllCategoryOption('')

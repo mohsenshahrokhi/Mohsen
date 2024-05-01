@@ -258,11 +258,12 @@ export type TResetPassSchema = z.infer<typeof ResetPass>
 export const CategorySchema = z.object({
     _id: z.string().uuid(),
     name: z.string(),
+    latinName: z.string(),
     slug: z.string(),
     colorIcon: z.string().optional(),
     icon: z.string().optional(),
     images: z.string().optional(),
-    type: z.string().default('0'),
+    type: z.boolean().optional().default(false),
     parent: z.string().uuid().optional(),
     propertys: z.array(z.string()).optional()
     // propertys: z.array(z.object({ name: z.string(), values: z.string() })).optional()
@@ -274,15 +275,20 @@ export const RegisterCategorySchema = z.object({
     name: z.string().min(6, {
         message: 'حداقل ۶ حرف را وارد کنید'
     }),
-    slug: z.string().min(6, {
+    latinName: z.string().min(6, {
         message: 'حداقل ۶ حرف را وارد کنید'
     }),
+    slug: z.string().optional(),
     colorIcon: z.string().optional(),
     icon: z.string().optional(),
     images: z.string().optional(),
-    type: z.string().optional().default('0'),
-    parent: z.string().uuid().optional(),
+    type: z.boolean().optional(),
+    parent: z.string().optional(),
     propertys: z.array(z.string()).optional()
+}).superRefine((data, ctx) => {
+    if (data.latinName) {
+        data.slug = data.latinName.replace(/\ /g, '-')
+    }
 })
 export type TRegisterCategorySchema = z.infer<typeof RegisterCategorySchema>
 

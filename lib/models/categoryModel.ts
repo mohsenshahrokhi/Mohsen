@@ -8,6 +8,10 @@ const CategorySchema = new Schema<TCategorySchema>({
         type: String,
         required: [true, 'لطفا نام دسته بندی را وارد کنید'],
     },
+    latinName: {
+        type: String,
+        required: [true, 'لطفا نام دسته بندی را وارد کنید'],
+    },
     colorIcon: {
         type: String,
     },
@@ -22,8 +26,8 @@ const CategorySchema = new Schema<TCategorySchema>({
         required: true,
     },
     type: {
-        type: String,
-        default: '0',
+        type: Boolean,
+        default: false,
     },
     parent: {
         type: Schema.Types.ObjectId,

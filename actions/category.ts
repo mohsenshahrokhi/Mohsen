@@ -2,6 +2,7 @@
 
 import { CategorySchema, RegisterCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import { createNewCategory, getCategory } from "@/lib/controllers/categoryController"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 export const createCategory = async (values: TRegisterCategorySchema) => {
 
@@ -10,6 +11,7 @@ export const createCategory = async (values: TRegisterCategorySchema) => {
     if (!validatedFields.success) {
         return { error: true, msg: 'ارتباط با سرور برقرار نشد !' }
     }
+    console.log(validatedFields.data);
 
     await createNewCategory({
         ...validatedFields.data

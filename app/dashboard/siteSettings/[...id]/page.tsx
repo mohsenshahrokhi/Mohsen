@@ -18,39 +18,31 @@ type Props = {
 }
 
 async function getData(cId: string) {
-
-    // const categoryChild = await getAllCategory(`parent=${cId}`)
-    const categoryChild = await getAllCategory(`parent=${cId}&populate=categories.name,categories.slug`)
-    console.log('categoryChild', categoryChild)
+    console.log('cId', cId)
+    const categoryChild = await getAllCategory(`parent=${cId}`)
+    // const categoryChild = await getAllCategory(`parent=${cId}&populate=categories.name,categories.slug`)
+    // console.log('categoryChild', categoryChild)
 
     return categoryChild as TCategorySchema[]
 
 }
 
 async function Category({ params }: Props) {
-    console.log(params.id.slice(-1)[0]);
 
     // const categories: TCategorySchema[] = []
     const categories = await getData(params.id.slice(-1)[0])
+    const {
+        id
+    } = params
+    let url = ''
+    let parent = ''
 
-    const parsed = {
-        parent: '',
-        cat: ''
+    if (Array.isArray(id)) {
+        parent = id.pop() || ''
+        url = id.join('/')
     }
 
-    let back = ''
-
-    params.id.map((id: string, index: number) => {
-
-        if (index === 0) parsed.parent = id
-
-        if (index === 1) parsed.cat = id
-
-    })
-
-    if (params.id.length > 1) back = params.id.shift() || ''
-
-    const stringified = queryString.stringify(parsed)
+    const stringified = queryString.stringify(params)
 
     return (
         <Box
@@ -77,7 +69,7 @@ async function Category({ params }: Props) {
                 aria-label="add"
             >
                 <Link
-                    href={`/dashboard/siteSettings/${back}`}
+                    href={`/dashboard/siteSettings/${url}`}
                 >
                     برگشت
                     <UndoIcon sx={{ ml: 1 }} />
@@ -95,7 +87,7 @@ async function Category({ params }: Props) {
             >
                 {
                     categories && <CatList
-                        parsed={encodeURIComponent(parsed.parent)}
+                        parsed={encodeURIComponent(parent)}
                         categories={categories}
                     />
                 }
