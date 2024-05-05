@@ -91,9 +91,9 @@ function AddSettings({ searchParams }: Props) {
     } = searchParams
 
 
-    console.log('searchParams', searchParams)
+    // console.log('searchParams', searchParams)
     let url = ''
-    let parent = ''
+    let parent = null
     // id!.join('/')
     if (id) {
 
@@ -107,9 +107,7 @@ function AddSettings({ searchParams }: Props) {
         }
     }
 
-    // const parent = url
-    // const parent = id!.slice(-1)[0] || ''
-    console.log('searchParams1', searchParams, url);
+    // console.log('searchParams1', searchParams, url);
 
     const form = useForm<TRegisterCategorySchema>({
         resolver: zodResolver(RegisterCategorySchema),
@@ -128,17 +126,21 @@ function AddSettings({ searchParams }: Props) {
 
     const onSubmit = (values: TRegisterCategorySchema) => {
         form.setValue('parent', encodeURIComponent(parent || ''))
+        form.setValue('author', '65be6e52d57f694793cbb0a1')
         values.parent = parent || ''
-        console.log('valuesMain', form.getValues(), values)
+        values.author = '65be6e52d57f694793cbb0a1'
+        console.log('valuesMain', form.getValues(), values, parent)
         startTransition(() => {
             createCategory(values)
                 .then((data) => {
                     data.success ?
                         HandleEnqueueSnackbar({ variant: 'success', msg: data.msg }) :
-                        HandleEnqueueSnackbar({ msg: data.msg, variant: 'error' })
-                    parent ?
-                        router.push(`/dashboard/siteSettings/${url}`) :
-                        router.push(`/dashboard/siteSettings`)
+                        console.log(data);
+
+                    // HandleEnqueueSnackbar({ msg: data.msg, variant: 'error' })
+                    // parent ?
+                    //     router.push(`/dashboard/siteSettings/${url}`) :
+                    //     router.push(`/dashboard/siteSettings`)
                     // router.refresh()
                 })
         })

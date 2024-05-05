@@ -265,6 +265,7 @@ export const CategorySchema = z.object({
     images: z.string().optional(),
     type: z.boolean().optional().default(false),
     parent: z.string().uuid().optional(),
+    author: z.string().uuid().optional(),
     propertys: z.array(z.string()).optional()
     // propertys: z.array(z.object({ name: z.string(), values: z.string() })).optional()
 
@@ -284,6 +285,7 @@ export const RegisterCategorySchema = z.object({
     images: z.string().optional(),
     type: z.boolean().optional(),
     parent: z.string().optional(),
+    author: z.string().optional(),
     propertys: z.array(z.string()).optional()
 }).superRefine((data, ctx) => {
     if (data.latinName) {
@@ -294,8 +296,7 @@ export type TRegisterCategorySchema = z.infer<typeof RegisterCategorySchema>
 
 export const CategoryOptionSchema = z.object({
     _id: z.string().uuid(),
-    parent: z.string().uuid().optional(),
+    parent: z.string().uuid(),
     propertys: z.array(z.string())
-
 })
 export type TCategoryOptionSchema = z.infer<typeof CategoryOptionSchema>

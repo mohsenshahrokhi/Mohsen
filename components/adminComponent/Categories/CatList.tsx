@@ -20,7 +20,6 @@ type Props = {
 function CatList({ categories, parsed }: Props) {
 
     const [expanded, setExpanded] = React.useState<string | false>(false)
-    console.log('parsed', parsed);
 
     const handleChange = (panel: string) => async (event: React.SyntheticEvent, isExpanded: boolean) => {
         // const res = await getAllCategoryOption('')
@@ -73,7 +72,7 @@ function CatList({ categories, parsed }: Props) {
                                 <Link
                                     href={`${parsed}/${encodeURIComponent(cat._id)}`}
                                 >
-                                    <Fab color="secondary" size="small" aria-label="view">
+                                    <Fab color="secondary" size="small" aria-label="add">
                                         <EditNoteIcon />
                                     </Fab>
                                 </Link>

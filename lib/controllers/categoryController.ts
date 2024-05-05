@@ -3,6 +3,7 @@ import Category from "../models/categoryModel"
 import connectToMongodb from "../mongodb"
 import { TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import CategoryOption from "../models/categoryOptionModel"
+import mongoose from "mongoose"
 
 export const getAllCategory = async (req: any) => {
   connectToMongodb()
@@ -14,27 +15,27 @@ export const getAllCategory = async (req: any) => {
     const parsed = parser.parse(req)
     const c = await CategoryOption.find()
     const d = await Category.find()
-    console.log('req', req)
-    console.log('reqa', parsed)
-    const categories = await Category
+    // console.log('req', req)
+    console.log('req', parsed)
+    const cats = await Category
       .find(parsed.filter)
+      .populate(parsed.populate)
       .sort(parsed.sort)
       .limit(parsed.limit || 10)
-      // .populate({ path: 'categories' })
-      .populate(parsed.populate)
+      // .populate({ path: 'parent' })
       .select(parsed.select)
       .exec()
     // } else {
     //   categories = await Category.find()
     // }
-    const updateCId = categories.map(category => ({
+    const updateCId = cats.map(category => ({
 
       // ...category._doc, _id: category._doc._id.toString(), parent: category._doc.parent?.toString(), propertys: category._doc.propertys?.toString()
       // // ...category._doc, _id: category._doc._id.toString()
 
     }))
     // console.log(updateCId);
-    return categories
+    return cats
     // return updateCId
   } catch (err) {
     return err
@@ -73,11 +74,17 @@ export const getCategoryBySlug = async (slug: string) => {
 export const createNewCategory = async (params: TRegisterCategorySchema) => {
   try {
     connectToMongodb()
-    const category = await Category.create({ ...params })
-    const updateCId = {
-      ...category._doc, _id: category._doc._id.toString()
+
+    console.log('endparams', params);
+    if (params.parent === '') {
+      // delete params.parent
     }
-    return updateCId
+    const category = await Category.create({ ...params })
+    // console.log('category:', category);
+    // const updateCId = {
+    //   ...category._doc, _id: category._doc._id.toString()
+    // }
+    return category
   } catch (err) {
     return err
   }

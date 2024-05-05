@@ -9,14 +9,16 @@ export const createCategory = async (values: TRegisterCategorySchema) => {
     const validatedFields = RegisterCategorySchema.safeParse(values)
 
     if (!validatedFields.success) {
-        return { error: true, msg: 'ارتباط با سرور برقرار نشد !' }
+        console.log(validatedFields.error);
+
+        return { error: true, msg: validatedFields.error }
+        // return { error: true, msg: 'ارتباط با سرور برقرار نشد !' }
     }
-    console.log(validatedFields.data);
 
     await createNewCategory({
         ...validatedFields.data
     })
-
+    // revalidatePath('')
     return { success: true, msg: 'حساب کاربری با موفقیت ایجاد شد' }
 
 }

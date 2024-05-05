@@ -1,22 +1,22 @@
 import { TCategorySchema } from "@/ZSchemas"
 import { Schema, model, models } from "mongoose"
-import CategoryOption from "./categoryOptionModel"
 
 const CategorySchema = new Schema<TCategorySchema>({
-
     name: {
         type: String,
         required: [true, 'لطفا نام دسته بندی را وارد کنید'],
+        trim: true,
     },
     latinName: {
         type: String,
         required: [true, 'لطفا نام دسته بندی را وارد کنید'],
+        trim: true,
     },
     colorIcon: {
         type: String,
     },
     images: {
-        type: [String],
+        type: Array,
     },
     icon: {
         type: String,
@@ -24,6 +24,7 @@ const CategorySchema = new Schema<TCategorySchema>({
     slug: {
         type: String,
         required: true,
+        trim: true,
     },
     type: {
         type: Boolean,
@@ -31,21 +32,19 @@ const CategorySchema = new Schema<TCategorySchema>({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'categories',
-        default: null
+        ref: 'Category'
     },
     propertys: {
         type: Schema.Types.ObjectId,
-        ref: 'CategoryOption',
-        default: null
+        ref: 'CategoryOption'
     },
-    // propertys: [{
-    //     type: Object,
-    //     default: null
-    // }]
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'user'
+    }
 
 })
 
-const Category = models.categories || model("categories", CategorySchema)
+const Category = models.Category || model("Category", CategorySchema)
 
 export default Category 
