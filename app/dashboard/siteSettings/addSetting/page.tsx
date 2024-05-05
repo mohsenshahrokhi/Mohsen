@@ -25,6 +25,8 @@ import Switch from '@mui/material/Switch'
 import { createCategory } from '@/actions/category'
 import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
 import { useRouter } from 'next/navigation'
+import { verifyJwt } from '@/lib/jwt'
+import { useSession } from 'next-auth/react'
 
 // type Props = {
 //     params: {},
@@ -84,12 +86,27 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 function AddSettings({ searchParams }: Props) {
 
-    const [isPending, startTransition] = useTransition()
     const router = useRouter()
+    const { data: session } = useSession({
+        required: true,
+        onUnauthenticated() {
+            router.push('/login')
+        },
+    })
+
+    const user = session?.user
+
+    const accessToken = user?.accessToken || ''
+
+    const verify = accessToken && verifyJwt(accessToken!) || null
+
+    console.log('verify', verify);
+
+    const [isPending, startTransition] = useTransition()
+
     const {
         id
     } = searchParams
-
 
     // console.log('searchParams', searchParams)
     let url = ''
@@ -126,21 +143,21 @@ function AddSettings({ searchParams }: Props) {
 
     const onSubmit = (values: TRegisterCategorySchema) => {
         form.setValue('parent', encodeURIComponent(parent || ''))
-        form.setValue('author', '65be6e52d57f694793cbb0a1')
+        form.setValue('author', user?._id)
         values.parent = parent || ''
         values.author = '65be6e52d57f694793cbb0a1'
         console.log('valuesMain', form.getValues(), values, parent)
         startTransition(() => {
-            createCategory(values)
+            createCategory({ values, accessToken })
                 .then((data) => {
                     data.success ?
                         HandleEnqueueSnackbar({ variant: 'success', msg: data.msg }) :
                         console.log(data);
 
                     // HandleEnqueueSnackbar({ msg: data.msg, variant: 'error' })
-                    // parent ?
-                    //     router.push(`/dashboard/siteSettings/${url}`) :
-                    //     router.push(`/dashboard/siteSettings`)
+                    parent ?
+                        router.push(`/dashboard/siteSettings/${url}`) :
+                        router.push(`/dashboard/siteSettings`)
                     // router.refresh()
                 })
         })

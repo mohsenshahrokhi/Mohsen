@@ -13,6 +13,9 @@ import { getAllCategoryOption } from '@/lib/controllers/categoryOptionController
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { verifyJwt } from '@/lib/jwt'
 
 
 type Props = {
@@ -22,7 +25,7 @@ type Props = {
 }
 
 async function getData(cId: string) {
-    // console.log('cId:', cId)
+
     const params = {
         parent: cId,
         populate: 'parent.name,author.username'
@@ -40,10 +43,12 @@ async function getData(cId: string) {
 
 async function Category({ params }: Props) {
 
+    const session = await getServerSession(authOptions)
+    const accessToken = session?.user.accessToken
+    const verify = accessToken && verifyJwt(accessToken) || null
     // const categories: TCategorySchema[] = []
-    const categories = await getData(params.id.slice(-1)[0])
-    console.log('categoryChild', categories)
-    console.log('params:', params);
+    let categories: TCategorySchema[] = []
+    if (verify?.accessToken) categories = await getData(params.id.slice(-1)[0])
 
     // const [expanded, setExpanded] = React.useState<string | false>(false)
 

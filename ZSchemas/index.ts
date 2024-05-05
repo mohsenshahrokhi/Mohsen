@@ -273,11 +273,11 @@ export const CategorySchema = z.object({
 export type TCategorySchema = z.infer<typeof CategorySchema>
 
 export const RegisterCategorySchema = z.object({
-    name: z.string().min(6, {
-        message: 'حداقل ۶ حرف را وارد کنید'
+    name: z.string().min(4, {
+        message: 'حداقل ۴ حرف را وارد کنید'
     }),
-    latinName: z.string().min(6, {
-        message: 'حداقل ۶ حرف را وارد کنید'
+    latinName: z.string().min(4, {
+        message: 'حداقل ۴ حرف را وارد کنید'
     }),
     slug: z.string().optional(),
     colorIcon: z.string().optional(),
@@ -289,7 +289,7 @@ export const RegisterCategorySchema = z.object({
     propertys: z.array(z.string()).optional()
 }).superRefine((data, ctx) => {
     if (data.latinName) {
-        data.slug = data.latinName.replace(/\ /g, '-')
+        data.slug = data.latinName.replace(/\ /g, '_')
     }
 })
 export type TRegisterCategorySchema = z.infer<typeof RegisterCategorySchema>

@@ -10,10 +10,22 @@ import AddIcon from '@mui/icons-material/Add'
 import { Box, Grid } from '@mui/material'
 import { getAllCategoryOption } from '@/lib/controllers/categoryOptionController'
 import CatList from '@/components/adminComponent/Categories/CatList'
+import queryString from 'query-string'
+import { getCategories } from '@/actions/category'
 
-async function getData() {
-    const category = await getAllCategory('parent=null')
-    return category as TCategorySchema[]
+async function getData(accessToken: string) {
+
+    const params = {
+        parent: 'null'
+    }
+
+    const stringifyParams = queryString.stringify(params)
+
+    const { categories, success } = await getCategories({ stringifyParams, accessToken })
+    // const category = await getAllCategory(stringifyParams)
+
+    return categories as TCategorySchema[]
+
 }
 
 const parsed = {
@@ -26,7 +38,10 @@ async function SiteSettings() {
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
 
-    const categories = await getData()
+    // console.log('verify', verify)
+
+    let categories: TCategorySchema[] = []
+    if (verify) categories = await getData(accessToken!)
 
     return (
         <Box
@@ -58,7 +73,7 @@ async function SiteSettings() {
                 }}
             >
                 {
-                    categories.length > 0 && categories.map((cat: TCategorySchema) => (
+                    categories && categories.length > 0 && categories.map((cat: TCategorySchema) => (
                         <Link
                             key={cat._id}
                             className=' h-full w-full text-center border rounded-md p-3 border-gray-300'

@@ -8,35 +8,21 @@ import mongoose from "mongoose"
 export const getAllCategory = async (req: any) => {
   connectToMongodb()
   try {
-    // let categories: TCategorySchema[] = []
-    // const url = new URL(req.url).search.split('?')[1]
-    // if (url) {
     const parser = new MongooseQueryParser()
     const parsed = parser.parse(req)
-    const c = await CategoryOption.find()
-    const d = await Category.find()
-    // console.log('req', req)
-    console.log('req', parsed)
-    const cats = await Category
+    let cats: TCategorySchema[]
+    cats = await Category
       .find(parsed.filter)
       .populate(parsed.populate)
       .sort(parsed.sort)
       .limit(parsed.limit || 10)
-      // .populate({ path: 'parent' })
       .select(parsed.select)
       .exec()
-    // } else {
-    //   categories = await Category.find()
-    // }
     const updateCId = cats.map(category => ({
-
       // ...category._doc, _id: category._doc._id.toString(), parent: category._doc.parent?.toString(), propertys: category._doc.propertys?.toString()
       // // ...category._doc, _id: category._doc._id.toString()
-
     }))
-    // console.log(updateCId);
     return cats
-    // return updateCId
   } catch (err) {
     return err
   }
