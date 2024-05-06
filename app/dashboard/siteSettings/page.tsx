@@ -7,11 +7,14 @@ import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'
 import React from 'react'
 import AddIcon from '@mui/icons-material/Add'
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, Tooltip } from '@mui/material'
 import { getAllCategoryOption } from '@/lib/controllers/categoryOptionController'
 import CatList from '@/components/adminComponent/Categories/CatList'
 import queryString from 'query-string'
 import { getCategories } from '@/actions/category'
+import CloseIcon from '@mui/icons-material/Close'
+import EditNoteIcon from '@mui/icons-material/EditNote'
+import PreviewIcon from '@mui/icons-material/Preview'
 
 async function getData(accessToken: string) {
 
@@ -74,13 +77,45 @@ async function SiteSettings() {
             >
                 {
                     categories && categories.length > 0 && categories.map((cat: TCategorySchema) => (
-                        <Link
+                        <Box
                             key={cat._id}
-                            className=' h-full w-full text-center border rounded-md p-3 border-gray-300'
-                            href={`siteSettings/${encodeURIComponent(cat._id)}`}
-                        >
+                            className=' flex gap-3 h-full w-full justify-between border rounded-md p-3 border-gray-300'>
                             {cat.name}
-                        </Link>
+
+                            <Box className='flex gap-3'>
+
+                                <Tooltip title={`ویرایش ${cat.name}`} placement="top">
+                                    <Link
+                                        href={``}
+                                    >
+                                        {/* <Fab color="error" size="small" aria-label="add"> */}
+                                        <EditNoteIcon color="info" />
+                                        {/* </Fab> */}
+                                    </Link>
+                                </Tooltip>
+                                <Tooltip title={`حذف ${cat.name}`} placement="top">
+                                    <Link
+                                        href={``}
+                                    >
+                                        {/* <Fab color="error" size="small" aria-label="add"> */}
+                                        <CloseIcon color="error" />
+                                        {/* </Fab> */}
+                                    </Link>
+                                </Tooltip>
+
+                                <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
+                                    <Link
+                                        href={`siteSettings/${encodeURIComponent(cat._id)}`}
+                                    >
+                                        {/* <Fab color="info" size="small" aria-label="add"> */}
+                                        <PreviewIcon color='info' />
+                                        {/* </Fab> */}
+                                    </Link>
+                                </Tooltip>
+                            </Box>
+
+
+                        </Box>
                     ))
                 }
             </Box>

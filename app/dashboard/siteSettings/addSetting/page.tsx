@@ -100,8 +100,6 @@ function AddSettings({ searchParams }: Props) {
 
     const verify = accessToken && verifyJwt(accessToken!) || null
 
-    console.log('verify', verify);
-
     const [isPending, startTransition] = useTransition()
 
     const {
@@ -150,15 +148,18 @@ function AddSettings({ searchParams }: Props) {
         startTransition(() => {
             createCategory({ values, accessToken })
                 .then((data) => {
-                    data.success ?
-                        HandleEnqueueSnackbar({ variant: 'success', msg: data.msg }) :
+                    if (data.success) {
+
+                        HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
+
+                        parent ?
+                            router.push(`/dashboard/siteSettings/${url}`) :
+                            router.push(`/dashboard/siteSettings`)
+                    }
+                    data.error ?
+                        HandleEnqueueSnackbar({ variant: 'error', msg: data.msg }) :
                         console.log(data);
 
-                    // HandleEnqueueSnackbar({ msg: data.msg, variant: 'error' })
-                    parent ?
-                        router.push(`/dashboard/siteSettings/${url}`) :
-                        router.push(`/dashboard/siteSettings`)
-                    // router.refresh()
                 })
         })
     }

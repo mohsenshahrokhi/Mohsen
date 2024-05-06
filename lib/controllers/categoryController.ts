@@ -11,6 +11,8 @@ export const getAllCategory = async (req: any) => {
     const parser = new MongooseQueryParser()
     const parsed = parser.parse(req)
     let cats: TCategorySchema[]
+    console.log('parsed', parsed.filter);
+
     cats = await Category
       .find(parsed.filter)
       .populate(parsed.populate)
@@ -60,17 +62,14 @@ export const getCategoryBySlug = async (slug: string) => {
 export const createNewCategory = async (params: TRegisterCategorySchema) => {
   try {
     connectToMongodb()
-
-    console.log('endparams', params);
     if (params.parent === '') {
-      // delete params.parent
+      delete params.parent
     }
     const category = await Category.create({ ...params })
-    // console.log('category:', category);
-    // const updateCId = {
-    //   ...category._doc, _id: category._doc._id.toString()
-    // }
-    return category
+    const updateCId = {
+      ...category._doc, _id: category._doc._id.toString()
+    }
+    return updateCId
   } catch (err) {
     return err
   }

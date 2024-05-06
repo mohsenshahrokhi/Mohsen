@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
@@ -8,82 +8,112 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { TCategorySchema } from '@/ZSchemas'
-import { Box, Fab, IconButton, Link, Tooltip } from '@mui/material'
+import { Box, Button, Fab, IconButton, Tooltip } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { getAllCategoryOption, getCategoryOption } from '@/lib/controllers/categoryOptionController'
+import queryString from 'query-string'
+import { getCategories } from '@/actions/category'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import CloseIcon from '@mui/icons-material/Close'
+import PreviewIcon from '@mui/icons-material/Preview'
 
 type Props = {
-    categories: TCategorySchema[],
-    parsed: string
+    parentId: string
+    pathname: string
+    backUrl: string
 }
 
-function CatList({ categories, parsed }: Props) {
+async function getData(cId: string, accessToken: string) {
 
-    const [expanded, setExpanded] = React.useState<string | false>(false)
-
-    const handleChange = (panel: string) => async (event: React.SyntheticEvent, isExpanded: boolean) => {
-        // const res = await getAllCategoryOption('')
-        // console.log('res', res);
-        // const catOptions = await getData(panel)
-        // console.log('catOptions', catOptions);
-        setExpanded(isExpanded ? panel : false)
+    const params = {
+        parent: cId,
+        select: 'name'
     }
 
-    //  const handleChange = async (values: string) => {
-    //             // console.log(values);
-    //             const variant = 'success'
-    //             // startTransition(async () => {
-    //             const res = await await getAllCategoryOption('')
-    //             console.log(res);
-    //             setExpanded(isExpanded ? values : false)
-    //             // if (res) enqueueSnackbar('Password Changed Success', { variant })
-    //             // })
+    const stringifyParams = queryString.stringify(params)
 
-    //∫ }
+    const { categories, success } = await getCategories({ stringifyParams, accessToken })
 
-    return (<Box>
-        {categories.length > 0 && categories.map((cat: TCategorySchema) => (
-            <Accordion key={cat._id} expanded={expanded === `${encodeURIComponent(cat._id)}`} onChange={handleChange(`${encodeURIComponent(cat._id)}`)}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`panel-${cat._id}-bh-content`}
-                    id={`panel-${cat._id}-bh-header`}
-                >
-                    <Typography sx={{ flexShrink: 0 }}>
-                        {cat.name}
-                    </Typography>
+    return categories as TCategorySchema[]
+}
 
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Box
-                        component={'div'}
+
+function CatList({ parentId, pathname }: Props) {
+
+    const router = useRouter()
+    const { data: session } = useSession({
+        required: true,
+        onUnauthenticated() {
+            router.push('/login')
+        },
+    })
+
+    const user = session?.user
+
+    const accessToken = user?.accessToken || ''
+    const [categories, setCategories] = useState<TCategorySchema[]>()
+    async function loadMore() {
+        const cats = await getData(parentId, accessToken!)
+        setCategories(cats)
+    }
+
+    function hideSubCats() {
+        setCategories([])
+    }
+
+    return (
+
+        <div className=' flex flex-col justify-between'>
+            {
+                categories && categories.map((category) => (
+                    <div className=' flex flex-col w-full p-2' key={category._id}>
+                        <Box className=' flex justify-around border-b-2 items-center'>
+                            <p className=' font-xs text-lime-700 '>زیر شاخه ها</p>
+                            <Tooltip title="بستن زیر شاخه ها" placement="top">
+                                <Button
+                                    onClick={hideSubCats}
+                                >
+                                    <Fab color="secondary" size="small" aria-label="view">
+                                        <CloseIcon />
+                                    </Fab>
+                                </Button>
+
+                            </Tooltip>
+                        </Box>
+                        <Link
+                            className=' font-xs p-1'
+                            href={`${pathname}/${encodeURIComponent(category._id)}`}
+                        >
+                            {category.name}
+                        </Link>
+                    </div>
+                ))
+            }
+            <div className=' flex w-full justify-between p-2'>
+
+                <Tooltip title="اضافه کردن زیر شاخه" placement="top">
+                    <Link
+                        href={`/dashboard/siteSettings/addSettings/${parentId}`}
                     >
-                        <div className=' flex justify-between'>
-                            <Tooltip title="add" placement="top">
-                                <Link
-                                    href={`${parsed}/${encodeURIComponent(cat._id)}`}
-                                >
-                                    <Fab color="info" size="small" aria-label="add">
-                                        <AddIcon />
-                                    </Fab>
-                                </Link>
-                            </Tooltip>
-                            <Tooltip title="view" placement="top">
-                                <Link
-                                    href={`${parsed}/${encodeURIComponent(cat._id)}`}
-                                >
-                                    <Fab color="secondary" size="small" aria-label="add">
-                                        <EditNoteIcon />
-                                    </Fab>
-                                </Link>
+                        {/* <Fab color="info" size="small" aria-label="add"> */}
+                        <AddIcon color="info" />
+                        {/* </Fab> */}
+                    </Link>
+                </Tooltip>
+                <Tooltip title="دیدن زیر شاخه ها" placement="top">
+                    <Button
+                        onClick={loadMore}
+                    >
+                        {/* <Fab color="secondary" size="small" aria-label="view"> */}
+                        <PreviewIcon color='secondary' />
+                        {/* </Fab> */}
+                    </Button>
 
-                            </Tooltip>
-                        </div>
-                    </Box>
-                </AccordionDetails>
-            </Accordion>
-        ))}
-    </Box>
+                </Tooltip>
+            </div>
+        </div>
     )
 }
 

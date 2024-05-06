@@ -5,11 +5,13 @@ const CategorySchema = new Schema<TCategorySchema>({
     name: {
         type: String,
         required: [true, 'لطفا نام دسته بندی را وارد کنید'],
+        unique: true,
         trim: true,
     },
     latinName: {
         type: String,
         required: [true, 'لطفا نام دسته بندی را وارد کنید'],
+        unique: true,
         trim: true,
     },
     colorIcon: {

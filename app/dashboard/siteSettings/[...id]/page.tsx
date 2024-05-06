@@ -1,7 +1,7 @@
+import React from 'react'
 import Link from 'next/link'
 import Fab from '@mui/material/Fab'
 import queryString from 'query-string'
-import { headers } from "next/headers"
 import { TCategorySchema } from '@/ZSchemas'
 import AddIcon from '@mui/icons-material/Add'
 import UndoIcon from '@mui/icons-material/Undo'
@@ -16,6 +16,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'
+import { getCategories } from '@/actions/category'
+import CloseIcon from '@mui/icons-material/Close'
 
 
 type Props = {
@@ -24,21 +26,17 @@ type Props = {
     }
 }
 
-async function getData(cId: string) {
+async function getData(cId: string, accessToken: string) {
 
     const params = {
         parent: cId,
         populate: 'parent.name,author.username'
     }
     const stringifyParams = queryString.stringify(params)
-    // console.log('stringifyParams', stringifyParams)
 
-    const categoryChild = await getAllCategory(stringifyParams)
-    // const categoryChild = await getAllCategory(`parent=${cId}&populate=categories.name,categories.slug`)
-    // console.log('categoryChild', categoryChild)
+    const { categories, success } = await getCategories({ stringifyParams, accessToken })
 
-    return categoryChild as TCategorySchema[]
-
+    return categories as TCategorySchema[]
 }
 
 async function Category({ params }: Props) {
@@ -47,12 +45,16 @@ async function Category({ params }: Props) {
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
     // const categories: TCategorySchema[] = []
-    let categories: TCategorySchema[] = []
-    if (verify?.accessToken) categories = await getData(params.id.slice(-1)[0])
+    const categories = await getData(params.id.slice(-1)[0], accessToken!)
+
+    // const searchParam = searchParams
 
     // const [expanded, setExpanded] = React.useState<string | false>(false)
 
-    const handleChange = (panel: string) => async (event: React.SyntheticEvent, isExpanded: boolean) => {
+    const handleChange = (panel: string) => async (
+        event: React.SyntheticEvent,
+        isExpanded: boolean
+    ) => {
         // const res = await getAllCategoryOption('')
         // console.log('res', res);
         // const catOptions = await getData(panel)
@@ -65,27 +67,24 @@ async function Category({ params }: Props) {
     } = params
 
     let url = ''
-    let parentId = ''
-
-    console.log('params.idd', id)
+    let backUrl = ''
 
     if (Array.isArray(id)) {
         if (id.length > 1) {
-            parentId = id.pop() || ''
+            url = ''
+            backUrl = ''
             url = id.join('/')
+            const copyUrl = [...id]
+            copyUrl.pop()
+            backUrl = copyUrl.join('/')
+        } else {
+            url = id[0]
         }
     }
 
-    const headersList = headers()
-
-    const { BASE_URL } = process.env
-
-    const pathname = headersList.get("referer")?.replace(BASE_URL!, '')
-
-
     const stringified = queryString.stringify({ id: params.id.slice(-1) })
 
-    console.log('params.id.slice(-1)[0]', stringified, ';;')
+    console.log('params.idd', params, url, backUrl)
 
     return (
         <Box
@@ -112,7 +111,8 @@ async function Category({ params }: Props) {
                 aria-label="add"
             >
                 <Link
-                    href={`/dashboard/siteSettings/${url}`}
+                    href={`/dashboard/siteSettings/${backUrl}`}
+
                 >
                     برگشت
                     <UndoIcon sx={{ ml: 1 }} />
@@ -129,7 +129,6 @@ async function Category({ params }: Props) {
                 }}
             >
                 {
-                    // categories.map((category) => (
                     <div >
                         {categories.length > 0 && categories.map((cat: TCategorySchema) => (
                             <Accordion key={cat._id} >
@@ -138,46 +137,45 @@ async function Category({ params }: Props) {
                                     aria-controls={`panel-${cat._id}-bh-content`}
                                     id={`panel-${cat._id}-bh-header`}
                                 >
-                                    <Typography sx={{ flexShrink: 0 }}>
-                                        {cat.name}
-                                    </Typography>
+                                    <Box className=' flex w-full justify-between items-center ml-5'>
 
+                                        <Typography sx={{ flexShrink: 0 }}>
+                                            {cat.name + '/' + cat._id}
+                                        </Typography>
+
+                                        <Box className=' flex gap-3'>
+                                            <Tooltip title={`حذف ${cat.name}`} placement="top">
+                                                <Link
+                                                    href={``}
+                                                >
+                                                    {/* <Fab color="error" size="small" aria-label="add"> */}
+                                                    <CloseIcon color="error" />
+                                                    {/* </Fab> */}
+                                                </Link>
+                                            </Tooltip>
+
+                                            <Tooltip title={`ویرایش ${cat.name}`} placement="top">
+                                                <Link
+                                                    href={`/dashboard/siteSettings/${url}/${cat._id}`}
+                                                >
+                                                    {/* <Fab color="info" size="small" aria-label="add"> */}
+                                                    <EditNoteIcon color='info' />
+                                                    {/* </Fab> */}
+                                                </Link>
+                                            </Tooltip>
+                                        </Box>
+                                    </Box>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Box
                                         component={'div'}
                                     >
-                                        <div className=' flex justify-between'>
-                                            <Tooltip title="add" placement="top">
-                                                <Link
-                                                    href={`/dashboard/siteSettings/${url}/${encodeURIComponent(cat._id)}`}
-                                                >
-                                                    <Fab color="info" size="small" aria-label="add">
-                                                        <AddIcon />
-                                                    </Fab>
-                                                </Link>
-                                            </Tooltip>
-                                            <Tooltip title="view" placement="top">
-                                                <Link
-                                                    href={`/dashboard/siteSettings/${url}/${encodeURIComponent(cat._id)}`}
-                                                >
-                                                    <Fab color="secondary" size="small" aria-label="view">
-                                                        <EditNoteIcon />
-                                                    </Fab>
-                                                </Link>
-
-                                            </Tooltip>
-                                        </div>
+                                        <CatList backUrl={backUrl} pathname={`/dashboard/siteSettings/${url}`} parentId={`${cat._id}`} />
                                     </Box>
                                 </AccordionDetails>
                             </Accordion>
                         ))}
                     </div>
-                    // ))
-                    // categories && <CatList
-                    //     parsed={`/dashboard/siteSettings/${url}`}
-                    //     categories={categories}
-                    // />
                 }
             </Box>
         </Box>
