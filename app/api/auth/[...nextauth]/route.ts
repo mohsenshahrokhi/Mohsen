@@ -1,12 +1,20 @@
-import { getAllUsers, getUserByEmail, getUserByPhone, getUserByUsername, updateUser } from "@/lib/controllers/userController"
+import {
+    getUserByEmail,
+    getUserByPhone,
+    getUserByUsernamePass,
+    updateUser
+} from "@/lib/controllers/userController"
 import { signJwtAccessToken } from "@/lib/jwt"
 import connectToMongodb from "@/lib/mongodb"
 import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from 'next-auth/providers/credentials'
 import * as bcrypt from 'bcrypt'
-import { TLoginMailSchema, TLoginSmsSchema, TLoginUsernameSchema, TUserSchema } from "@/ZSchemas"
-// import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
-import queryString from "query-string"
+import {
+    TLoginMailSchema,
+    TLoginSmsSchema,
+    TLoginUsernameSchema,
+    TUserSchema
+} from "@/ZSchemas"
 
 export const authOptions: NextAuthOptions = {
     jwt: {
@@ -32,14 +40,14 @@ export const authOptions: NextAuthOptions = {
                 const users: TUserSchema[] = await getAllUsers(stringified)
                 const user = users[0] */
 
-                const user: TUserSchema = await getUserByEmail(email)
+                const user = await getUserByEmail(email) as TUserSchema
                 if (!user) throw Error('ایمیل یا گذرواژه اشتباه است!')
                 if (!user.verifyMail) throw Error('ابتدا باید حساب کاربری خود را فعال کنید!')
                 const passwordMatch = await bcrypt.compare(password, user.password)
                 if (!passwordMatch) throw Error('ایمیل یا گذرواژه اشتباه است!')
                 const accessToken = signJwtAccessToken(user)
                 return {
-                    id: user._id,
+                    _id: user._id,
                     role: user.role,
                     email: user.email,
                     username: user.username,
@@ -55,7 +63,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials, req) {
                 const { username, password } = credentials as TLoginUsernameSchema
                 connectToMongodb()
-                const user: TUserSchema = await getUserByUsername(username)
+                const user = await getUserByUsernamePass(username) as TUserSchema
                 // if (!user) {
                 //     HandleEnqueueSnackbar({ msg: 'email/password mismatch', variant: 'error' })
                 //     return null
@@ -69,7 +77,7 @@ export const authOptions: NextAuthOptions = {
                 if (!passwordMatch) throw Error('username/password mismatch')
                 const accessToken = signJwtAccessToken(user)
                 return {
-                    id: user._id,
+                    _id: user._id,
                     email: user.email,
                     username: user.username,
                     role: user.role,
@@ -84,7 +92,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials, req) {
                 const { phone, verifyPKey } = credentials as TLoginSmsSchema
                 connectToMongodb()
-                const user: TUserSchema = await getUserByPhone({ phone })
+                const user = await getUserByPhone({ phone }) as TUserSchema
                 if (!user) {
                     // HandleEnqueueSnackbar({ msg: 'password mismatch', variant: 'error' })
                     return null
@@ -104,7 +112,7 @@ export const authOptions: NextAuthOptions = {
                 })
                 const accessToken = signJwtAccessToken(user)
                 return {
-                    id: user._id,
+                    _id: user._id,
                     email: user.email,
                     username: user.username,
                     displayName: user.displayName,
@@ -135,14 +143,14 @@ export const authOptions: NextAuthOptions = {
             return session
         }
     },
-    secret: process.env.NEXTAUTH_CECRET,
     pages: {
         signIn: '/phone',
         error: '/mail',
         signOut: '/',
         verifyRequest: '/',
         newUser: '/dashboard'
-    }
+    },
+    secret: process.env.NEXTAUTH_CECRET
 
 }
 

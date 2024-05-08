@@ -17,6 +17,7 @@ import { verifyJwt } from '@/lib/jwt'
 import { getCategories } from '@/actions/category'
 import CloseIcon from '@mui/icons-material/Close'
 
+
 type Props = {
     params: {
         id: string[] | string
@@ -64,7 +65,7 @@ async function Category({ params, searchParams }: Props) {
         id
     } = params
 
-    // console.log('params', params);
+    console.log('params', params);
 
     let url = ''
     let backUrl = ''
@@ -82,7 +83,7 @@ async function Category({ params, searchParams }: Props) {
         }
     }
 
-    const stringified = queryString.stringify({ parentCat: params.id.slice(-1) })
+    const stringified = queryString.stringify({ id: params.id.slice(-1) })
 
     return (
         <Box
@@ -96,7 +97,7 @@ async function Category({ params, searchParams }: Props) {
                 aria-label="add"
             >
                 <Link
-                    href={`/dashboard/siteSettings/addSetting/add_new_cat?${stringified}&${parseSearchParams}`}
+                    href={`/dashboard/siteSettings/addSetting?${stringified}?${parseSearchParams}`}
                 >
                     اضافه کردن ویژگی جدید
                     <AddIcon sx={{ ml: 1 }} />
@@ -144,7 +145,7 @@ async function Category({ params, searchParams }: Props) {
                                         <Box className=' flex gap-3'>
                                             <Tooltip title={`حذف ${cat.name}`} placement="top">
                                                 <Link
-                                                    href={`deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                                    href={``}
                                                 >
                                                     {/* <Fab color="error" size="small" aria-label="add"> */}
                                                     <CloseIcon color="error" />
@@ -154,7 +155,7 @@ async function Category({ params, searchParams }: Props) {
 
                                             <Tooltip title={`ویرایش ${cat.name}`} placement="top">
                                                 <Link
-                                                    href={`/dashboard/siteSettings/addSetting/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                                    href={`/dashboard/siteSettings/${url}/${cat._id}?${parseSearchParams}`}
                                                 >
                                                     {/* <Fab color="info" size="small" aria-label="add"> */}
                                                     <EditNoteIcon color='info' />

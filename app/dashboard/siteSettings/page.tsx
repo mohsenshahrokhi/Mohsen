@@ -8,13 +8,12 @@ import Link from 'next/link'
 import React from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import { Box, Grid, Tooltip } from '@mui/material'
-import { getAllCategoryOption } from '@/lib/controllers/categoryOptionController'
-import CatList from '@/components/adminComponent/Categories/CatList'
 import queryString from 'query-string'
 import { getCategories } from '@/actions/category'
 import CloseIcon from '@mui/icons-material/Close'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 import PreviewIcon from '@mui/icons-material/Preview'
+import BasicModal from '@/components/ui/BasicModal'
 
 async function getData(accessToken: string) {
 
@@ -31,17 +30,15 @@ async function getData(accessToken: string) {
 
 }
 
-const parsed = {
-    parent: '',
-    cat: ''
+type Props = {
+    searchParams: { [key: string]: string | string[] | undefined }
 }
 
-async function SiteSettings() {
+async function SiteSettings({ searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
-
-    // console.log('verify', verify)
+    const params = queryString.stringify(searchParams)
 
     let categories: TCategorySchema[] = []
     if (verify) categories = await getData(accessToken!)
@@ -86,7 +83,7 @@ async function SiteSettings() {
 
                                 <Tooltip title={`ویرایش ${cat.name}`} placement="top">
                                     <Link
-                                        href={``}
+                                        href={`siteSettings/addSetting/${encodeURIComponent(cat._id)}?${params}`}
                                     >
                                         {/* <Fab color="error" size="small" aria-label="add"> */}
                                         <EditNoteIcon color="info" />
@@ -94,18 +91,18 @@ async function SiteSettings() {
                                     </Link>
                                 </Tooltip>
                                 <Tooltip title={`حذف ${cat.name}`} placement="top">
+
+                                    {/* <BasicModal /> */}
                                     <Link
-                                        href={``}
+                                        href={`siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${params}`}
                                     >
-                                        {/* <Fab color="error" size="small" aria-label="add"> */}
                                         <CloseIcon color="error" />
-                                        {/* </Fab> */}
                                     </Link>
                                 </Tooltip>
 
                                 <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
                                     <Link
-                                        href={`siteSettings/${encodeURIComponent(cat._id)}`}
+                                        href={`siteSettings/${encodeURIComponent(cat._id)}?${params}`}
                                     >
                                         {/* <Fab color="info" size="small" aria-label="add"> */}
                                         <PreviewIcon color='info' />

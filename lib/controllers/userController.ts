@@ -56,7 +56,7 @@ export const getUser = async (user: any) => {
     }
 }
 
-export const getUserByUsername = async (username: string) => {
+export const getUserByUsernamePass = async (username: string) => {
     try {
         connectToMongodb()
         const newUser = await Users.findOne({ username }).select('+password')

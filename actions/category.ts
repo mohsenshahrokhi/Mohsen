@@ -1,8 +1,9 @@
 'use server'
 
 import { CategorySchema, RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
-import { createNewCategory, getAllCategory, getCategory } from "@/lib/controllers/categoryController"
+import { createNewCategory, getAllCategory, getCategory, updateCat } from "@/lib/controllers/categoryController"
 import { verifyJwt } from "@/lib/jwt"
+import { UpdateWriteOpResult } from "mongoose"
 import queryString from "query-string"
 
 export const getCategories = async (
@@ -60,7 +61,7 @@ export const createCategory = async (
 
         const { success, categories } = await getCategories({ stringifyParams, accessToken })
 
-        console.log('stringifyParams', stringifyParams, categories, success)
+        // console.log('stringifyParams', stringifyParams, categories, success)
 
         if (success === true) {
             return {
@@ -85,15 +86,74 @@ export const createCategory = async (
     }
 }
 
+export const updateCategory = async (
+    {
+        _id,
+        values,
+        accessToken
+    }: {
+        _id: string | undefined
+        values: TRegisterCategorySchema,
+        accessToken: string
+    }
+) => {
+    const validatedFields = RegisterCategorySchema.safeParse(values)
+    const verify = accessToken && verifyJwt(accessToken) || null
+    if (accessToken && verify?.role === '2') {
+        if (!validatedFields.success) {
+            return {
+                error: true,
+                msg: 'ارتباط با سرور برقرار نشد !'
+                // msg: validatedFields.error
+            }
+        }
+
+        const existParams = {
+            slug: validatedFields.data.slug,
+        }
+
+        const stringifyParams = queryString.stringify(existParams)
+
+        const { success } = await getCategories({ stringifyParams, accessToken })
+
+        // console.log('stringifyParams', stringifyParams, categories, success)
+
+        if (success === true) {
+            return {
+                error: true,
+                msg: 'این مورد وجود دارد !'
+            }
+        }
+
+        const update = await updateCat({
+            _id: _id,
+            data: validatedFields.data
+        }) as UpdateWriteOpResult
+
+        console.log('update', update)
+
+        if (!update?.acknowledged) {
+            return {
+                error: true,
+                msg: 'به روز رسانی انجام نشد !'
+            }
+        }
+
+        return {
+            success: true,
+            msg: 'حساب کاربری با موفقیت ایجاد شد'
+        }
+    } else {
+        return {
+            success: false,
+            msg: 'شما دسترسی های لازم را ندارید !'
+        }
+    }
+}
+
 export const getCat = async (_id: string) => {
 
-    const validatedField = CategorySchema.safeParse(_id)
+    const category = await getCategory(_id) as TCategorySchema
 
-    if (!validatedField.success) {
-        return { error: true, msg: 'ارتباط با سرور برقرار نشد !' }
-    }
-
-    const cat = await getCategory(validatedField.data._id)
-
-    return { success: true, cat }
+    return { success: true, category }
 }

@@ -23,6 +23,7 @@ type Props = {
     parentId: string
     pathname: string
     backUrl: string
+    parseSearchParams: string
 }
 
 async function getData(cId: string, accessToken: string) {
@@ -40,7 +41,7 @@ async function getData(cId: string, accessToken: string) {
 }
 
 
-function CatList({ parentId, pathname }: Props) {
+function CatList({ parentId, pathname, parseSearchParams }: Props) {
 
     const router = useRouter()
     const { data: session } = useSession({
@@ -66,25 +67,29 @@ function CatList({ parentId, pathname }: Props) {
     return (
 
         <div className=' flex flex-col justify-between'>
+
+            {
+                categories && categories?.length > 0 && <Box className=' flex justify-around border-b-2 items-center'>
+                    <p className=' font-xs text-lime-700 '>زیر شاخه ها</p>
+                    <Tooltip title="بستن زیر شاخه ها" placement="top">
+                        <Button
+                            onClick={hideSubCats}
+                        >
+                            <Fab color="secondary" size="small" aria-label="view">
+                                <CloseIcon />
+                            </Fab>
+                        </Button>
+
+                    </Tooltip>
+                </Box>
+            }
             {
                 categories && categories.map((category) => (
                     <div className=' flex flex-col w-full p-2' key={category._id}>
-                        <Box className=' flex justify-around border-b-2 items-center'>
-                            <p className=' font-xs text-lime-700 '>زیر شاخه ها</p>
-                            <Tooltip title="بستن زیر شاخه ها" placement="top">
-                                <Button
-                                    onClick={hideSubCats}
-                                >
-                                    <Fab color="secondary" size="small" aria-label="view">
-                                        <CloseIcon />
-                                    </Fab>
-                                </Button>
 
-                            </Tooltip>
-                        </Box>
                         <Link
                             className=' font-xs p-1'
-                            href={`${pathname}/${encodeURIComponent(category._id)}`}
+                            href={`${pathname}/${encodeURIComponent(category._id)}?${parseSearchParams}`}
                         >
                             {category.name}
                         </Link>
@@ -95,7 +100,7 @@ function CatList({ parentId, pathname }: Props) {
 
                 <Tooltip title="اضافه کردن زیر شاخه" placement="top">
                     <Link
-                        href={`/dashboard/siteSettings/addSettings/${parentId}`}
+                        href={`/dashboard/siteSettings/addSetting/add_new_cat?parentId=${parentId}&${parseSearchParams}`}
                     >
                         {/* <Fab color="info" size="small" aria-label="add"> */}
                         <AddIcon color="info" />

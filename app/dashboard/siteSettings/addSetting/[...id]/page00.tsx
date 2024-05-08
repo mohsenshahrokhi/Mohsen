@@ -34,6 +34,9 @@ import { useSession } from 'next-auth/react'
 //     searchParams: { [key: string]: string | undefined }
 // }
 type Props = {
+    params: {
+        id: string
+    }
     searchParams: { [id: string]: [string] | undefined }
 }
 
@@ -84,7 +87,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-function AddSettings({ searchParams }: Props) {
+function AddSettings({ params, searchParams }: Props) {
 
     const router = useRouter()
     const { data: session } = useSession({
@@ -106,7 +109,9 @@ function AddSettings({ searchParams }: Props) {
         id
     } = searchParams
 
-    // console.log('searchParams', searchParams)
+    const editId = params.id
+
+    console.log('searchParams', params, searchParams)
     let url = ''
     let parent = null
     // id!.join('/')
@@ -144,21 +149,24 @@ function AddSettings({ searchParams }: Props) {
         form.setValue('author', user?._id)
         values.parent = parent || ''
         values.author = '65be6e52d57f694793cbb0a1'
-        console.log('valuesMain', form.getValues(), values, parent)
+        // console.log('valuesMain', form.getValues(), values, parent)
         startTransition(() => {
             createCategory({ values, accessToken })
                 .then((data) => {
-                    if (data.success) {
+                    console.log(data)
+
+                    if (data.success === true) {
 
                         HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
 
                         parent ?
                             router.push(`/dashboard/siteSettings/${url}`) :
                             router.push(`/dashboard/siteSettings`)
+                    } else {
+
+                        HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })
                     }
-                    data.error ?
-                        HandleEnqueueSnackbar({ variant: 'error', msg: data.msg }) :
-                        console.log(data);
+                    // console.log(data);
 
                 })
         })

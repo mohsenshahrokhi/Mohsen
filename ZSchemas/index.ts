@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import slugify from 'slugify'
 
 declare module 'next-auth' {
     interface Session {
@@ -289,7 +290,15 @@ export const RegisterCategorySchema = z.object({
     propertys: z.array(z.string()).optional()
 }).superRefine((data, ctx) => {
     if (data.latinName) {
-        data.slug = data.latinName.replace(/\ /g, '_')
+        data.slug = slugify(data.latinName, {
+            replacement: '_',  // replace spaces with replacement character, defaults to `-`
+            remove: undefined, // remove characters that match regex, defaults to `undefined`
+            lower: true,      // convert to lower case, defaults to `false`
+            strict: false,     // strip special characters except replacement, defaults to `false`
+            locale: 'fa',      // language code of the locale to use
+            trim: true         // trim leading and trailing replacement chars, defaults to `true`
+        })
+        // data.slug = data.latinName.replace(/\ /g, '_')
     }
 })
 export type TRegisterCategorySchema = z.infer<typeof RegisterCategorySchema>

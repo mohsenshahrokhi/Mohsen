@@ -34,7 +34,8 @@ const CategorySchema = new Schema<TCategorySchema>({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'Category'
+        ref: 'Category',
+        default: null
     },
     propertys: {
         type: Schema.Types.ObjectId,

@@ -20,8 +20,6 @@ export default function RootLayout({
   const sidebarControl = searchParams.get('sidebarControl') === 'true' ? true : false
   const params = new URLSearchParams(searchParams)
 
-  // console.log('lay-params', searchParams.get('theme'));
-
   const { status, data } = useSession({
     required: true,
     onUnauthenticated() {
