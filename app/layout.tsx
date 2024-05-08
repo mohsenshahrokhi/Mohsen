@@ -30,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html dir="rtl" lang="fa-IR">
-      <body  >
+      <body className=" flex h-screen" >
         <ThemeDirection>
           <AuthProvider>
             <ToustProvider>

@@ -15,14 +15,13 @@ type Props = {
     params: URLSearchParams
 }
 
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { AiOutlineDashboard } from 'react-icons/ai'
 
 const SidebarItems = ({ title, params }: Props) => {
 
     const carentRoute = usePathname()
 
-    const router = useRouter()
 
     // const { color } = useAppSelector((store) => store.themeMode.theme)
 
@@ -139,14 +138,14 @@ const SidebarItems = ({ title, params }: Props) => {
             {
                 sidebarItems?.map((item, index) => (
                     <div key={index}
-                        className=' flex flex-col p-3'
+                        className=' flex w-full flex-col p-3'
                     >
 
                         {title && <label className={`px-3 text-xs uppercase mb-2`}>{item.label}</label>}
 
                         {item.items?.map((i, index) => (
                             <div
-                                className={`flex items-center p-3 mb-1 rounded-md transition-colors duration-300 transform hover:bg-zinc-300 hover:text-zinc-800 ${(i.href === carentRoute ? 'bg-sky-200 ' : '')} ${i.accessRolse.includes(accessRole) ? '' : 'hidden'}`}
+                                className={`flex text-center items-center justify-center p-3 mb-1 rounded-md transition-colors duration-300 transform hover:bg-zinc-300 hover:text-zinc-800 ${(i.href === carentRoute ? 'bg-sky-200 ' : '')} ${i.accessRolse.includes(accessRole) ? '' : 'hidden'}`}
                                 key={index}
                             >
                                 <Link

@@ -1,9 +1,9 @@
 'use server'
 
 import { CategorySchema, RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
-import { createNewCategory, getAllCategory, getCategory, updateCat } from "@/lib/controllers/categoryController"
+import { createNewCategory, deleteCategory, getAllCategory, getCategory, updateCat } from "@/lib/controllers/categoryController"
 import { verifyJwt } from "@/lib/jwt"
-import { UpdateWriteOpResult } from "mongoose"
+import mongoose, { UpdateWriteOpResult } from "mongoose"
 import queryString from "query-string"
 
 export const getCategories = async (
@@ -116,8 +116,6 @@ export const updateCategory = async (
 
         const { success } = await getCategories({ stringifyParams, accessToken })
 
-        // console.log('stringifyParams', stringifyParams, categories, success)
-
         if (success === true) {
             return {
                 error: true,
@@ -156,4 +154,21 @@ export const getCat = async (_id: string) => {
     const category = await getCategory(_id) as TCategorySchema
 
     return { success: true, category }
+}
+
+export const deleteCat = async ({ id, accessToken }: { id: string, accessToken: string | undefined }) => {
+    const verify = accessToken && verifyJwt(accessToken) || null
+    if (accessToken && (verify?.role) === '2') {
+        const { acknowledged } = await deleteCategory(id) as mongoose.mongo.DeleteResult
+        return {
+            success: acknowledged ? true : false,
+            msg: acknowledged ? 'دسته بندی با موفقیت حذف شد !' : 'دسته بندی با موفقیت حذف نشد !'
+        }
+    } else {
+        return {
+            success: false,
+            msg: 'شما دسترسی های لازم را ندارید !'
+        }
+    }
+
 }

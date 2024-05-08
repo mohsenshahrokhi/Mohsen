@@ -75,7 +75,6 @@ export const createNewCategory = async (params: TRegisterCategorySchema) => {
 
 export const updateCat = async ({ _id, data }: { _id: string | undefined, data: TRegisterCategorySchema }) => {
   try {
-    // console.log('controller', _id, data)
     if (data.parent === '') {
       delete data.parent
     }
@@ -91,11 +90,8 @@ export const deleteCategory = async (_id: string) => {
 
   try {
     connectToMongodb()
-
-    await Category.deleteOne({ _id })
-
-    return true
-
+    const item = await Category.deleteOne({ _id })
+    return item
   } catch (err) {
     return err
   }

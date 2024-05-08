@@ -36,17 +36,17 @@ const AdminSidebar = () => {
         <>
             <Link
                 href={`/?theme=${theme}`}
-                className=' flex py-2 border-b-2 h-10 justify-center items-center'
+                className=' flex py-2 border-b-2 w-full justify-center items-center'
             >
                 <Image width={30} height={30} className="w-auto h-7" src="https://merakiui.com/images/logo.svg" alt="" />
             </Link >
 
-            <div className="flex flex-col overflow-y-auto h-96 overflow-x-hidden justify-between flex-1 mt-6">
+            <div className="flex flex-col w-full overflow-y-auto h-96 overflow-x-hidden justify-center flex-1 mt-6">
                 <nav className="-mx-3 space-y-6 ">
                     <SidebarItems params={resetParams} title={sidebarControl ? false : true} />
                 </nav>
             </div>
-            <div className="flex h-13 justify-center py-2 border-t-2 items-center">
+            <div className="flex w-full justify-center py-2 border-t-2 items-center">
                 <Tooltip title={''} placement="top">
                     <Fab color="info" size="small" aria-label="add" onClick={toggleSidebar}>
                         {sidebarControl ? <ArrowLeftIcon /> : <ArrowRightIcon />}

@@ -16,7 +16,7 @@ const ToggleSidebar: () => JSX.Element = () => {
 
         sidebarVisible ? params.set('sidebarVisible', 'false') : params.set('sidebarVisible', 'true')
 
-        params.set('sidebarControl', 'false')
+        params.set('sidebarControl', 'true')
 
         router.push(`${pathName}?${params}`)
 

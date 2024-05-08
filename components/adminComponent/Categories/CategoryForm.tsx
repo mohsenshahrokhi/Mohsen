@@ -35,31 +35,35 @@ function CategoryForm({ cat, add, parentId }: Props) {
 
     const accessToken = user?.accessToken || ''
 
-    const verify = accessToken && verifyJwt(accessToken!) || null
-
     const form = useForm<TRegisterCategorySchema>({
         resolver: zodResolver(RegisterCategorySchema),
         defaultValues: {
-            name: cat?.name || '',
-            latinName: cat?.latinName || '',
-            slug: cat?.slug || '',
+            name: !add ? cat?.name : '',
+            latinName: !add ? cat?.latinName : '',
+            slug: !add ? cat?.slug : '',
             // colorIcon: cat?.colorIcon || '',
             // icon: cat?.icon || '',
             // images: cat?.images || '',
-            type: cat?.type || false,
-            parent: cat?.parent || '',
+            type: !add ? cat?.type : false,
+            parent: !add ? cat?.parent : '',
             // propertys: cat?.slug ||[]
         }
     })
 
     const catId = cat?._id
 
+    console.log(parentId);
+
+
     const onSubmit = (values: TRegisterCategorySchema | TCategorySchema) => {
         form.setValue('author', user?._id)
         values.author = user?._id
         add && startTransition(() => {
-            form.setValue('parent', encodeURIComponent(parentId || ''))
-            values.parent = parentId || ''
+            form.setValue('parent', parentId)
+            // values.parent = parentId || ''
+            parentId ? values.parent = parentId || '' : delete values.parent
+            console.log(values);
+
             createCategory({ values, accessToken })
                 .then((data) => {
                     console.log(data)
@@ -68,9 +72,9 @@ function CategoryForm({ cat, add, parentId }: Props) {
 
                         HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
 
-                        parent ?
-                            router.push(`/dashboard/siteSettings/`) :
-                            router.push(`/dashboard/siteSettings`)
+                        // parent ?
+                        //     router.push(`/dashboard/siteSettings/`) :
+                        //     router.push(`/dashboard/siteSettings`)
                     } else {
 
                         HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })

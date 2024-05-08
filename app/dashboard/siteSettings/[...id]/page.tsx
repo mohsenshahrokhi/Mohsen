@@ -16,6 +16,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'
 import { getCategories } from '@/actions/category'
 import CloseIcon from '@mui/icons-material/Close'
+import PreviewIcon from '@mui/icons-material/Preview'
 
 type Props = {
     params: {
@@ -89,33 +90,39 @@ async function Category({ params, searchParams }: Props) {
             component="div"
             sx={{ m: '2px', width: '100%', justifyContent: 'center' }}
         >
-            <Fab
-                size="medium"
-                variant="extended"
-                color="secondary"
-                aria-label="add"
+            <Box
+                className='flex w-full items-center justify-between'
+                component="div"
+                sx={{ m: '2px', width: '100%' }}
             >
-                <Link
-                    href={`/dashboard/siteSettings/addSetting/add_new_cat?${stringified}&${parseSearchParams}`}
+                <Button
+                    size="medium"
+                    variant="outlined"
+                    color="secondary"
+                    aria-label="add"
                 >
-                    اضافه کردن ویژگی جدید
-                    <AddIcon sx={{ ml: 1 }} />
-                </Link>
-            </Fab>
-            <Fab
-                size="medium"
-                variant="extended"
-                color="secondary"
-                aria-label="add"
-            >
-                <Link
-                    href={`/dashboard/siteSettings/${backUrl}?${parseSearchParams}`}
+                    <Link
+                        href={`/dashboard/siteSettings/addSetting/add_new_cat?${stringified}&${parseSearchParams}`}
+                    >
+                        اضافه کردن ویژگی جدید
+                        <AddIcon sx={{ ml: 1 }} />
+                    </Link>
+                </Button>
+                <Button
+                    size="medium"
+                    variant="outlined"
+                    color="secondary"
+                    aria-label="add"
+                >
+                    <Link
+                        href={`/dashboard/siteSettings/${backUrl}?${parseSearchParams}`}
 
-                >
-                    برگشت
-                    <UndoIcon sx={{ ml: 1 }} />
-                </Link>
-            </Fab>
+                    >
+                        برگشت
+                        <UndoIcon sx={{ ml: 1 }} />
+                    </Link>
+                </Button>
+            </Box>
             <Box
                 component={'div'}
                 sx={{
@@ -127,9 +134,56 @@ async function Category({ params, searchParams }: Props) {
                 }}
             >
                 {
-                    <div >
+                    <Box >
                         {categories.length > 0 && categories.map((cat: TCategorySchema) => (
-                            <Accordion key={cat._id} >
+                            <Box
+                                key={cat._id}
+                                className=' flex mb-2 w-full justify-between border rounded-md p-3 border-gray-300'>
+                                {cat.name}
+
+                                <Box className='flex gap-3'>
+
+                                    <Tooltip title={`ویرایش ${cat.name}`} placement="top">
+                                        <Link
+                                            href={`/dashboard/siteSettings/addSetting/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                        >
+                                            {/* <Fab color="error" size="small" aria-label="add"> */}
+                                            <EditNoteIcon color="info" />
+                                            {/* </Fab> */}
+                                        </Link>
+                                    </Tooltip>
+                                    <Tooltip title={`حذف ${cat.name}`} placement="top">
+
+                                        {/* <BasicModal /> */}
+                                        <Link
+                                            href={`/dashboard/siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                        >
+                                            <CloseIcon color="error" />
+                                        </Link>
+                                    </Tooltip>
+
+                                    <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
+                                        <Link
+                                            href={`/dashboard/siteSettings/${url}/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                        >
+                                            {/* <Fab color="info" size="small" aria-label="add"> */}
+                                            <PreviewIcon color='info' />
+                                            {/* </Fab> */}
+                                        </Link>
+                                    </Tooltip>
+                                </Box>
+                            </Box>
+                        ))}
+                    </Box>
+                }
+            </Box>
+        </Box>
+    )
+}
+
+export default Category
+
+{/* <Accordion key={cat._id} >
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     aria-controls={`panel-${cat._id}-bh-content`}
@@ -144,11 +198,11 @@ async function Category({ params, searchParams }: Props) {
                                         <Box className=' flex gap-3'>
                                             <Tooltip title={`حذف ${cat.name}`} placement="top">
                                                 <Link
-                                                    href={`deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                                    href={`/dashboard/siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
                                                 >
-                                                    {/* <Fab color="error" size="small" aria-label="add"> */}
+                          
                                                     <CloseIcon color="error" />
-                                                    {/* </Fab> */}
+                                              
                                                 </Link>
                                             </Tooltip>
 
@@ -156,9 +210,18 @@ async function Category({ params, searchParams }: Props) {
                                                 <Link
                                                     href={`/dashboard/siteSettings/addSetting/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
                                                 >
-                                                    {/* <Fab color="info" size="small" aria-label="add"> */}
+                     
                                                     <EditNoteIcon color='info' />
-                                                    {/* </Fab> */}
+                                                   
+                                                </Link>
+                                            </Tooltip>
+                                            <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
+                                                <Link
+                                                    href={`/dashboard/siteSettings/${url}/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                                >
+                           
+                                                    <PreviewIcon color='info' />
+                                                 
                                                 </Link>
                                             </Tooltip>
                                         </Box>
@@ -176,13 +239,4 @@ async function Category({ params, searchParams }: Props) {
                                         />
                                     </Box>
                                 </AccordionDetails>
-                            </Accordion>
-                        ))}
-                    </div>
-                }
-            </Box>
-        </Box>
-    )
-}
-
-export default Category
+                            </Accordion> */}

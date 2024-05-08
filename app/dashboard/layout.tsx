@@ -53,10 +53,10 @@ export default function RootLayout({
 
         <AdminNavbar />
         <div className="flex relative justify-end">
-          <div className={` ${sidebarVisible ? sidebarControl ? 'w-1/6 border mr-2 mb-2 px-1 justify-center items-center ' : ' translate-x-0 w-1/2 border mx-2 mb-2 px-3 ' : ' translate-x-48 w-0 border-0 p-0 m-0'}  shadow-lg  rounded-md h-[80] flex flex-col transition-all mt-2 ease-in-out duration-300 `}>
+          <div className={` ${sidebarVisible ? sidebarControl ? 'w-1/12 border mr-2 mb-2 px-1 justify-center items-center ' : ' translate-x-0 w-1/2 border mx-2 mb-2 px-3 ' : ' translate-x-48 w-0 border-0 p-0 m-0'}  shadow-lg  rounded-md h-[80] flex flex-col transition-all mt-2 ease-in-out duration-300 `}>
             <AdminSidebar />
           </div>
-          <div className={` flex ${sidebarVisible ? sidebarControl ? ' w-5/6 mr-2 ' : ' w-1/2 ' : ' w-full mr-2 '} transition-all ease-in-out duration-300 my-2 ml-2 p-3 shadow-lg border rounded-md overflow-auto`}
+          <div className={` flex ${sidebarVisible ? sidebarControl ? ' w-11/12 mr-2 ' : ' w-1/2 ' : ' w-full mr-2 '} transition-all ease-in-out duration-300 my-2 ml-2 p-3 shadow-lg border rounded-md overflow-auto`}
             onClick={closeSidebar}
           >
             {children}

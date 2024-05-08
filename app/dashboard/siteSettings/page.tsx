@@ -7,7 +7,7 @@ import { getServerSession } from 'next-auth/next'
 import Link from 'next/link'
 import React from 'react'
 import AddIcon from '@mui/icons-material/Add'
-import { Box, Grid, Tooltip } from '@mui/material'
+import { Box, Button, Grid, Tooltip } from '@mui/material'
 import queryString from 'query-string'
 import { getCategories } from '@/actions/category'
 import CloseIcon from '@mui/icons-material/Close'
@@ -48,19 +48,19 @@ async function SiteSettings({ searchParams }: Props) {
             component="div"
             sx={{ m: '2px', width: '100%', justifyContent: 'center' }}
         >
-            <Fab
+            <Button
                 size="medium"
-                variant="extended"
+                variant="outlined"
                 color="secondary"
                 aria-label="add"
             >
                 <Link
-                    href={`/dashboard/siteSettings/addSetting`}
+                    href={`/dashboard/siteSettings/addSetting/add_new_cat?${params}`}
                 >
                     اضافه کردن ویژگی جدید
                     <AddIcon sx={{ ml: 1 }} />
                 </Link>
-            </Fab>
+            </Button>
 
             <Box
                 component={'div'}
@@ -110,8 +110,6 @@ async function SiteSettings({ searchParams }: Props) {
                                     </Link>
                                 </Tooltip>
                             </Box>
-
-
                         </Box>
                     ))
                 }

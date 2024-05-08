@@ -17,7 +17,7 @@ type Props = {
         id: string
     }
     searchParams: {
-        parentId: string
+        parentCat: string
     }
     // searchParams: { [parentCat: string]: [string] | undefined }
 }
@@ -30,9 +30,7 @@ async function getData(cId: string) {
 async function AddSetting({ params, searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
-    const verify = accessToken && verifyJwt(accessToken) || null
-
-    const { parentId } = searchParams
+    const { parentCat } = searchParams
 
     const { id } = params
 
@@ -45,10 +43,7 @@ async function AddSetting({ params, searchParams }: Props) {
         type: false,
         parent: ''
     }
-    if (!add) category = await getData(id[0])
-
-    console.log('searchParams...', searchParams);
-
+    add ? category = await getData(parentCat) : category = await getData(id[0])
 
     return (
         <Box
@@ -56,7 +51,7 @@ async function AddSetting({ params, searchParams }: Props) {
             sx={{ m: '2px', width: '100%', justifyContent: 'center' }}
         >
             <p className=' flex p-3'>{
-                add ? 'اضافه کردن دسته بندی جدید' : `ویرایش ${category.name}`
+                add ? `اضافه کردن دسته بندی جدید به دسته بندی ( ${category.name} )` : `ویرایش دسته بندی ( ${category.name} )`
             }</p>
             <Fab
                 size="medium"
@@ -81,7 +76,7 @@ async function AddSetting({ params, searchParams }: Props) {
                     width: '100%'
                 }}
             >
-                <CategoryForm cat={category} add={add} parentId={parentId} />
+                <CategoryForm cat={category} add={add} parentId={parentCat} />
             </Box>
         </Box>
     )
