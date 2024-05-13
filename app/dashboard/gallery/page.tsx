@@ -24,21 +24,30 @@ import { Box, Button, Checkbox } from '@mui/material'
 import Lootti from '@/components/publicComponents/Lootti'
 import dynamic from 'next/dynamic'
 import AddIcon from '@mui/icons-material/Add'
+import { skip } from 'node:test'
 
 type Props = {
     searchParams: { [key: string]: string | string[] | undefined }
 }
-
-async function getData(accessToken: string) {
+type Data = {
+    gallerys: TGallerySchema[]
+    success: boolean
+    qtt: number
+}
+async function getData({ page, perPage, accessToken }: { page: number, perPage: number, accessToken: string }) {
 
     const params = {
         // parent: 'null'
-        limit: 100
+        limit: perPage,
+        skip: perPage * (page - 1)
     }
 
     const stringifyParams = queryString.stringify(params)
-    const { gallerys, success } = await getAllGallerys({ stringifyParams, accessToken })
-    return gallerys as TGallerySchema[]
+
+    const gallerys = await getAllGallerys({ stringifyParams, accessToken })
+
+    return gallerys as Data
+
 }
 
 async function Gallery({ searchParams }: Props) {
@@ -46,13 +55,30 @@ async function Gallery({ searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
+    const newSerchParams = ''
+    // searchParams.delete('page')
+    let page = parseInt(searchParams.page || '1', 10)
+    delete searchParams.page
     const stringified = queryString.stringify(searchParams)
+    page = !page || page < 1 ? 1 : page
+    const perPage = 10
 
-    let gallery: TGallerySchema[] = []
-    if (verify) gallery = await getData(accessToken!)
-    console.log('gallery', gallery)
+    const prevPage = `?page=${page - 1 > 0 ? page - 1 : 1}&${stringified}`
+    const nextPage = `?page=${page + 1}&${stringified}`
+
+    const { gallerys, success, qtt } = await getData({ page: page, perPage: perPage, accessToken: accessToken! })
+    const totalPage = Math.ceil(qtt / perPage)
+    const outOfRange = page > totalPage
+
+    const pageNumber = []
+    const offsetPage = 3
+
+    for (let i = page - offsetPage; i <= page + offsetPage; i++) {
+        if (i >= 1 && i <= totalPage) pageNumber.push(i)
+    }
 
     // const router = useRouter()
+    console.log(searchParams);
 
     // const [gallery, setGallery] = useState<TGallerySchema[]>([])
     // const [isOpen, setIsOpen] = useState(false)
@@ -263,18 +289,25 @@ async function Gallery({ searchParams }: Props) {
         <Box
             component={'div'}
             className="flex flex-col w-full">
-            <Box
-                component={'section'}
-                className="flex relative overflow-y-auto flex-col w-full p-1 my-2">
+            {outOfRange ? (
                 <Box
                     component={'div'}
-                    className="flex items-center justify-between">
+                >
+                    این صفحه وجود ندارد
+                </Box>
+            ) : (
+                <Box
+                    component={'section'}
+                    className="flex relative overflow-y-auto flex-col w-full p-1 my-2">
                     <Box
-                        component={'h2'}
-                        className="text-lg font-medium ">
-                        فایل های بارگذاری شده
-                    </Box>
-                    {/* <HModal
+                        component={'div'}
+                        className="flex items-center justify-between">
+                        <Box
+                            component={'h2'}
+                            className="text-lg font-medium ">
+                            فایل های بارگذاری شده
+                        </Box>
+                        {/* <HModal
                         open={isOpen}
                         close={closeModal}
                         title='حذف عکس'
@@ -295,51 +328,51 @@ async function Gallery({ searchParams }: Props) {
 
                         </div>
                     </HModal> */}
-                    {/* {selected.length > 0 && <button
+                        {/* {selected.length > 0 && <button
                         name='colorIcon'
                         onClick={() => setIsOpen(true)}
                     >
                         انتخاب عکس
                     </button>} */}
-                    <Box component={'div'} className="flex items-center">
-                        <Button
-                            size="medium"
-                            variant="contained"
-                            color="info"
-                            aria-label="add"
-                        >
-                            <Link
-                                href={'/dashboard/gallery/addFile'}
+                        <Box component={'div'} className="flex items-center">
+                            <Button
+                                size="medium"
+                                variant="contained"
+                                color="info"
+                                aria-label="add"
                             >
-                                <Box component={'span'}>بارگذاری فایل جدید</Box>
-                                <AddIcon sx={{ ml: 1 }} />
-                            </Link>
-                        </Button>
+                                <Link
+                                    href={`/dashboard/gallery/addFile?${stringified}`}
+                                >
+                                    <Box component={'span'}>بارگذاری فایل جدید</Box>
+                                    <AddIcon sx={{ ml: 1 }} />
+                                </Link>
+                            </Button>
 
+                        </Box>
                     </Box>
-                </Box>
 
-                <Box component={'div'} className="flex flex-col mt-2">
-                    <Box component={'div'} className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <Box component={'div'} className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                            <Box component={'div'} className=" grid grid-cols-4 md:grid-cols-12 p-5 gap-2 overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
-                                {gallery.length > 0 && gallery.map((galler) => (
-                                    <>
-                                        {galler.type === 'image/svg+xml' &&
-                                            imageSvgContainer(galler)
-                                        }
-                                    </>
-                                ))}
+                    <Box component={'div'} className="flex flex-col mt-2">
+                        <Box component={'div'} className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <Box component={'div'} className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                                <Box component={'div'} className=" grid grid-cols-4 md:grid-cols-12 p-5 gap-2 overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                                    {gallerys.length > 0 && gallerys.map((galler) => (
+                                        <>
+                                            {galler.type === 'image/svg+xml' &&
+                                                imageSvgContainer(galler)
+                                            }
+                                        </>
+                                    ))}
 
-                                {gallery.length > 0 && gallery.map((galler) => (
-                                    <>
-                                        {(galler.type === 'image/jpeg' || galler.type === 'image/png') &&
-                                            imageSvgContainer(galler)
-                                        }
-                                    </>
-                                ))}
+                                    {gallerys.length > 0 && gallerys.map((galler) => (
+                                        <>
+                                            {(galler.type === 'image/jpeg' || galler.type === 'image/png') &&
+                                                imageSvgContainer(galler)
+                                            }
+                                        </>
+                                    ))}
 
-                                {/* {gallery.length > 0 && gallery.map((galler) => (
+                                    {/* {gallerys.length > 0 && gallerys.map((galler) => (
                                     <>
                                         {galler.type === 'video/mp4' &&
                                             videoContainer(galler, galler._id)
@@ -347,7 +380,7 @@ async function Gallery({ searchParams }: Props) {
                                     </>
                                 ))} */}
 
-                                {/* {gallery.length > 0 && gallery.map((galler) => (
+                                    {/* {gallerys.length > 0 && gallerys.map((galler) => (
                                     <div key={galler._id}>
                                         {galler.type === 'application/json' &&
                                             svgContainer(galler)
@@ -355,44 +388,88 @@ async function Gallery({ searchParams }: Props) {
                                     </div>
                                 ))} */}
 
+                                </Box>
                             </Box>
                         </Box>
                     </Box>
-                </Box>
+
+                    <Box component={'div'} className="flex items-center justify-between mt-6">
+                        {page === 1 ? (
+                            <Box
+                                component={'div'}
+                                aria-disabled={true}
+                                className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                                </svg>
+
+                                <Box component={'span'}>
+                                    قبلی
+                                </Box>
+                            </Box>
+                        ) : (
+                            <Link
+                                href={`${prevPage}`}
+                                className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                                </svg>
+
+                                <Box component={'span'}>
+                                    قبلی
+                                </Box>
+                            </Link>)}
 
 
-                <Box component={'div'} className="flex items-center justify-between mt-6">
-                    <Link href="#" className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
-                        </svg>
+                        <Box component={'div'} className="items-center hidden md:flex gap-x-3">
+                            {pageNumber.map((p, index) => (
 
-                        <Box component={'span'}>
-                            قبلی
+                                <Link
+                                    key={index}
+                                    href={`?page=${p}&${stringified}`}
+                                    className={`px-2 py-1 text-sm  rounded-md ${page === p ? 'bg-blue-500 text-white' : 'bg-blue-100/60 text-blue-500'} `}
+                                >{p}</Link>
+                            ))}
+                            {/* <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">2</Link>
+                            <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">3</Link>
+                            <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">...</Link>
+                            <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">12</Link>
+                            <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">13</Link>
+                            <Link href="#" className="px-2 py-1 text-sm  dark:hover:bg-gray-800  hover:bg-gray-100">14</Link> */}
                         </Box>
-                    </Link>
+                        {page === totalPage ? (
+                            <Box
+                                component={'div'}
+                                aria-disabled={true}
+                                className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+                            >
+                                <Box component={'span'}>
+                                    بعدی
+                                </Box>
 
-                    <Box component={'div'} className="items-center hidden md:flex gap-x-3">
-                        <Link href="#" className="px-2 py-1 text-sm text-blue-500 rounded-md dark:bg-gray-800 bg-blue-100/60">1</Link>
-                        <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">2</Link>
-                        <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">3</Link>
-                        <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">...</Link>
-                        <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">12</Link>
-                        <Link href="#" className="px-2 py-1 text-sm text-gray-500 rounded-md dark:hover:bg-gray-800 dark:text-gray-300 hover:bg-gray-100">13</Link>
-                        <Link href="#" className="px-2 py-1 text-sm  dark:hover:bg-gray-800  hover:bg-gray-100">14</Link>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                                </svg>
+                            </Box>
+                        ) : (
+                            <Link
+                                href={`${nextPage}`}
+                                className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+                            >
+                                <Box component={'span'}>
+                                    بعدی
+                                </Box>
+
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                                </svg>
+                            </Link>)}
                     </Box>
-
-                    <Link href="#" className="flex items-center px-5 py-2 text-sm text-gray-700 capitalize transition-colors duration-200 bg-white border rounded-md gap-x-2 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800">
-                        <Box component={'span'}>
-                            بعدی
-                        </Box>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 rtl:-scale-x-100">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
-                        </svg>
-                    </Link>
                 </Box>
-            </Box>
+            )}
+
         </Box >
     )
 }

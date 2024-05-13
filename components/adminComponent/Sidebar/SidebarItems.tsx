@@ -37,49 +37,49 @@ const SidebarItems = ({ title, params }: Props) => {
                     title: 'Dashboard',
                     accessRolse: ['2'],
                     icon: <GrUserAdmin />,
-                    href: '/dashboard',
+                    href: '/dashboard?',
 
                 },
                 {
                     title: 'Settings',
                     accessRolse: ['2'],
                     icon: <CiSettings />,
-                    href: '/dashboard/siteSettings',
+                    href: '/dashboard/siteSettings?',
 
                 },
                 {
                     title: 'Products',
                     accessRolse: ["2"],
                     icon: <LiaProductHunt />,
-                    href: '/dashboard/product',
+                    href: '/dashboard/product?',
 
                 },
                 {
                     title: 'Invoice',
                     accessRolse: ["2"],
                     icon: <LiaFileInvoiceDollarSolid />,
-                    href: '/dashboard/invoice',
+                    href: '/dashboard/invoice?',
 
                 },
                 {
                     title: 'Users',
                     accessRolse: ["2"],
                     icon: <CiUser />,
-                    href: '/dashboard/user',
+                    href: '/dashboard/user?',
 
                 },
                 {
                     title: 'Category',
                     accessRolse: ["2"],
                     icon: <BiCategory />,
-                    href: '/dashboard/category?limit=400&select=name%2Ctype%2CeName%2Cparent',
+                    href: '/dashboard/category?',
 
                 },
                 {
                     title: 'Gallery',
                     accessRolse: ["2"],
                     icon: <GrGallery />,
-                    href: '/dashboard/gallery',
+                    href: '/dashboard/gallery?page=1',
 
                 }
             ]
@@ -90,7 +90,7 @@ const SidebarItems = ({ title, params }: Props) => {
                     title: 'userDashboard',
                     accessRolse: ["مدیر کل", 'کاربر'],
                     icon: <AiOutlineDashboard />,
-                    href: '/userDashboard',
+                    href: '/userDashboard?',
 
                 },
                 {
@@ -149,7 +149,7 @@ const SidebarItems = ({ title, params }: Props) => {
                                 key={index}
                             >
                                 <Link
-                                    href={`${i.href}?${params}`}
+                                    href={`${i.href}&${params}`}
                                     className=' flex w-full'
                                 >
                                     {i.icon}

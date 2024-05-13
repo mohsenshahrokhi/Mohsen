@@ -8,6 +8,11 @@ import mongoose from "mongoose"
 import queryString from "query-string"
 import { existsSync, mkdirSync, writeFileSync } from "fs"
 
+type All = {
+    gallery: TGallerySchema[]
+    qtt: number
+}
+
 export const getAllGallerys = async (
     {
         stringifyParams,
@@ -19,9 +24,9 @@ export const getAllGallerys = async (
 ) => {
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && verify?.role === '2') {
-        let gallerys: TGallerySchema[] = []
-        gallerys = await getAllGallery(stringifyParams) as TGallerySchema[]
-        return { success: gallerys.length > 0, gallerys }
+        let gallerys: All
+        gallerys = await getAllGallery(stringifyParams) as All
+        return { success: gallerys.qtt > 0, gallerys: gallerys.gallery, qtt: gallerys.qtt }
     } else {
         return { success: false }
     }

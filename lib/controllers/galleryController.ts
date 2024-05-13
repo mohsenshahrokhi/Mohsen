@@ -9,19 +9,22 @@ export const getAllGallery = async (req: any) => {
   try {
     const parser = new MongooseQueryParser()
     const parsed = parser.parse(req)
+    const qtt = await PublicGallery.find().countDocuments({})
     let gallery: TGallerySchema[]
     gallery = await PublicGallery
       .find(parsed.filter)
       .populate(parsed.populate)
       .sort(parsed.sort)
       .limit(parsed.limit || 10)
+      .skip(parsed.skip || 0)
       .select(parsed.select)
       .exec()
     const updateCId = gallery.map(category => ({
       // ...category._doc, _id: category._doc._id.toString(), parent: category._doc.parent?.toString(), propertys: category._doc.propertys?.toString()
       // // ...category._doc, _id: category._doc._id.toString()
     }))
-    return gallery
+    return { gallery, qtt }
+    // return { gallery, qtt }
   } catch (err) {
     return err
   }
