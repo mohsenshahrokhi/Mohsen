@@ -39,7 +39,8 @@ const CategorySchema = new Schema<TCategorySchema>({
     },
     propertys: {
         type: Schema.Types.ObjectId,
-        ref: 'CategoryOption'
+        ref: 'CategoryOption',
+        default: null
     },
     author: {
         type: Schema.Types.ObjectId,

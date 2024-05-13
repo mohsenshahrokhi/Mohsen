@@ -1,5 +1,6 @@
 import * as z from 'zod'
 import slugify from 'slugify'
+import { title } from 'process'
 
 declare module 'next-auth' {
     interface Session {
@@ -309,3 +310,19 @@ export const CategoryOptionSchema = z.object({
     propertys: z.array(z.string())
 })
 export type TCategoryOptionSchema = z.infer<typeof CategoryOptionSchema>
+
+export const GallerySchema = z.object({
+    _id: z.string().uuid(),
+    type: z.string(),
+    author: z.string().uuid().optional(),
+    url: z.string()
+})
+export type TGallerySchema = z.infer<typeof GallerySchema>
+
+export const RegisterGallerySchema = z.object({
+    type: z.string(),
+    author: z.string(),
+    url: z.string()
+})
+export type TRegisterGallerySchema = z.infer<typeof RegisterGallerySchema>
+

@@ -1,38 +1,33 @@
 import { MongooseQueryParser } from "mongoose-query-parser";
-import PublicGallery from "../models/galleryModel"
 import connectToMongodb from "../mongodb"
 import fs from "fs";
+import { TGallerySchema, TRegisterGallerySchema } from "@/ZSchemas";
+import PublicGallery from "../models/galleryModel";
 
 export const getAllGallery = async (req: any) => {
+  connectToMongodb()
   try {
-    connectToMongodb()
-    let gallerys = []
-    const url = new URL(req.url).search.split('?')[1]
-    if (url) {
-      const parser = new MongooseQueryParser()
-      const parsed = parser.parse(url)
-      gallerys = await PublicGallery
-        .find(parsed.filter)
-        .sort(parsed.sort).
-        limit(parsed.limit || 10)
-        .populate(parsed.populate)
-        .select(parsed.select)
-    } else {
-      gallerys = await PublicGallery.find()
-    }
-    // const gallerys = await PublicGallery.find()
-    const updateCId = gallerys.map(PublicGallery => ({
-      ...PublicGallery._doc, _id: PublicGallery._doc._id.toString()
+    const parser = new MongooseQueryParser()
+    const parsed = parser.parse(req)
+    let gallery: TGallerySchema[]
+    gallery = await PublicGallery
+      .find(parsed.filter)
+      .populate(parsed.populate)
+      .sort(parsed.sort)
+      .limit(parsed.limit || 10)
+      .select(parsed.select)
+      .exec()
+    const updateCId = gallery.map(category => ({
+      // ...category._doc, _id: category._doc._id.toString(), parent: category._doc.parent?.toString(), propertys: category._doc.propertys?.toString()
+      // // ...category._doc, _id: category._doc._id.toString()
     }))
-    return updateCId
+    return gallery
   } catch (err) {
     return err
-  } finally {
-    // await prisma.$disconnect();
   }
 }
 
-export const getGallery = async (_id: string) => {
+export const getGalleryById = async (_id: string) => {
   try {
     connectToMongodb()
     const gallery = await PublicGallery.findById({ _id })
@@ -48,11 +43,11 @@ export const getGallery = async (_id: string) => {
 }
 
 
-export const getGalleryBySlug = async (slug: string) => {
+export const getGalleryByTitle = async (title: string) => {
 
   try {
     connectToMongodb()
-    const gallery = await PublicGallery.findOne({ slug })
+    const gallery = await PublicGallery.findOne({ title })
     const updateCId = {
       ...gallery._doc, _id: gallery._doc._id.toString()
     }
@@ -64,20 +59,15 @@ export const getGalleryBySlug = async (slug: string) => {
   }
 }
 
-export const uploadGalleryImages = async (params: any) => {
+export const createGalleryImages = async (params: any) => {
   try {
     connectToMongodb()
     console.log(params)
     const gallery = await PublicGallery.create({ ...params })
-
     const updateCId = {
-
       ...gallery._doc, _id: gallery._doc._id.toString()
-
     }
-
     return updateCId
-
   } catch (err) {
     return err
   } finally {
@@ -85,10 +75,9 @@ export const uploadGalleryImages = async (params: any) => {
   }
 }
 
-export const updateGallery = async (_id: string, params: any) => {
+export const updateGallery = async ({ _id, data }: { _id: string, data: TRegisterGallerySchema }) => {
   try {
     connectToMongodb()
-    const { data } = params
     const gallery = await PublicGallery.updateOne({ _id }, { ...data })
     return gallery
   } catch (err) {

@@ -49,35 +49,35 @@ const SidebarItems = ({ title, params }: Props) => {
                 },
                 {
                     title: 'Products',
-                    accessRolse: ["مدیر کل"],
+                    accessRolse: ["2"],
                     icon: <LiaProductHunt />,
                     href: '/dashboard/product',
 
                 },
                 {
                     title: 'Invoice',
-                    accessRolse: ["مدیر کل"],
+                    accessRolse: ["2"],
                     icon: <LiaFileInvoiceDollarSolid />,
                     href: '/dashboard/invoice',
 
                 },
                 {
                     title: 'Users',
-                    accessRolse: ["مدیر کل"],
+                    accessRolse: ["2"],
                     icon: <CiUser />,
                     href: '/dashboard/user',
 
                 },
                 {
                     title: 'Category',
-                    accessRolse: ["مدیر کل"],
+                    accessRolse: ["2"],
                     icon: <BiCategory />,
                     href: '/dashboard/category?limit=400&select=name%2Ctype%2CeName%2Cparent',
 
                 },
                 {
                     title: 'Gallery',
-                    accessRolse: ["مدیر کل"],
+                    accessRolse: ["2"],
                     icon: <GrGallery />,
                     href: '/dashboard/gallery',
 

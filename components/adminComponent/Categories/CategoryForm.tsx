@@ -2,14 +2,12 @@
 
 import { RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import { createCategory, updateCategory } from "@/actions/category"
-import { verifyJwt } from "@/lib/jwt"
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Box, Button, Fab, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Switch } from "@mui/material"
 import { useSession } from "next-auth/react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { startTransition, useTransition } from "react"
+import { useTransition } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 type Props = {
@@ -108,7 +106,6 @@ function CategoryForm({ cat, add, parentId }: Props) {
             component="div"
             sx={{ m: '2px', width: '100%', justifyContent: 'center' }}
         >
-
             <Box
                 component={'div'}
                 sx={{
@@ -119,9 +116,7 @@ function CategoryForm({ cat, add, parentId }: Props) {
                     width: '100%'
                 }}
             >
-
                 <form onSubmit={form.handleSubmit(onSubmit)}>
-
                     <Controller
                         name="name"
                         control={form.control}
@@ -170,7 +165,6 @@ function CategoryForm({ cat, add, parentId }: Props) {
                             </FormControl>
                         )}
                     />
-
                     <Controller
                         name="latinName"
                         control={form.control}
@@ -211,7 +205,6 @@ function CategoryForm({ cat, add, parentId }: Props) {
                                     {fieldState.error?.message ?? ''}
                                 </FormHelperText>
                             </FormControl>
-
                         )}
                     />
                     <Controller
@@ -232,7 +225,6 @@ function CategoryForm({ cat, add, parentId }: Props) {
                             />
                         )}
                     />
-
                     <Button
                         type='submit'
                         disabled={isPending}
@@ -243,7 +235,6 @@ function CategoryForm({ cat, add, parentId }: Props) {
                         ثبت
                     </Button>
                 </form>
-
             </Box>
         </Box>
     )
