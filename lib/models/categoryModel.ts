@@ -16,12 +16,16 @@ const CategorySchema = new Schema<TCategorySchema>({
     },
     colorIcon: {
         type: String,
+        trim: true,
+        default: null
     },
     images: {
         type: Array,
     },
     icon: {
         type: String,
+        trim: true,
+        default: null
     },
     slug: {
         type: String,

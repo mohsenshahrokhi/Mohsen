@@ -4,19 +4,23 @@ import { RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from
 import { createCategory, updateCategory } from "@/actions/category"
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Box, Button, Fab, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Switch } from "@mui/material"
+import { Avatar, Box, Button, Fab, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, Switch } from "@mui/material"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useTransition } from "react"
 import { Controller, useForm } from "react-hook-form"
+import AddIcon from '@mui/icons-material/Add'
+import queryString from "query-string"
 
 type Props = {
     cat?: TCategorySchema
     add: boolean
     parentId: string
+    searchParams: string
 }
 
-function CategoryForm({ cat, add, parentId }: Props) {
+function CategoryForm({ cat, add, parentId, searchParams }: Props) {
 
     const router = useRouter()
 
@@ -40,7 +44,7 @@ function CategoryForm({ cat, add, parentId }: Props) {
             latinName: !add ? cat?.latinName : '',
             slug: !add ? cat?.slug : '',
             // colorIcon: cat?.colorIcon || '',
-            // icon: cat?.icon || '',
+            icon: cat?.icon || '',
             // images: cat?.images || '',
             type: !add ? cat?.type : false,
             parent: !add ? cat?.parent : '',
@@ -50,8 +54,7 @@ function CategoryForm({ cat, add, parentId }: Props) {
 
     const catId = cat?._id
 
-    console.log(parentId);
-
+    console.log('stringifyParams', searchParams);
 
     const onSubmit = (values: TRegisterCategorySchema | TCategorySchema) => {
         form.setValue('author', user?._id)
@@ -225,6 +228,45 @@ function CategoryForm({ cat, add, parentId }: Props) {
                             />
                         )}
                     />
+                    {/* <Controller
+                        name="icon"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <FormControl component="div" fullWidth sx={{ my: 1 }} variant="outlined">
+                                <InputLabel htmlFor="icon">ایکون این دسته بندی</InputLabel>
+                                <input
+                                    {...field}
+                                    type={'hidden'}
+                                />
+                                {form.getValues('icon') && <Stack direction="row" spacing={2}>
+                                    <Avatar alt={`${form.getValues('name')}`} src={`${form.getValues('icon')}`} />
+                                </Stack>}
+                                {!form.getValues('icon') && <Button
+                                    id='icon'
+                                    size="medium"
+                                    variant="outlined"
+                                    color="secondary"
+                                    aria-label="add"
+                                >
+                                    <Link
+                                        href={`/dashboard/gallery/addIcon/${cat?._id}?accessToken=${accessToken}&${searchParams}`}
+                                    >
+                                        اضافه کردن ایکون
+                                        <AddIcon sx={{ ml: 1 }} />
+                                    </Link>
+                                </Button>}
+                            
+                                <FormHelperText
+                                    component={'div'}
+                                    sx={{
+                                        color: 'error.main',
+                                    }}
+                                >
+                                    {fieldState.error?.message ?? ''}
+                                </FormHelperText>
+                            </FormControl>
+                        )}
+                    /> */}
                     <Button
                         type='submit'
                         disabled={isPending}
@@ -232,7 +274,11 @@ function CategoryForm({ cat, add, parentId }: Props) {
                         color='info'
                         sx={{ width: '100%' }}
                     >
-                        ثبت
+                        {add ? (
+                            <Box component={'span'}>ثبت</Box>
+                        ) : (
+                            <Box component={'span'}>ویرایش</Box>
+                        )}
                     </Button>
                 </form>
             </Box>

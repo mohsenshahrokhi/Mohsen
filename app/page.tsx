@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
 
-    <main className=" w-full">
+    <main className=" flex h-screen w-full">
       <section className="flex flex-col w-full relative h-full">
         <video autoPlay muted loop className=" flex h-full w-full object-cover fixed">
           <source type="video/mp4" src="./bgVideo/v-bg.mp4" />

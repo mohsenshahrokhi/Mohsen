@@ -31,6 +31,7 @@ async function AddSetting({ params, searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const { parentCat } = searchParams
+    const stringifyParams = queryString.stringify(searchParams)
 
     const { id } = params
 
@@ -76,7 +77,12 @@ async function AddSetting({ params, searchParams }: Props) {
                     width: '100%'
                 }}
             >
-                <CategoryForm cat={category} add={add} parentId={parentCat} />
+                <CategoryForm
+                    cat={category}
+                    add={add}
+                    parentId={parentCat}
+                    searchParams={stringifyParams}
+                />
             </Box>
         </Box>
     )

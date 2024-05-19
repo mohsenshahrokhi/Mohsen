@@ -17,6 +17,7 @@ import { verifyJwt } from '@/lib/jwt'
 import { getCategories } from '@/actions/category'
 import CloseIcon from '@mui/icons-material/Close'
 import PreviewIcon from '@mui/icons-material/Preview'
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 
 type Props = {
     params: {
@@ -168,6 +169,16 @@ async function Category({ params, searchParams }: Props) {
                                         >
                                             {/* <Fab color="info" size="small" aria-label="add"> */}
                                             <PreviewIcon color='info' />
+                                            {/* </Fab> */}
+                                        </Link>
+                                    </Tooltip>
+
+                                    <Tooltip title={`خواص ${cat.name}`} placement="top">
+                                        <Link
+                                            href={`/dashboard/siteSettings/settingsProperties/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                        >
+                                            {/* <Fab color="info" size="small" aria-label="add"> */}
+                                            <ZoomOutMapIcon color='info' />
                                             {/* </Fab> */}
                                         </Link>
                                     </Tooltip>

@@ -34,11 +34,11 @@ type Props = {
     searchParams: { [key: string]: string | string[] | undefined }
 }
 
-async function SiteSettings({ searchParams }: Props) {
+async function settingsProperties({ searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
-    const params = queryString.stringify(searchParams)
+    const stringifyParams = queryString.stringify(searchParams)
 
     let categories: TCategorySchema[] = []
     if (verify) categories = await getData(accessToken!)
@@ -55,7 +55,7 @@ async function SiteSettings({ searchParams }: Props) {
                 aria-label="add"
             >
                 <Link
-                    href={`/dashboard/siteSettings/addSetting/add_new_cat?${params}`}
+                    href={`/dashboard/siteSettings/addSetting/add_new_cat?${stringifyParams}`}
                 >
                     اضافه کردن ویژگی جدید
                     <AddIcon sx={{ ml: 1 }} />
@@ -83,7 +83,7 @@ async function SiteSettings({ searchParams }: Props) {
 
                                 <Tooltip title={`ویرایش ${cat.name}`} placement="top">
                                     <Link
-                                        href={`siteSettings/addSetting/${encodeURIComponent(cat._id)}?${params}`}
+                                        href={`siteSettings/addSetting/${encodeURIComponent(cat._id)}?${stringifyParams}`}
                                     >
                                         {/* <Fab color="error" size="small" aria-label="add"> */}
                                         <EditNoteIcon color="info" />
@@ -94,7 +94,7 @@ async function SiteSettings({ searchParams }: Props) {
 
                                     {/* <BasicModal /> */}
                                     <Link
-                                        href={`siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${params}`}
+                                        href={`siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${stringifyParams}`}
                                     >
                                         <CloseIcon color="error" />
                                     </Link>
@@ -102,7 +102,7 @@ async function SiteSettings({ searchParams }: Props) {
 
                                 <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
                                     <Link
-                                        href={`siteSettings/${encodeURIComponent(cat._id)}?${params}`}
+                                        href={`siteSettings/${encodeURIComponent(cat._id)}?${stringifyParams}`}
                                     >
                                         {/* <Fab color="info" size="small" aria-label="add"> */}
                                         <PreviewIcon color='info' />
@@ -118,4 +118,4 @@ async function SiteSettings({ searchParams }: Props) {
     )
 }
 
-export default SiteSettings
+export default settingsProperties

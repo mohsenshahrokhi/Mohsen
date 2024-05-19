@@ -10,8 +10,8 @@ export const getAllGallery = async (req: any) => {
     const parser = new MongooseQueryParser()
     const parsed = parser.parse(req)
     const qtt = await PublicGallery.find().countDocuments({})
-    let gallery: TGallerySchema[]
-    gallery = await PublicGallery
+    // let gallerys: TGallerySchema[]
+    const gallerys = await PublicGallery
       .find(parsed.filter)
       .populate(parsed.populate)
       .sort(parsed.sort)
@@ -19,12 +19,10 @@ export const getAllGallery = async (req: any) => {
       .skip(parsed.skip || 0)
       .select(parsed.select)
       .exec()
-    const updateCId = gallery.map(category => ({
-      // ...category._doc, _id: category._doc._id.toString(), parent: category._doc.parent?.toString(), propertys: category._doc.propertys?.toString()
-      // // ...category._doc, _id: category._doc._id.toString()
+    const updateCId = gallerys.map(gallery => ({
+      ...gallery._doc, _id: gallery._doc._id.toString(), parent: gallery._doc.parent?.toString(), propertys: gallery._doc.propertys?.toString(), author: gallery._doc.author?.toString()
     }))
-    return { gallery, qtt }
-    // return { gallery, qtt }
+    return { gallery: updateCId, qtt }
   } catch (err) {
     return err
   }

@@ -93,42 +93,18 @@ export const updateCategory = async (
         accessToken
     }: {
         _id: string | undefined
-        values: TRegisterCategorySchema,
+        values: any,
         accessToken: string
     }
 ) => {
     const validatedFields = RegisterCategorySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && verify?.role === '2') {
-        if (!validatedFields.success) {
-            return {
-                error: true,
-                msg: 'ارتباط با سرور برقرار نشد !'
-                // msg: validatedFields.error
-            }
-        }
-
-        const existParams = {
-            slug: validatedFields.data.slug,
-        }
-
-        const stringifyParams = queryString.stringify(existParams)
-
-        const { success } = await getCategories({ stringifyParams, accessToken })
-
-        if (success === true) {
-            return {
-                error: true,
-                msg: 'این مورد وجود دارد !'
-            }
-        }
 
         const update = await updateCat({
-            _id: _id,
-            data: validatedFields.data
+            _id,
+            values
         }) as UpdateWriteOpResult
-
-        console.log('update', update)
 
         if (!update?.acknowledged) {
             return {

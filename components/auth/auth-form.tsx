@@ -79,7 +79,9 @@ function AuthForm(props: any) {
     }
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box
+            className=' flex flex-col h-full'
+            sx={{ width: '100%' }}>
             <Box sx={{ width: '100%', borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value.newValue} onChange={handleChange} aria-label="icon tabs example">
                     <Tooltip
