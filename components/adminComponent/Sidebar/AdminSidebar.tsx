@@ -30,6 +30,7 @@ const AdminSidebar = () => {
     const resetParams = params
     resetParams.set('sidebarControl', 'false')
     resetParams.set('sidebarVisible', 'false')
+    resetParams.delete('page')
     resetParams.set('theme', theme)
 
     return (

@@ -56,6 +56,7 @@ function GalleryBase({
     }
 
     console.log('catProperty', catProperty, images)
+
     async function updateCat() {
 
         let values = {}
@@ -94,6 +95,8 @@ function GalleryBase({
     }
 
     const imageSvgContainer = (image: TGallerySchema) => {
+        console.log(images.includes(`${image.type}/${image.url}`))
+
         return (
             <Box
                 component={'div'}
@@ -127,11 +130,12 @@ function GalleryBase({
                                 className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"></Box>
                             <Box
                                 component={'div'}
-                                className=' absolute right-1 top-1'
+                                className=' absolute left-0 top-0'
                             >
                                 <Checkbox
                                     id={image._id}
-                                    checked={false}
+                                    checked={images.includes(`${image.type}/${image.url}`)}
+                                    color="info"
                                 // setCheck={() => handleSelected(galler.url)}
                                 />
                             </Box>

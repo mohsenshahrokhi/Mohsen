@@ -35,49 +35,49 @@ const SidebarItems = ({ title, params }: Props) => {
             items: [
                 {
                     title: 'Dashboard',
-                    accessRolse: ['2'],
+                    accessRoles: ['2'],
                     icon: <GrUserAdmin />,
                     href: '/dashboard?',
 
                 },
                 {
                     title: 'Settings',
-                    accessRolse: ['2'],
+                    accessRoles: ['2'],
                     icon: <CiSettings />,
                     href: '/dashboard/siteSettings?',
 
                 },
                 {
                     title: 'Products',
-                    accessRolse: ["2"],
+                    accessRoles: ["2"],
                     icon: <LiaProductHunt />,
                     href: '/dashboard/product?',
 
                 },
                 {
                     title: 'Invoice',
-                    accessRolse: ["2"],
+                    accessRoles: ["2"],
                     icon: <LiaFileInvoiceDollarSolid />,
                     href: '/dashboard/invoice?',
 
                 },
                 {
                     title: 'Users',
-                    accessRolse: ["2"],
+                    accessRoles: ["2"],
                     icon: <CiUser />,
                     href: '/dashboard/user?',
 
                 },
                 {
                     title: 'Category',
-                    accessRolse: ["2"],
+                    accessRoles: ["2"],
                     icon: <BiCategory />,
                     href: '/dashboard/category?',
 
                 },
                 {
                     title: 'Gallery',
-                    accessRolse: ["2"],
+                    accessRoles: ["2"],
                     icon: <GrGallery />,
                     href: '/dashboard/gallery?page=1',
 
@@ -88,21 +88,21 @@ const SidebarItems = ({ title, params }: Props) => {
             items: [
                 {
                     title: 'userDashboard',
-                    accessRolse: ["مدیر کل", 'کاربر'],
+                    accessRoles: ["مدیر کل", 'کاربر'],
                     icon: <AiOutlineDashboard />,
                     href: '/userDashboard?',
 
                 },
                 {
                     title: 'userSettings',
-                    accessRolse: ["مدیر کل", 'کاربر'],
+                    accessRoles: ["مدیر کل", 'کاربر'],
                     icon: <TfiPanel />,
                     href: '#',
 
                 },
                 {
                     title: 'Products',
-                    accessRolse: ['کاربر'],
+                    accessRoles: ['کاربر'],
                     icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
                     </svg>,
@@ -111,7 +111,7 @@ const SidebarItems = ({ title, params }: Props) => {
                 },
                 {
                     title: 'Users',
-                    accessRolse: ['کاربر'],
+                    accessRoles: ['کاربر'],
                     icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
                     </svg>,
@@ -120,7 +120,7 @@ const SidebarItems = ({ title, params }: Props) => {
                 },
                 {
                     title: 'Options',
-                    accessRolse: ['کاربر'],
+                    accessRoles: ['کاربر'],
                     icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
                     </svg>,
@@ -145,7 +145,7 @@ const SidebarItems = ({ title, params }: Props) => {
 
                         {item.items?.map((i, index) => (
                             <div
-                                className={`flex text-center items-center justify-center p-3 mb-1 rounded-md transition-colors duration-300 transform hover:bg-zinc-300 hover:text-zinc-800 ${(i.href === carentRoute ? 'bg-sky-200 ' : '')} ${i.accessRolse.includes(accessRole) ? '' : 'hidden'}`}
+                                className={`flex text-center items-center justify-center p-3 mb-1 rounded-md transition-colors duration-300 transform hover:bg-zinc-300 hover:text-zinc-800 ${(i.href === carentRoute ? 'bg-sky-200 ' : '')} ${i.accessRoles.includes(accessRole) ? '' : 'hidden'}`}
                                 key={index}
                             >
                                 <Link

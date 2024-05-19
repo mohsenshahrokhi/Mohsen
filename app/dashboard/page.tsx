@@ -11,11 +11,15 @@ type Props = {
 export default function Dashboard({ searchParams }: Props) {
 
     const router = useRouter()
-    const params = queryString.stringify(searchParams)
+
+    delete searchParams.page
+
+    const stringifyParams = queryString.stringify(searchParams)
+
     const { status, data: session } = useSession({
         required: true,
         onUnauthenticated() {
-            router.push(`/phone?${params}`)
+            router.push(`/phone?${stringifyParams}`)
         },
     })
 

@@ -1,5 +1,5 @@
 import { TCategorySchema } from '@/ZSchemas'
-import { getCat, getCategories } from '@/actions/category'
+import { getCatById, getCategories } from '@/actions/category'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import BasicModal from '@/components/ui/BasicModal'
 import { verifyJwt } from '@/lib/jwt'
@@ -28,7 +28,7 @@ async function getData(catId: string, accessToken: string) {
 }
 
 async function getCatData(catId: string) {
-    const category = await getCat(catId)
+    const category = await getCatById(catId)
     return category
 
 }

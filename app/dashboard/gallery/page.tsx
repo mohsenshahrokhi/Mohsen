@@ -60,7 +60,6 @@ async function Gallery({ searchParams }: Props) {
     // searchParams.delete('page')
     let page = parseInt(searchParams.page || '1', 10)
     delete searchParams.page
-    const imageType = searchParams.catProperty
     const stringified = queryString.stringify(searchParams)
     page = !page || page < 1 ? 1 : page
     const perPage = 10

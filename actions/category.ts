@@ -1,7 +1,7 @@
 'use server'
 
 import { CategorySchema, RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
-import { createNewCategory, deleteCategory, getAllCategory, getCategory, updateCat } from "@/lib/controllers/categoryController"
+import { createNewCategory, deleteCategory, getAllCategory, getCategoryById, updateCat } from "@/lib/controllers/categoryController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose, { UpdateWriteOpResult } from "mongoose"
 import queryString from "query-string"
@@ -125,9 +125,9 @@ export const updateCategory = async (
     }
 }
 
-export const getCat = async (_id: string) => {
+export const getCatById = async (_id: string) => {
 
-    const category = await getCategory(_id) as TCategorySchema
+    const category = await getCategoryById(_id) as TCategorySchema
 
     return { success: true, category }
 }

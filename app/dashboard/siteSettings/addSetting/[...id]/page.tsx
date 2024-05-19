@@ -6,7 +6,7 @@ import Fab from '@mui/material/Fab'
 import Link from 'next/link'
 import queryString from 'query-string'
 import React from 'react'
-import { getCat, getCategories } from '@/actions/category'
+import { getCatById, getCategories } from '@/actions/category'
 import CategoryForm from '@/components/adminComponent/Categories/CategoryForm'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
@@ -23,7 +23,7 @@ type Props = {
 }
 
 async function getData(cId: string) {
-    const { category, success } = await getCat(cId)
+    const { category, success } = await getCatById(cId)
     return category
 }
 

@@ -29,8 +29,7 @@ export const getAllCategory = async (req: any) => {
   }
 }
 
-export const getCategory = async (_id: string) => {
-
+export const getCategoryById = async (_id: string) => {
   try {
     connectToMongodb()
     const category = await Category.findById({ _id })
@@ -88,7 +87,6 @@ export const updateCat = async ({ _id, values }: { _id: string | undefined, valu
 }
 
 export const deleteCategory = async (_id: string) => {
-
   try {
     connectToMongodb()
     const item = await Category.deleteOne({ _id })

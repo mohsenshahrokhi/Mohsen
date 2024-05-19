@@ -38,6 +38,7 @@ async function settingsProperties({ searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
+    delete searchParams.page
     const stringifyParams = queryString.stringify(searchParams)
 
     let categories: TCategorySchema[] = []
