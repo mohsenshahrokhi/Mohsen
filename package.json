@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^3.3.4",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
+    "@mui/x-data-grid": "^7.5.0",
     "bcrypt": "^5.1.1",
     "check-password-strength": "^2.0.10",
     "clsx": "^2.1.1",

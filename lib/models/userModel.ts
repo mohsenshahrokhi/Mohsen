@@ -2,7 +2,7 @@ import { Model, Schema, model, models } from "mongoose"
 import bcrypt from 'bcrypt'
 import { Methods, TUserSchema } from "@/ZSchemas"
 
-const UserSchema = new Schema<TUserSchema, {}, Methods>({
+export const UserSchema = new Schema<TUserSchema, {}, Methods>({
     // _id: {
     //     type: "string",
     //     unique: true,
@@ -92,6 +92,7 @@ UserSchema.methods.comparePassword = async function (password) {
     }
 }
 
-const Users = models.user || model("user", UserSchema)
+const Users = models.users || model("users", UserSchema)
 
-export default Users as Model<TUserSchema, {}, Methods>
+export default Users
+// export default Users as Model<TUserSchema, {}, Methods>

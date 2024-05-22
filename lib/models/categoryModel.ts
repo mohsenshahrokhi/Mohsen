@@ -1,7 +1,7 @@
 import { TCategorySchema } from "@/ZSchemas"
 import { Schema, model, models } from "mongoose"
 
-const CategorySchema = new Schema<TCategorySchema>({
+export const CategorySchema = new Schema<TCategorySchema>({
     name: {
         type: String,
         required: [true, 'لطفا نام دسته بندی را وارد کنید'],
@@ -20,7 +20,7 @@ const CategorySchema = new Schema<TCategorySchema>({
         default: null
     },
     images: {
-        type: Array,
+        type: [String]
     },
     icon: {
         type: String,
@@ -38,7 +38,7 @@ const CategorySchema = new Schema<TCategorySchema>({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'Category',
+        ref: 'categories',
         default: null
     },
     propertys: {
@@ -53,6 +53,6 @@ const CategorySchema = new Schema<TCategorySchema>({
 
 })
 
-const Category = models.Category || model("Category", CategorySchema)
+const Category = models.categories || model("categories", CategorySchema)
 
 export default Category 

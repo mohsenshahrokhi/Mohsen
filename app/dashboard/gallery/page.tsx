@@ -26,7 +26,7 @@ import dynamic from 'next/dynamic'
 import AddIcon from '@mui/icons-material/Add'
 import { skip } from 'node:test'
 import GalleryBase from '@/components/adminComponent/Gallery/GalleryBase'
-import GalleryPagination from '@/components/adminComponent/Gallery/GalleryPagination'
+import Pagination from '@/components/adminComponent/Pagination'
 
 type Props = {
     searchParams: { [key: string]: string | string[] | undefined }
@@ -208,7 +208,7 @@ async function Gallery({ searchParams }: Props) {
                         searchParams={stringified}
                     />
 
-                    <GalleryPagination
+                    <Pagination
                         page={page}
                         stringified={stringified}
                         totalPage={totalPage}

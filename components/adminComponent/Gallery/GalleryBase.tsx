@@ -55,7 +55,7 @@ function GalleryBase({
 
     }
 
-    console.log('catProperty', catProperty, images)
+    console.log('catProperty', catProperty, images, searchParams)
 
     async function updateCat() {
 
@@ -95,7 +95,6 @@ function GalleryBase({
     }
 
     const imageSvgContainer = (image: TGallerySchema) => {
-        console.log(images.includes(`${image.type}/${image.url}`))
 
         return (
             <Box
@@ -136,7 +135,6 @@ function GalleryBase({
                                     id={image._id}
                                     checked={images.includes(`${image.type}/${image.url}`)}
                                     color="info"
-                                // setCheck={() => handleSelected(galler.url)}
                                 />
                             </Box>
                         </Box>
@@ -258,7 +256,7 @@ function GalleryBase({
             </Box>
             <Box component={'div'} className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <Box component={'div'} className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                    <Box component={'div'} className=" grid grid-cols-4 md:grid-cols-12 p-5 gap-2 overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
+                    <Box component={'div'} className=" grid grid-cols-4 md:grid-cols-12 p-5 gap-2 overflow-hidden border md:rounded-lg">
                         {gallery.length > 0 && gallery.map((galler, index) => (
                             <Box
                                 key={index}

@@ -26,7 +26,7 @@ import dynamic from 'next/dynamic'
 import AddIcon from '@mui/icons-material/Add'
 import { skip } from 'node:test'
 import GalleryBase from '@/components/adminComponent/Gallery/GalleryBase'
-import GalleryPagination from '@/components/adminComponent/Gallery/GalleryPagination'
+import GalleryPagination from '@/components/adminComponent/GalleryPagination'
 
 type Props = {
     params: {

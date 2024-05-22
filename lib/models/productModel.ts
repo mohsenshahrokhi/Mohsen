@@ -1,4 +1,6 @@
-import { Schema, model, models } from "mongoose"
+import mongoose, { Schema, model, models } from "mongoose"
+import { CategorySchema } from "./categoryModel"
+import { UserSchema } from "./userModel"
 
 const ProductSchema = new Schema({
     title: {
@@ -11,18 +13,18 @@ const ProductSchema = new Schema({
     },
     description: {
         type: String,
-        required: [true, 'لطفا مشخصات محصول را وارد کنید'],
+        // required: [true, 'لطفا مشخصات محصول را وارد کنید'],
     },
     recipe: {
         type: String,
-        required: [true, 'لطفا مشخصات محصول را وارد کنید'],
+        // required: [true, 'لطفا مشخصات محصول را وارد کنید'],
     },
     price: {
         type: Number,
-        required: [true, 'لطفا قیمت محصول را وارد کنید'],
+        // required: [true, 'لطفا قیمت محصول را وارد کنید'],
     },
     discount: {
-        type: Number,
+        type: String,
     },
     images: {
         type: [String],
@@ -34,21 +36,24 @@ const ProductSchema = new Schema({
     },
     category: {
         type: Schema.Types.ObjectId,
-        ref: 'category',
+        // ref: model('categories', CategorySchema),
+        ref: 'categories',
         required: [true, 'لطفا دسته بندی محصول را وارد کنید']
     },
     seller: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        // ref: mongoose.model('users', UserSchema),
+        ref: 'users',
         required: [true, 'لطفا نام خریدار محصول را وارد کنید'],
     },
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        // ref: mongoose.model('users', UserSchema),
+        ref: 'users',
         required: [true, 'لطفا نام ثبت کننده محصول را وارد کنید'],
     },
     stock: {
-        type: Number,
+        type: String,
         required: [true, 'لطفا تعداد محصول را وارد کنید'],
     },
     ratings: {
@@ -58,7 +63,7 @@ const ProductSchema = new Schema({
     reviews: [
         {
             rating: {
-                type: Number,
+                type: String,
                 // required: [true, 'لطفا تعداد محصول را وارد کنید']
             },
             comment: {
@@ -76,6 +81,6 @@ const ProductSchema = new Schema({
     }
 })
 
-const Product = models.product || model("product", ProductSchema)
+const Product = models.Products || model("Products", ProductSchema)
 
 export default Product

@@ -1,6 +1,6 @@
 import { Methods, TCategoryOptionSchema } from "@/ZSchemas"
-import { Model, Schema, model, models } from "mongoose"
-import Category from "./categoryModel"
+import mongoose, { Model, Schema, model, models } from "mongoose"
+import Category, { CategorySchema } from "./categoryModel"
 
 const CategoryOptionSchema = new Schema<TCategoryOptionSchema>({
     _id: {
@@ -9,8 +9,7 @@ const CategoryOptionSchema = new Schema<TCategoryOptionSchema>({
     },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'categories',
-        // ref: 'categories',
+        ref: mongoose.model('categories', CategorySchema),
         required: true
     },
     propertys: [{

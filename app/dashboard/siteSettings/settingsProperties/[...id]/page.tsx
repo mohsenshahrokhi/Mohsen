@@ -42,6 +42,7 @@ async function CatProperties({ params, searchParams }: Props) {
     // const categories: TCategorySchema[] = []
     // const categories = await getData(params.id.slice(-1)[0], accessToken!)
     const stringifyParams = queryString.stringify(searchParams)
+    console.log(searchParams);
 
     // const { success } = await getData(params.id.slice(-1)[0], accessToken!)
     const { category } = await getCatData(params.id.slice(-1)[0])

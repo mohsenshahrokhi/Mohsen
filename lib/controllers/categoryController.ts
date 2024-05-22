@@ -42,7 +42,6 @@ export const getCategoryById = async (_id: string) => {
   }
 }
 
-
 export const getCategoryBySlug = async (slug: string) => {
 
   try {

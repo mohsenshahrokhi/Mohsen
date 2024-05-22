@@ -1,6 +1,6 @@
-import { Box, Button } from '@mui/material';
-import Link from 'next/link';
-import React from 'react';
+import { Box, Button } from '@mui/material'
+import Link from 'next/link'
+import React from 'react'
 
 type Props = {
     page: number
@@ -8,7 +8,7 @@ type Props = {
     totalPage: number
 }
 
-export default function GalleryPagination({ page, stringified, totalPage }: Props) {
+export default function Pagination({ page, stringified, totalPage }: Props) {
 
     const prevPage = `?page=${page - 1 > 0 ? page - 1 : 1}&${stringified}`
     const nextPage = `?page=${page + 1}&${stringified}`
