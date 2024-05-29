@@ -7,17 +7,20 @@ import Link from 'next/link'
 import queryString from 'query-string'
 import React from 'react'
 import { getCatById, getCategories } from '@/actions/category'
-import CategoryForm from '@/components/adminComponent/Categories/CategoryForm'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'
+import AddCategoryForm from '@/components/adminComponent/Categories/AddCategoryForm'
+import EditCategoryForm from '@/components/adminComponent/Categories/EditCategoryForm'
+import HandleURL from '@/utils/HandleURL'
 
 type Props = {
     params: {
-        id: string
+        id: string | string[]
     }
     searchParams: {
         parentCat: string
+        callbackUrl: string
     }
     // searchParams: { [parentCat: string]: [string] | undefined }
 }
@@ -32,19 +35,25 @@ async function AddSetting({ params, searchParams }: Props) {
     const accessToken = session?.user.accessToken
     const { parentCat } = searchParams
     const stringifyParams = queryString.stringify(searchParams)
-
+    const callbackUrl = searchParams.callbackUrl
     const { id } = params
 
-    const add = id[0] === 'add_new_cat' ? true : false
+    const add = id[0] === 'add' ? true : false
+
     let category: TCategorySchema = {
         _id: '',
         name: '',
         latinName: '',
         slug: '',
         type: false,
-        parent: ''
+        parent: '',
+        images: [],
+        propertys: []
     }
     add ? category = await getData(parentCat) : category = await getData(id[0])
+
+    console.log('searchParams', searchParams);
+
 
     return (
         <Box
@@ -61,7 +70,7 @@ async function AddSetting({ params, searchParams }: Props) {
                 aria-label="add"
             >
                 <Link
-                    href={`/dashboard/siteSettings/`}
+                    href={`/dashboard/siteSettings/${callbackUrl}`}
                 >
                     انصراف
                 </Link>
@@ -77,12 +86,17 @@ async function AddSetting({ params, searchParams }: Props) {
                     width: '100%'
                 }}
             >
-                <CategoryForm
+                {add && <AddCategoryForm
                     cat={category}
-                    add={add}
                     parentId={parentCat}
                     searchParams={stringifyParams}
-                />
+                />}
+                {!add && <EditCategoryForm
+                    cat={category}
+                    callbackUrl={callbackUrl}
+                    parentId={parentCat}
+                    searchParams={stringifyParams}
+                />}
             </Box>
         </Box>
     )

@@ -129,14 +129,14 @@ export const updateProduct = async (
     }
 }
 
-export const getCatById = async (_id: string) => {
+export const getPById = async (_id: string) => {
 
     const product = await getProductById(_id) as TProductSchema
 
     return { success: true, product }
 }
 
-export const deleteCat = async ({ id, accessToken }: { id: string, accessToken: string | undefined }) => {
+export const deleteP = async ({ id, accessToken }: { id: string, accessToken: string | undefined }) => {
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && (verify?.role) === '2') {
         const { acknowledged } = await deleteProduct(id) as mongoose.mongo.DeleteResult

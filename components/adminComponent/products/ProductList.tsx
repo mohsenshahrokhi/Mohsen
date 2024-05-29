@@ -6,9 +6,10 @@ import { TProductSchema } from "@/ZSchemas";
 
 type Props = {
     products: TProductSchema[]
+    stringified: string
 }
 
-export default function ProductList({ products }: Props) {
+export default function ProductList({ products, stringified }: Props) {
 
     return (
         <Box
@@ -181,7 +182,7 @@ export default function ProductList({ products }: Props) {
                                     >
                                         <Link
                                             id={`edit-${product._id}`}
-                                            href={`/dashboard/product/edit/${product?._id}`}
+                                            href={`/dashboard/product/addProduct/edit?id=${product?._id}&${stringified}`}
                                             className=" ">
                                             <HiOutlinePencilSquare color="orange" />
                                         </Link>

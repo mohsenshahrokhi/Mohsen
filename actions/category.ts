@@ -1,6 +1,6 @@
 'use server'
 
-import { CategorySchema, RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
+import { CategorySchema, EditCategorySchema, RegisterCategorySchema, TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import { createNewCategory, deleteCategory, getAllCategory, getCategoryById, updateCat } from "@/lib/controllers/categoryController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose, { UpdateWriteOpResult } from "mongoose"
@@ -93,17 +93,19 @@ export const updateCategory = async (
         accessToken
     }: {
         _id: string | undefined
-        values: any,
+        values: TEditCategorySchema,
         accessToken: string
     }
 ) => {
-    const validatedFields = RegisterCategorySchema.safeParse(values)
+    const validatedFields = EditCategorySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
+    console.log('validatedFields', validatedFields.data);
+
+    if (accessToken && verify?.role === '2' && validatedFields.success) {
 
         const update = await updateCat({
             _id,
-            values
+            values: validatedFields.data
         }) as UpdateWriteOpResult
 
         if (!update?.acknowledged) {

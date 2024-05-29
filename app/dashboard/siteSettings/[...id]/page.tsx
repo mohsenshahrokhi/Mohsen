@@ -18,6 +18,7 @@ import { getCategories } from '@/actions/category'
 import CloseIcon from '@mui/icons-material/Close'
 import PreviewIcon from '@mui/icons-material/Preview'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
+import HandleURL from '@/utils/HandleURL'
 
 type Props = {
     params: {
@@ -30,7 +31,7 @@ async function getData(cId: string, accessToken: string) {
 
     const params = {
         parent: cId,
-        populate: 'parent.name,author.username'
+        populate: 'parent.name,author'
     }
     const stringifyParams = queryString.stringify(params)
 
@@ -44,45 +45,38 @@ async function Category({ params, searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
-    // const categories: TCategorySchema[] = []
-    const categories = await getData(params.id.slice(-1)[0], accessToken!)
+
+    const { id } = params
+
+    const categories = await getData(id.slice(-1)[0], accessToken!)
+
+    const stringifyParams = queryString.stringify(params)
+
     const parseSearchParams = queryString.stringify(searchParams)
-    // const searchParam = searchParams
 
-    // const [expanded, setExpanded] = React.useState<string | false>(false)
+    const { url, backUrl } = HandleURL(id)
+    console.log('ss', url);
+    // let url = ''
 
-    const handleChange = (panel: string) => async (
-        event: React.SyntheticEvent,
-        isExpanded: boolean
-    ) => {
-        // const res = await getAllCategoryOption('')
-        // console.log('res', res);
-        // const catOptions = await getData(panel)
-        // console.log('catOptions', catOptions);
-        // setExpanded(isExpanded ? panel : false)
-    }
+    // let backUrl = ''
 
-    const {
-        id
-    } = params
+    // // let u = ''
 
-    // console.log('params', params);
-
-    let url = ''
-    let backUrl = ''
-
-    if (Array.isArray(id)) {
-        if (id.length > 1) {
-            url = ''
-            backUrl = ''
-            url = id.join('/')
-            const copyUrl = [...id]
-            copyUrl.pop()
-            backUrl = copyUrl.join('/')
-        } else {
-            url = id[0]
-        }
-    }
+    // if (Array.isArray(id)) {
+    //     const addId = [...id]
+    //     // u = addId.join('/')
+    //     if (id.length > 1) {
+    //         url = ''
+    //         backUrl = ''
+    //         url = id.join('/')
+    //         const copyUrl = [...id]
+    //         copyUrl.pop()
+    //         backUrl = copyUrl.join('/')
+    //     } else {
+    //         url = id[0]
+    //     }
+    // }
+    // console.log('searchParams', u)
 
     const stringified = queryString.stringify({ parentCat: params.id.slice(-1) })
 
@@ -103,7 +97,7 @@ async function Category({ params, searchParams }: Props) {
                     aria-label="add"
                 >
                     <Link
-                        href={`/dashboard/siteSettings/addSetting/add_new_cat?${stringified}&${parseSearchParams}`}
+                        href={`/dashboard/siteSettings/addSetting/add?${stringified}&${parseSearchParams}`}
                     >
                         اضافه کردن ویژگی جدید
                         <AddIcon sx={{ ml: 1 }} />
@@ -146,7 +140,7 @@ async function Category({ params, searchParams }: Props) {
 
                                     <Tooltip title={`ویرایش ${cat.name}`} placement="top">
                                         <Link
-                                            href={`/dashboard/siteSettings/addSetting/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                            href={`/dashboard/siteSettings/addSetting/${encodeURIComponent(cat._id)}?${parseSearchParams}&callbackUrl=${url}`}
                                         >
                                             {/* <Fab color="error" size="small" aria-label="add"> */}
                                             <EditNoteIcon color="info" />

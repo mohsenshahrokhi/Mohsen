@@ -61,7 +61,7 @@ function PropertiesDetile({ category, stringifyParams }: Props) {
                         >
                             آیکون سیاه و سفید
                         </Box>
-                        <ControlledImage image={category.icon} cat={category} property={'icon'} />
+                        <ControlledImage image={category.icon} cat={category} property={'icon'} stringifyParams={stringifyParams} />
                     </Box>
                 )}
                 {!category.colorIcon ? (<Button
@@ -85,7 +85,7 @@ function PropertiesDetile({ category, stringifyParams }: Props) {
                         >
                             آیکون رنگی
                         </Box>
-                        <ControlledImage image={category.colorIcon} cat={category} property={'colorIcon'} />
+                        <ControlledImage image={category.colorIcon} cat={category} property={'colorIcon'} stringifyParams={stringifyParams} />
                     </Box>
                 )}
             </Box>

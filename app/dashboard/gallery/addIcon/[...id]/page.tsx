@@ -26,7 +26,7 @@ import dynamic from 'next/dynamic'
 import AddIcon from '@mui/icons-material/Add'
 import { skip } from 'node:test'
 import GalleryBase from '@/components/adminComponent/Gallery/GalleryBase'
-import GalleryPagination from '@/components/adminComponent/GalleryPagination'
+import Pagination from '@/components/adminComponent/Pagination'
 
 type Props = {
     params: {
@@ -360,7 +360,7 @@ async function Gallery({ params, searchParams }: Props) {
                         catProperty={catProperty}
                     />
 
-                    <GalleryPagination
+                    <Pagination
                         page={page}
                         stringified={stringified}
                         totalPage={totalPage}

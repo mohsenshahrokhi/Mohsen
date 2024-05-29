@@ -42,13 +42,17 @@ export const CategorySchema = new Schema<TCategorySchema>({
         default: null
     },
     propertys: {
-        type: Schema.Types.ObjectId,
-        ref: 'CategoryOption',
-        default: null
+        type: Array,
+        default: []
     },
+    //   propertys: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'CategoryOption',
+    //     default: null
+    // },
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'users'
     }
 
 })

@@ -43,23 +43,9 @@ async function Category({ params, searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const verify = accessToken && verifyJwt(accessToken) || null
-    // const categories: TCategorySchema[] = []
+
     const categories = await getData(params.id.slice(-1)[0], accessToken!)
     const parseSearchParams = queryString.stringify(searchParams)
-    // const searchParam = searchParams
-
-    // const [expanded, setExpanded] = React.useState<string | false>(false)
-
-    const handleChange = (panel: string) => async (
-        event: React.SyntheticEvent,
-        isExpanded: boolean
-    ) => {
-        // const res = await getAllCategoryOption('')
-        // console.log('res', res);
-        // const catOptions = await getData(panel)
-        // console.log('catOptions', catOptions);
-        // setExpanded(isExpanded ? panel : false)
-    }
 
     const {
         id

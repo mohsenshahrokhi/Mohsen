@@ -1,6 +1,6 @@
 'use client'
 
-import { RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
+import { CategorySchema, EditCategorySchema, RegisterCategorySchema, TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import { createCategory, updateCategory } from "@/actions/category"
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -8,23 +8,26 @@ import { Avatar, Box, Button, Fab, FormControl, FormControlLabel, FormHelperText
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useTransition } from "react"
+import { ChangeEvent, MouseEventHandler, useState, useTransition } from "react"
 import { Controller, useForm } from "react-hook-form"
 import AddIcon from '@mui/icons-material/Add'
 import queryString from "query-string"
+import { HiXMark } from "react-icons/hi2"
 
 type Props = {
     cat?: TCategorySchema
-    add: boolean
+    callbackUrl: string
     parentId: string
     searchParams: string
 }
 
-function CategoryForm({ cat, add, parentId, searchParams }: Props) {
+function EditCategoryForm({ cat, parentId, searchParams, callbackUrl }: Props) {
 
     const router = useRouter()
 
     const [isPending, startTransition] = useTransition()
+
+    const [property, setProperty] = useState<{ name: string, values: string }[]>(cat?.propertys || [])
 
     const { data: session } = useSession({
         required: true,
@@ -37,64 +40,38 @@ function CategoryForm({ cat, add, parentId, searchParams }: Props) {
 
     const accessToken = user?.accessToken || ''
 
-    const form = useForm<TRegisterCategorySchema>({
-        resolver: zodResolver(RegisterCategorySchema),
+    const form = useForm<TEditCategorySchema>({
+        resolver: zodResolver(EditCategorySchema),
         defaultValues: {
-            name: !add ? cat?.name : '',
-            latinName: !add ? cat?.latinName : '',
-            slug: !add ? cat?.slug : '',
-            // colorIcon: cat?.colorIcon || '',
-            icon: cat?.icon || '',
-            // images: cat?.images || '',
-            type: !add ? cat?.type : false,
-            parent: !add ? cat?.parent : '',
-            // propertys: cat?.slug ||[]
+            // _id: cat?._id,
+            name: cat?.name,
+            latinName: cat?.latinName,
+            slug: cat?.slug,
+            // icon: cat?.icon,
+            type: cat?.type,
+            parent: cat?.parent,
+            propertys: cat?.propertys || property
         }
     })
 
     const catId = cat?._id
 
-    console.log('stringifyParams', searchParams);
-
-    const onSubmit = (values: TRegisterCategorySchema | TCategorySchema) => {
+    const onSubmit = (values: TEditCategorySchema) => {
         form.setValue('author', user?._id)
         values.author = user?._id
-        add && startTransition(() => {
-            form.setValue('parent', parentId)
-            // values.parent = parentId || ''
-            parentId ? values.parent = parentId || '' : delete values.parent
-            console.log(values);
+        values.propertys = property
+        console.log('form', values);
 
-            createCategory({ values, accessToken })
-                .then((data) => {
-                    console.log(data)
-
-                    if (data.success === true) {
-
-                        HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
-
-                        // parent ?
-                        //     router.push(`/dashboard/siteSettings/`) :
-                        //     router.push(`/dashboard/siteSettings`)
-                    } else {
-
-                        HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })
-                    }
-
-                })
-        })
-        !add && startTransition(() => {
+        startTransition(() => {
             updateCategory({ _id: catId, values, accessToken })
+
                 .then((data) => {
-                    console.log(data)
 
                     if (data.success === true) {
 
                         HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
 
-                        parent ?
-                            router.push(`/dashboard/siteSettings/`) :
-                            router.push(`/dashboard/siteSettings`)
+                        router.push(`/dashboard/siteSettings/${callbackUrl}`)
                     } else {
 
                         HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })
@@ -103,6 +80,41 @@ function CategoryForm({ cat, add, parentId, searchParams }: Props) {
                 })
         })
     }
+
+    function addProperty(p: { name: string, values: string }) {
+        const oldP = [...property]
+        oldP.push(p)
+        setProperty(oldP)
+        form.formState.defaultValues?.propertys?.push(p)
+
+    }
+
+    function deleteProperty(index: number) {
+        const oldP = [...property]
+        oldP.splice(index, 1)
+        // console.log(newP, oldP);
+
+        setProperty(oldP)
+        form.formState.defaultValues?.propertys?.splice(index, 1)
+
+    }
+
+    function handlePropertyName(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number): void {
+        const p = e.target.value
+        const oldP = [...property]
+        oldP[index].name = p
+        setProperty(oldP)
+    }
+
+    function handlePropertyValues(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number): void {
+        const p = e.target.value
+        const oldP = [...property]
+        oldP[index].values = p
+        setProperty(oldP)
+    }
+
+    // console.log('v', property, form.formState.defaultValues);
+
 
     return (
         <Box
@@ -182,7 +194,7 @@ function CategoryForm({ cat, add, parentId, searchParams }: Props) {
                                 <OutlinedInput
                                     id='latinName'
                                     {...field}
-                                    autoComplete='name'
+                                    autoComplete='latinName'
                                     disabled={isPending}
                                     error={fieldState.error ? true : false}
                                     type={'text'}
@@ -210,6 +222,82 @@ function CategoryForm({ cat, add, parentId, searchParams }: Props) {
                             </FormControl>
                         )}
                     />
+                    {
+                        property.map((p, index) => (
+                            <Box
+                                className=' flex gap-3 mb-3 justify-start items-center'
+                                key={index}
+                            >
+                                <FormControl
+                                    component="div"
+                                    className=" flex p-0 m-0"
+                                    variant="outlined"
+                                >
+                                    <InputLabel htmlFor={`propertyName${index}`}>نام خاصیت</InputLabel>
+                                    <OutlinedInput
+                                        id={`propertyName${index}`}
+                                        autoComplete='name'
+                                        value={p.name}
+                                        disabled={isPending}
+                                        type={'text'}
+                                        label="نام خاصیت"
+                                        onChange={e => handlePropertyName(e, index)}
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                                <IconButton
+                                                    aria-label="delete"
+                                                    className=" flex p-0 m-0"
+                                                    disabled={isPending}
+                                                    color='error'
+                                                    onClick={() => deleteProperty(index)}
+                                                    edge="start"
+                                                >
+                                                    {<HiXMark />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </FormControl>
+                                <FormControl
+                                    component="div"
+                                    className=" flex h-full p-0 m-0"
+                                    variant="outlined"
+                                >
+                                    <InputLabel htmlFor={`propertyVal${index}`}>مقدار خاصیت</InputLabel>
+                                    <OutlinedInput
+                                        id={`propertyVal${index}`}
+                                        autoComplete='name'
+                                        disabled={isPending}
+                                        value={p.values}
+                                        type={'text'}
+                                        label="مقدار خاصیت"
+                                        onChange={e => handlePropertyValues(e, index)}
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    edge="start"
+                                                >
+
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </FormControl>
+
+                            </Box>
+                        ))
+                    }
+                    <Button
+                        type='button'
+                        disabled={isPending}
+                        variant='contained'
+                        color='primary'
+                        sx={{ width: '100%' }}
+                        onClick={() => addProperty({ name: '', values: '' })}
+                    >
+                        اضافه کردن خواص جدید
+                    </Button>
                     <Controller
                         name="type"
                         control={form.control}
@@ -228,45 +316,7 @@ function CategoryForm({ cat, add, parentId, searchParams }: Props) {
                             />
                         )}
                     />
-                    {/* <Controller
-                        name="icon"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl component="div" fullWidth sx={{ my: 1 }} variant="outlined">
-                                <InputLabel htmlFor="icon">ایکون این دسته بندی</InputLabel>
-                                <input
-                                    {...field}
-                                    type={'hidden'}
-                                />
-                                {form.getValues('icon') && <Stack direction="row" spacing={2}>
-                                    <Avatar alt={`${form.getValues('name')}`} src={`${form.getValues('icon')}`} />
-                                </Stack>}
-                                {!form.getValues('icon') && <Button
-                                    id='icon'
-                                    size="medium"
-                                    variant="outlined"
-                                    color="secondary"
-                                    aria-label="add"
-                                >
-                                    <Link
-                                        href={`/dashboard/gallery/addIcon/${cat?._id}?accessToken=${accessToken}&${searchParams}`}
-                                    >
-                                        اضافه کردن ایکون
-                                        <AddIcon sx={{ ml: 1 }} />
-                                    </Link>
-                                </Button>}
-                            
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    /> */}
+
                     <Button
                         type='submit'
                         disabled={isPending}
@@ -274,11 +324,7 @@ function CategoryForm({ cat, add, parentId, searchParams }: Props) {
                         color='info'
                         sx={{ width: '100%' }}
                     >
-                        {add ? (
-                            <Box component={'span'}>ثبت</Box>
-                        ) : (
-                            <Box component={'span'}>ویرایش</Box>
-                        )}
+                        <Box component={'span'}>ویرایش</Box>
                     </Button>
                 </form>
             </Box>
@@ -286,4 +332,4 @@ function CategoryForm({ cat, add, parentId, searchParams }: Props) {
     )
 }
 
-export default CategoryForm
+export default EditCategoryForm

@@ -258,7 +258,7 @@ export type TResetPassSchema = z.infer<typeof ResetPass>
 /* category */
 
 export const CategorySchema = z.object({
-    _id: z.string().uuid(),
+    _id: z.string(),
     name: z.string(),
     latinName: z.string(),
     slug: z.string(),
@@ -266,13 +266,32 @@ export const CategorySchema = z.object({
     icon: z.string().uuid().optional(),
     images: z.array(z.string()).default([]),
     type: z.boolean().optional().default(false),
-    parent: z.string().uuid().optional(),
-    author: z.string().uuid().optional(),
-    propertys: z.array(z.string()).optional()
+    parent: z.string().optional(),
+    author: z.string().optional(),
+    propertys: z.array(z.object({ name: z.string(), values: z.string() })).default([]).optional()
+    // propertys: z.array(z.string()).default([]).optional()
     // propertys: z.array(z.object({ name: z.string(), values: z.string() })).optional()
 
 })
 export type TCategorySchema = z.infer<typeof CategorySchema>
+
+export const EditCategorySchema = z.object({
+    // _id: z.string(),
+    name: z.string(),
+    latinName: z.string(),
+    slug: z.string(),
+    colorIcon: z.string().uuid().optional(),
+    icon: z.string().uuid().optional(),
+    images: z.array(z.string()).default([]),
+    type: z.boolean().optional().default(false),
+    parent: z.string().optional(),
+    author: z.string().optional(),
+    propertys: z.array(z.object({ name: z.string(), values: z.string() })).default([]).optional()
+    // propertys: z.array(z.string()).default([]).optional()
+    // propertys: z.array(z.object({ name: z.string(), values: z.string() })).optional()
+
+})
+export type TEditCategorySchema = z.infer<typeof EditCategorySchema>
 
 export const RegisterCategorySchema = z.object({
     name: z.string().min(4, {
@@ -282,13 +301,14 @@ export const RegisterCategorySchema = z.object({
         message: 'حداقل ۴ حرف را وارد کنید'
     }),
     slug: z.string().optional(),
-    colorIcon: z.string().uuid().optional(),
-    icon: z.string().uuid().optional(),
+    colorIcon: z.string().optional(),
+    icon: z.string().optional(),
     images: z.array(z.string()).optional(),
-    type: z.boolean().optional(),
-    parent: z.string().uuid().optional(),
+    type: z.boolean().default(false).optional(),
+    parent: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.string()).optional()
+    propertys: z.array(z.object({ name: z.string(), values: z.string() })).default([]).optional()
+    // propertys: z.array(z.string()).optional()
 }).superRefine((data, ctx) => {
     if (data.latinName) {
         data.slug = slugify(data.latinName, {

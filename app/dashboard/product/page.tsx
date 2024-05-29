@@ -192,7 +192,10 @@ export default async function Product({ searchParams }: Props) {
                             <Box
                                 component={'div'}
                             >
-                                <ProductList products={products} />
+                                <ProductList
+                                    products={products}
+                                    stringified={stringified}
+                                />
                                 <Pagination
                                     page={page}
                                     stringified={stringified}

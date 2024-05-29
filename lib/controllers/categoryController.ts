@@ -1,16 +1,18 @@
 import { MongooseQueryParser } from "mongoose-query-parser"
 import Category from "../models/categoryModel"
 import connectToMongodb from "../mongodb"
-import { TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
+import { TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import CategoryOption from "../models/categoryOptionModel"
 import mongoose from "mongoose"
+import Users from "../models/userModel"
 
 export const getAllCategory = async (req: any) => {
   connectToMongodb()
   try {
     const parser = new MongooseQueryParser()
     const parsed = parser.parse(req)
-    // let cats: TCategorySchema[]
+    const user = await Users.find({})
+    const qtt = await Category.find().countDocuments({})
     const cats = await Category
       .find(parsed.filter)
       .populate(parsed.populate)
@@ -72,13 +74,13 @@ export const createNewCategory = async (params: TRegisterCategorySchema) => {
   }
 }
 
-export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TRegisterCategorySchema }) => {
+export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TEditCategorySchema }) => {
   try {
     if (values.parent === '') {
       delete values.parent
     }
     connectToMongodb()
-    const category = await Category.updateOne({ _id }, { ...values })
+    const category = await Category.updateOne({ _id: _id }, { ...values })
     return category
   } catch (err) {
     return err
