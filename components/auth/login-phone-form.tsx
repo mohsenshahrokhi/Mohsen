@@ -4,12 +4,12 @@ import { Box, Button, FormControl, FormHelperText, IconButton, InputAdornment, I
 import { Controller, useForm } from 'react-hook-form'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import React, { useState, useTransition } from 'react'
-import { LoginPhoneSchema, LoginSmsSchema, TLoginPhoneSchema, TLoginSmsSchema, TUserSchema } from '@/ZSchemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { sendSms } from '@/actions/register'
 import { VariantType, enqueueSnackbar } from 'notistack'
 import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
+import { LoginPhoneSchema, LoginSmsSchema, TLoginPhoneSchema, TLoginSmsSchema, TUserSchema } from '@/ZSchemas/UserSchema'
 
 function LoginPhoneForm() {
 

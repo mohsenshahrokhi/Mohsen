@@ -2,7 +2,6 @@ import React from 'react'
 import Link from 'next/link'
 import Fab from '@mui/material/Fab'
 import queryString from 'query-string'
-import { TCategorySchema } from '@/ZSchemas'
 import AddIcon from '@mui/icons-material/Add'
 import UndoIcon from '@mui/icons-material/Undo'
 import EditNoteIcon from '@mui/icons-material/EditNote'
@@ -16,6 +15,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'
 import { getCategories } from '@/actions/category'
 import CloseIcon from '@mui/icons-material/Close'
+import { TCategorySchema } from '@/ZSchemas/CategorySchema'
 
 
 type Props = {

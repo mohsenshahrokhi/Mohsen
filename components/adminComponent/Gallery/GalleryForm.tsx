@@ -1,6 +1,5 @@
 'use client'
 
-import { TGallerySchema } from "@/ZSchemas"
 import { Box, Button } from "@mui/material"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -9,6 +8,7 @@ import Image from "next/image"
 import { HiOutlineArrowUpTray } from "react-icons/hi2"
 import { createGallery } from "@/actions/gallery"
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
+import { TGallerySchema } from "@/ZSchemas/GallerySchema"
 
 
 type Props = {

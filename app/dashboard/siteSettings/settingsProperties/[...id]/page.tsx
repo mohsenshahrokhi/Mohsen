@@ -1,5 +1,5 @@
-import { TCategorySchema } from '@/ZSchemas'
-import { getCatById, getCategories } from '@/actions/category'
+
+import { getCBy, getCategories } from '@/actions/category'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import BasicModal from '@/components/ui/BasicModal'
 import { verifyJwt } from '@/lib/jwt'
@@ -31,20 +31,18 @@ async function getData(catId: string, accessToken: string) {
 }
 
 async function getCatData(catId: string) {
-    const category = await getCatById(catId)
+    const params = {
+        _id: catId
+    }
+    const stringifyParams = queryString.stringify(params)
+    const category = await getCBy(stringifyParams)
     return category
 }
 
 async function CatProperties({ params, searchParams }: Props) {
-    const session = await getServerSession(authOptions)
-    const accessToken = session?.user.accessToken
-    const verify = accessToken && verifyJwt(accessToken) || null
-    // const categories: TCategorySchema[] = []
-    // const categories = await getData(params.id.slice(-1)[0], accessToken!)
-    const stringifyParams = queryString.stringify(searchParams)
-    console.log(searchParams);
 
-    // const { success } = await getData(params.id.slice(-1)[0], accessToken!)
+    const stringifyParams = queryString.stringify(searchParams)
+
     const { category } = await getCatData(params.id.slice(-1)[0])
 
     return (
@@ -62,7 +60,10 @@ async function CatProperties({ params, searchParams }: Props) {
                     >
                         {category.name}
                     </Box>
-                    <PropertiesDetile category={category} stringifyParams={stringifyParams} />
+                    <PropertiesDetile
+                        category={category}
+                        stringifyParams={stringifyParams}
+                    />
                 </Box>
             </Box>
         </Box>

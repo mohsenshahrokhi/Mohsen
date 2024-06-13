@@ -7,10 +7,10 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { TCategorySchema } from '@/ZSchemas'
 import { Box, Fab, IconButton, Link, Tooltip } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { getAllCategoryOption, getCategoryOption } from '@/lib/controllers/categoryOptionController'
+import { TCategorySchema } from '@/ZSchemas/CategorySchema'
 
 type Props = {
     categories: TCategorySchema[],

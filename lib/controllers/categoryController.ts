@@ -22,8 +22,9 @@ export const getAllCategory = async (req: any) => {
       .select(parsed.select)
       .exec()
     const updateCId = cats.map(category => ({
-      ...category._doc, _id: category._doc._id.toString(), parent: category._doc.parent?.toString(), propertys: category._doc.propertys?.toString()
-      // // ...category._doc, _id: category._doc._id.toString()
+      // ...category._doc, _id: category._doc._id.toString(), parent: category._doc.parent?.toString(), propertys: category._doc.propertys?.toString()
+      ...category._doc, _id: category._doc._id.toString()
+
     }))
     return updateCId
   } catch (err) {
@@ -31,10 +32,18 @@ export const getAllCategory = async (req: any) => {
   }
 }
 
-export const getCategoryById = async (_id: string) => {
+export const getCategoryBy = async (stringifyParams: string) => {
   try {
     connectToMongodb()
-    const category = await Category.findById({ _id })
+    const parser = new MongooseQueryParser()
+    const parsed = parser.parse(stringifyParams)
+    console.log('req', parsed);
+    const cat = await Category.find({})
+    const user = await Users.find({})
+    const category = await Category.findById(parsed.filter)
+      .populate(parsed.populate)
+      .select(parsed.select)
+      .exec()
     const updateCId = {
       ...category._doc, _id: category._doc._id.toString()
     }

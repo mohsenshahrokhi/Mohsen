@@ -4,7 +4,6 @@ import { Box, Button, FormControl, FormHelperText, IconButton, InputAdornment, I
 import { Controller, useForm } from 'react-hook-form'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import React, { useState, useTransition } from 'react'
-import { ForgetPass, LoginMailSchema, TForgetPassSchema, TLoginMailSchema } from '@/ZSchemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { VariantType, enqueueSnackbar } from 'notistack'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -12,6 +11,7 @@ import Visibility from '@mui/icons-material/Visibility'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { forgetPassword } from '@/actions/register'
+import { ForgetPass, TForgetPassSchema } from '@/ZSchemas/UserSchema'
 
 function ForgetMailPassForm() {
     const searchParams = useSearchParams()

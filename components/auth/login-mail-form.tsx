@@ -4,7 +4,6 @@ import { Box, Button, FormControl, FormHelperText, IconButton, InputAdornment, I
 import { Controller, useForm } from 'react-hook-form'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import React, { useState, useTransition } from 'react'
-import { LoginMailSchema, TLoginMailSchema } from '@/ZSchemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 // import { login } from '@/actions/login'
 import { VariantType, enqueueSnackbar } from 'notistack'
@@ -12,6 +11,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Visibility from '@mui/icons-material/Visibility'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { LoginMailSchema, TLoginMailSchema } from '@/ZSchemas/UserSchema'
 
 function LoginMailForm() {
     const router = useRouter()

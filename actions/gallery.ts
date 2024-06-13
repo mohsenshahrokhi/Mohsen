@@ -1,12 +1,12 @@
 'use server'
 
-import { RegisterCategorySchema, TGallerySchema, TRegisterGallerySchema } from "@/ZSchemas"
 import { deleteCategory } from "@/lib/controllers/categoryController"
 import { createGalleryImages, getAllGallery, getGalleryById } from "@/lib/controllers/galleryController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose from "mongoose"
 import queryString from "query-string"
 import { existsSync, mkdirSync, writeFileSync } from "fs"
+import { TGallerySchema } from "@/ZSchemas/GallerySchema"
 
 type All = {
     gallery: TGallerySchema[]

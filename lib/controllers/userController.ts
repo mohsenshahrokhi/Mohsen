@@ -7,9 +7,7 @@ import { TRegisterUserSchema, TUserSchema } from "@/ZSchemas"
 export const getAllUsers = async (req: any) => {
     try {
         connectToMongodb()
-        // let users = []
-        // const url = new URL(req.url).search.split('?')[1]
-        // if (url) {
+
         const parser = new MongooseQueryParser()
         const parsed = parser.parse(req)
         const users = await Users
@@ -18,9 +16,7 @@ export const getAllUsers = async (req: any) => {
             limit(parsed.limit || 10)
             .populate(parsed.populate)
             .select(parsed.select)
-        // } else {
-        //     users = await Users.find()
-        // }
+
         const updateUId = users.map(user => ({
             ...user?._doc, _id: user?._doc._id.toString()
         }))
@@ -113,10 +109,8 @@ export const updateUser = async (_id: string, params: any) => {
         connectToMongodb()
         const { data } = params
         const updatedUser = await Users.updateOne({ _id }, { ...data })
-        const updateId = {
-            ...updatedUser._doc, _id: updatedUser._doc._id.toString()
-        }
-        return updateId
+
+        return updatedUser
     } catch (err) {
         return err
     }

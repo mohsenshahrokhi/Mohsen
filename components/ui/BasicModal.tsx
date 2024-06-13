@@ -1,15 +1,20 @@
 'use client'
 
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import * as React from 'react'
+
+import Backdrop from '@mui/material/Backdrop'
+import Box from '@mui/material/Box'
+import Modal from '@mui/material/Modal'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import { useSpring, animated } from '@react-spring/web'
+
 import CloseIcon from '@mui/icons-material/Close'
-import { late } from 'zod';
-import { deleteCat } from '@/actions/category';
-import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar';
-import { useRouter } from 'next/navigation';
+
+import { deleteCat } from '@/actions/category'
+import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
+import { useRouter } from 'next/navigation'
+import { IconButton } from '@mui/material'
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -18,20 +23,22 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    borderRadius: '10px',
+    border: '1px solid #1e1e1e',
     boxShadow: 24,
     p: 4,
 };
 
 type Props = {
     openModal?: boolean
-    label: string
+    label: React.ReactNode
     disc: string
     catId: string
     accessToken: string | undefined
+    callbackUrl: string
 }
 
-export default function BasicModal({ openModal, label, disc, catId, accessToken }: Props) {
+export default function BasicModal({ openModal, label, disc, catId, accessToken, callbackUrl }: Props) {
 
     const router = useRouter()
     const [open, setOpen] = React.useState(false)
@@ -55,10 +62,9 @@ export default function BasicModal({ openModal, label, disc, catId, accessToken 
                     if (data.success === true) {
 
                         HandleEnqueueSnackbar({ variant: 'success', msg: ' data.msg' })
+                        handleClose()
 
-                        // parent ?
-                        //     router.push(`/dashboard/siteSettings/`) :
-                        //     router.push(`/dashboard/siteSettings`)
+                        router.push(`/dashboard/siteSettings/${callbackUrl}`)
                     } else {
 
                         HandleEnqueueSnackbar({ variant: 'error', msg: 'data.msg' })
@@ -72,21 +78,26 @@ export default function BasicModal({ openModal, label, disc, catId, accessToken 
 
     return (
         <Box>
-            <Button
-                variant='contained'
+            <IconButton
                 onClick={handleOpen}
                 color='warning'
+                className=' flex p-0 m-0'
+
             >
                 {label}
-            </Button>
+            </IconButton>
             <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
+                closeAfterTransition
+                slots={{ backdrop: Backdrop }}
+
             >
+                {/* <Fade in={open}> */}
                 <Box sx={style}>
-                    <Typography className=' flex text-xs' id="modal-modal-title" component="p">
+                    <Typography className=' flex text-xs text-gray-700 dark:text-gray-200' id="modal-modal-title">
                         {disc}
                     </Typography>
                     <Typography className=' flex justify-between' id="modal-modal-description" sx={{ mt: 2 }}>
@@ -103,6 +114,7 @@ export default function BasicModal({ openModal, label, disc, catId, accessToken 
                         >انصراف</Button>
                     </Typography>
                 </Box>
+                {/* </Fade> */}
             </Modal>
         </Box>
     );

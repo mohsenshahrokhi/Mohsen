@@ -1,5 +1,4 @@
 import React from 'react'
-import CategoryForm from "@/components/adminComponent/Categories/CategoryForm"
 
 import Link from 'next/link'
 import { HiMiniPlus, HiOutlinePencilSquare, HiOutlinePhoto, HiOutlineTrash } from 'react-icons/hi2'
@@ -15,7 +14,6 @@ import Image from 'next/image'
 // import ButtonWithRipple from '@/components/ui/components/Button/ButtonWithRipple'
 // import LinkWithRipple from '@/components/ui/components/Button/LinkWithRipple'
 import queryString from 'query-string'
-import { TGallerySchema } from '@/ZSchemas'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'
@@ -27,6 +25,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { skip } from 'node:test'
 import GalleryBase from '@/components/adminComponent/Gallery/GalleryBase'
 import Pagination from '@/components/adminComponent/Pagination'
+import { TGallerySchema } from '@/ZSchemas/GallerySchema'
 
 type Props = {
     searchParams: { [key: string]: string | string[] | undefined }

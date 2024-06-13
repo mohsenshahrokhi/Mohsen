@@ -21,23 +21,32 @@ export const getAllProduct = async (req: any) => {
             .skip(parsed.skip || 0)
             .select(parsed.select)
             .exec()
-        const updateCId = cats.map(product => ({
+        const updatePId = cats.map(product => ({
             ...product._doc, _id: product._doc._id.toString(), parent: product._doc.parent?.toString(), propertys: product._doc.propertys?.toString()
         }))
-        return { products: updateCId, qtt }
+        return { products: updatePId, qtt }
     } catch (err) {
         return err
     }
 }
 
-export const getProductById = async (_id: string) => {
+export const getProductBy = async (stringifyParams: string) => {
     try {
         connectToMongodb()
-        const product = await Product.findById({ _id })
-        const updateCId = {
+        const parser = new MongooseQueryParser()
+        const parsed = parser.parse(stringifyParams)
+        console.log('req', parsed);
+        const cat = await Category.find({})
+        const user = await Users.find({})
+        const product = await Product
+            .findById(parsed.filter)
+            .populate(parsed.populate)
+            .select(parsed.select)
+            .exec()
+        const updatePId = {
             ...product._doc, _id: product._doc._id.toString()
         }
-        return updateCId
+        return updatePId
     } catch (err) {
         return err
     }
@@ -47,10 +56,10 @@ export const getProductBySlug = async (slug: string) => {
     try {
         connectToMongodb()
         const product = await Product.findOne({ slug })
-        const updateCId = {
+        const updatePId = {
             ...product._doc, _id: product._doc._id.toString()
         }
-        return updateCId
+        return updatePId
     } catch (err) {
         return err
     }
@@ -60,10 +69,10 @@ export const createNewProduct = async (params: TRegisterProductSchema) => {
     try {
         connectToMongodb()
         const product = await Product.create({ ...params })
-        const updateCId = {
+        const updatePId = {
             ...product._doc, _id: product._doc._id.toString()
         }
-        return updateCId
+        return updatePId
     } catch (err) {
         return err
     }

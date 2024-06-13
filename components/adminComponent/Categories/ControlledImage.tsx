@@ -1,11 +1,11 @@
 import { Box, Button } from '@mui/material'
 import React from 'react'
 import Image from "next/image"
-import { TCategorySchema, TRegisterCategorySchema } from '@/ZSchemas'
 import { updateCategory } from '@/actions/category'
 import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import { TCategorySchema, TRegisterCategorySchema } from '@/ZSchemas/CategorySchema'
 
 type Props = {
     cat: TCategorySchema

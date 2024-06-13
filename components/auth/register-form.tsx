@@ -21,10 +21,6 @@ import React, {
     useTransition
 } from 'react'
 import {
-    RegisterUserFormSchema,
-    TRegisterUserFormSchema
-} from '@/ZSchemas'
-import {
     zodResolver
 } from '@hookform/resolvers/zod'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -35,6 +31,7 @@ import { register } from '@/actions/register'
 import { IMaskInput } from 'react-imask'
 import { passwordStrength } from "check-password-strength"
 import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
+import { RegisterUserFormSchema, TRegisterUserFormSchema } from '@/ZSchemas/UserSchema'
 
 interface CustomProps {
     onChange: (event: { target: { name: string; value: string } }) => void

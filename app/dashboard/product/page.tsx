@@ -2,13 +2,13 @@ import { HiMiniPlus, HiOutlinePencilSquare, HiOutlinePhoto, HiOutlineTrash } fro
 import Link from "next/link"
 import queryString from "query-string"
 import { Box, Button } from "@mui/material"
-import { TProductSchema } from "@/ZSchemas"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { verifyJwt } from "@/lib/jwt"
 import { getProducts } from "@/actions/product"
-import ProductList from "@/components/adminComponent/products/ProductList"
+import ProductList from "@/components/adminComponent/Products/ProductList"
 import Pagination from "@/components/adminComponent/Pagination"
+import { TProductSchema } from "@/ZSchemas/ProductSchema"
 
 type Data = {
     products: TProductSchema[]
@@ -26,7 +26,7 @@ async function getData({ page, perPage, accessToken }: { page: number, perPage: 
 
     const stringifyParams = queryString.stringify(params)
 
-    const products = await getProducts({ stringifyParams, accessToken })
+    const products = await getProducts(stringifyParams)
 
     return products as Data
 

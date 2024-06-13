@@ -1,4 +1,4 @@
-import { TCategorySchema } from '@/ZSchemas'
+
 import {
     Box
 } from '@mui/material'
@@ -6,13 +6,14 @@ import Fab from '@mui/material/Fab'
 import Link from 'next/link'
 import queryString from 'query-string'
 import React from 'react'
-import { getCatById, getCategories } from '@/actions/category'
+import { getCBy } from '@/actions/category'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'
 import AddCategoryForm from '@/components/adminComponent/Categories/AddCategoryForm'
 import EditCategoryForm from '@/components/adminComponent/Categories/EditCategoryForm'
 import HandleURL from '@/utils/HandleURL'
+import { TCategorySchema } from '@/ZSchemas/CategorySchema'
 
 type Props = {
     params: {
@@ -26,11 +27,18 @@ type Props = {
 }
 
 async function getData(cId: string) {
-    const { category, success } = await getCatById(cId)
+    const params = {
+        _id: cId,
+        // populate: 'parent.name,author'
+    }
+    const stringifyParams = queryString.stringify(params)
+    const { category, success } = await getCBy(stringifyParams)
     return category
 }
 
+
 async function AddSetting({ params, searchParams }: Props) {
+
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
     const { parentCat } = searchParams
@@ -51,10 +59,9 @@ async function AddSetting({ params, searchParams }: Props) {
         propertys: []
     }
     add ? category = await getData(parentCat) : category = await getData(id[0])
+    const catString = JSON.stringify(category)
 
-    console.log('searchParams', searchParams);
-
-
+    console.log(category);
     return (
         <Box
             component="div"
@@ -88,11 +95,12 @@ async function AddSetting({ params, searchParams }: Props) {
             >
                 {add && <AddCategoryForm
                     cat={category}
+                    callbackUrl={callbackUrl}
                     parentId={parentCat}
                     searchParams={stringifyParams}
                 />}
                 {!add && <EditCategoryForm
-                    cat={category}
+                    catString={catString}
                     callbackUrl={callbackUrl}
                     parentId={parentCat}
                     searchParams={stringifyParams}

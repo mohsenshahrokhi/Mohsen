@@ -9,12 +9,8 @@ import connectToMongodb from "@/lib/mongodb"
 import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from 'next-auth/providers/credentials'
 import * as bcrypt from 'bcrypt'
-import {
-    TLoginMailSchema,
-    TLoginSmsSchema,
-    TLoginUsernameSchema,
-    TUserSchema
-} from "@/ZSchemas"
+import { TLoginMailSchema, TLoginSmsSchema, TLoginUsernameSchema, TUserSchema } from "@/ZSchemas/UserSchema"
+
 
 export const authOptions: NextAuthOptions = {
     jwt: {

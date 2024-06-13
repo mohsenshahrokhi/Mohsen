@@ -1,8 +1,9 @@
 import mongoose, { Schema, model, models } from "mongoose"
 import { CategorySchema } from "./categoryModel"
 import { UserSchema } from "./userModel"
+import { TProductSchema } from "@/ZSchemas"
 
-const ProductSchema = new Schema({
+const ProductSchema = new Schema<TProductSchema>({
     title: {
         type: String,
         required: [true, 'لطفا نام محصول را وارد کنید'],
@@ -13,15 +14,15 @@ const ProductSchema = new Schema({
     },
     description: {
         type: String,
-        // required: [true, 'لطفا مشخصات محصول را وارد کنید'],
+        required: [true, 'لطفا مشخصات محصول را وارد کنید'],
     },
     recipe: {
         type: String,
-        // required: [true, 'لطفا مشخصات محصول را وارد کنید'],
+        required: [true, 'لطفا مشخصات محصول را وارد کنید'],
     },
     price: {
-        type: Number,
-        // required: [true, 'لطفا قیمت محصول را وارد کنید'],
+        type: String,
+        required: [true, 'لطفا قیمت محصول را وارد کنید'],
     },
     discount: {
         type: String,
@@ -31,24 +32,26 @@ const ProductSchema = new Schema({
 
     },
     propertys: {
-        type: [Object]
+        type: [Object],
+        required: true,
 
+    },
+    type: {
+        type: Boolean,
+        default: false,
     },
     category: {
         type: Schema.Types.ObjectId,
-        // ref: model('categories', CategorySchema),
         ref: 'categories',
         required: [true, 'لطفا دسته بندی محصول را وارد کنید']
     },
     seller: {
         type: Schema.Types.ObjectId,
-        // ref: mongoose.model('users', UserSchema),
         ref: 'users',
         required: [true, 'لطفا نام خریدار محصول را وارد کنید'],
     },
     author: {
         type: Schema.Types.ObjectId,
-        // ref: mongoose.model('users', UserSchema),
         ref: 'users',
         required: [true, 'لطفا نام ثبت کننده محصول را وارد کنید'],
     },
@@ -75,7 +78,8 @@ const ProductSchema = new Schema({
                 default: Date.now
             }
         },
-    ], createdAt: {
+    ],
+    createdAt: {
         type: Date,
         default: Date.now
     }

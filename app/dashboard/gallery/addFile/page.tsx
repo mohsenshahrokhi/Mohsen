@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import queryString from 'query-string'
-import { TGallerySchema } from '@/ZSchemas'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'

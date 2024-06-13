@@ -1,21 +1,32 @@
-// 'use client'
 
-import ProductForm from '@/components/adminComponent/products/ProductForm'
-import { EditProduct } from '@/type'
-import axios from 'axios'
-import { useParams } from 'next/navigation'
+import { TProductSchema } from '@/ZSchemas/ProductSchema'
+import { getPBy } from '@/actions/product'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from 'next-auth'
+import queryString from 'query-string'
 
-async function getProduct(editId: string) {
-    const { data } = await axios.get(`${process.env.BASE_URL}/api/product/${editId}`)
-    return data
+async function getData(pId: string, accessToken: string) {
 
+    const params = {
+        _id: pId,
+        populate: 'parent.name,author'
+    }
+    const stringifyParams = queryString.stringify(params)
+
+    const { product } = await getPBy(stringifyParams)
+
+    return product as TProductSchema
 }
 
-async function EditOnProduct({ params: { editId } }) {
+type Props = {
+    params: {
+        editId: string[] | string
+    }
+}
 
-    // const { editId } = useParams()
-    const { product } = await getProduct(editId[0])
-    console.log(product);
+async function EditOnProduct({ params }: Props) {
+
+
     // const router = useRouter()
     // const { data: session } = useSession({
     //     required: true,
@@ -30,11 +41,14 @@ async function EditOnProduct({ params: { editId } }) {
     // if (verify?.role !== "مدیر کل") {
     //     router.push('/login')
     // }
+    const session = await getServerSession(authOptions)
+    const accessToken = session?.user.accessToken
 
+    const { editId } = params
 
     return (
         <div className='flex flex-col w-full border rounded-md shadow-md p-10 my-2'>
-            <ProductForm productInfo={product} />
+            {/* <ProductForm productInfo={product} /> */}
         </div>
     )
 }

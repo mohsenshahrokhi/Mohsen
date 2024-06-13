@@ -1,21 +1,14 @@
 'use server'
 
-import {
-    LoginPhoneSchema,
-    RegisterUserSchema,
-    TForgetPassSchema,
-    TLoginPhoneSchema,
-    TRegisterUserSchema,
-    TUserSchema,
-} from "@/ZSchemas"
-
+import { LoginPhoneSchema, RegisterUserSchema, TForgetPassSchema, TLoginPhoneSchema, TRegisterUserSchema, TUserSchema } from "@/ZSchemas/UserSchema"
 import {
     getUserByEmail,
     getUserById,
     getUserByPhone,
-    getUserByUsername,
+    getUserByUsernamePass,
     registerUser,
-    updateUser
+    updateUser,
+    getAllUsers
 } from "@/lib/controllers/userController"
 import { signJwtAccessToken, verifyJwt } from "@/lib/jwt"
 import { compileActivaionThemplate, compileResetPasswordThemplate, sendMail } from "@/lib/mail"
@@ -44,7 +37,7 @@ export const register = async (values: TRegisterUserSchema) => {
         return { error: true, msg: 'این ایمیل قبلا ثبت شده است' }
     }
 
-    const existUserByUsername = await getUserByUsername(validatedFields.data.username)
+    const existUserByUsername = await getUserByUsernamePass(validatedFields.data.username)
 
     if (existUserByUsername._id) {
         return { error: true, msg: 'این نام کاربری قبلا ثبت شده است' }
@@ -101,6 +94,24 @@ export const activateUser: ActiveUserSchema = async (jwtUserId) => {
     })
 
     return 'success'
+
+}
+
+export const getAllU = async (
+    {
+        stringifyParams,
+        accessToken
+    }
+        :
+        {
+            stringifyParams: string,
+            accessToken: string
+        }
+) => {
+
+    const users = await getAllUsers(stringifyParams) as TUserSchema[]
+
+    return { success: users.length > 0, users }
 
 }
 

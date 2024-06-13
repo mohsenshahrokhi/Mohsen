@@ -1,12 +1,12 @@
 'use client'
 
-import { TCategorySchema } from '@/ZSchemas'
 import { Box, Button, Checkbox } from '@mui/material'
 import Link from 'next/link'
 import React, { MouseEventHandler, MouseEvent } from 'react'
 import Image from "next/image"
 import AddIcon from '@mui/icons-material/Add'
 import ControlledImage from './ControlledImage'
+import { TCategorySchema } from '@/ZSchemas/CategorySchema'
 
 type Props = {
     category: TCategorySchema

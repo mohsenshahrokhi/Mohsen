@@ -1,6 +1,5 @@
 'use client'
 
-import { CategorySchema, EditCategorySchema, RegisterCategorySchema, TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import { createCategory, updateCategory } from "@/actions/category"
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,20 +12,21 @@ import { Controller, useForm } from "react-hook-form"
 import AddIcon from '@mui/icons-material/Add'
 import queryString from "query-string"
 import { HiXMark } from "react-icons/hi2"
+import { EditCategorySchema, TEditCategorySchema } from "@/ZSchemas/CategorySchema"
 
 type Props = {
-    cat?: TCategorySchema
+    catString?: string
     callbackUrl: string
     parentId: string
     searchParams: string
 }
 
-function EditCategoryForm({ cat, parentId, searchParams, callbackUrl }: Props) {
+function EditCategoryForm({ catString, parentId, searchParams, callbackUrl }: Props) {
 
     const router = useRouter()
 
     const [isPending, startTransition] = useTransition()
-
+    const cat = JSON.parse(catString!)
     const [property, setProperty] = useState<{ name: string, values: string }[]>(cat?.propertys || [])
 
     const { data: session } = useSession({
@@ -40,14 +40,14 @@ function EditCategoryForm({ cat, parentId, searchParams, callbackUrl }: Props) {
 
     const accessToken = user?.accessToken || ''
 
+
+
     const form = useForm<TEditCategorySchema>({
         resolver: zodResolver(EditCategorySchema),
         defaultValues: {
-            // _id: cat?._id,
             name: cat?.name,
             latinName: cat?.latinName,
             slug: cat?.slug,
-            // icon: cat?.icon,
             type: cat?.type,
             parent: cat?.parent,
             propertys: cat?.propertys || property
@@ -60,8 +60,6 @@ function EditCategoryForm({ cat, parentId, searchParams, callbackUrl }: Props) {
         form.setValue('author', user?._id)
         values.author = user?._id
         values.propertys = property
-        console.log('form', values);
-
         startTransition(() => {
             updateCategory({ _id: catId, values, accessToken })
 
@@ -92,8 +90,6 @@ function EditCategoryForm({ cat, parentId, searchParams, callbackUrl }: Props) {
     function deleteProperty(index: number) {
         const oldP = [...property]
         oldP.splice(index, 1)
-        // console.log(newP, oldP);
-
         setProperty(oldP)
         form.formState.defaultValues?.propertys?.splice(index, 1)
 

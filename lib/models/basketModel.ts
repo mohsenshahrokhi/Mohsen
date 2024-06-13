@@ -15,6 +15,10 @@ const BasketsSchema = new Schema<BasketsDocument, {}, Methods>({
     },
     wishList: {
         type: [],
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 
 })

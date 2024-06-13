@@ -1,6 +1,5 @@
 'use client'
 
-import { RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import { createCategory, updateCategory } from "@/actions/category"
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,14 +12,16 @@ import { Controller, useForm } from "react-hook-form"
 import AddIcon from '@mui/icons-material/Add'
 import queryString from "query-string"
 import { HiXMark } from "react-icons/hi2"
+import { RegisterCategorySchema, TCategorySchema, TRegisterCategorySchema } from "@/ZSchemas/CategorySchema"
 
 type Props = {
     cat?: TCategorySchema
     parentId: string
     searchParams: string
+    callbackUrl: string
 }
 
-function AddCategoryForm({ cat, parentId, searchParams }: Props) {
+function AddCategoryForm({ cat, parentId, callbackUrl }: Props) {
 
     const router = useRouter()
 
@@ -54,8 +55,8 @@ function AddCategoryForm({ cat, parentId, searchParams }: Props) {
 
     const catId = cat?._id
 
-    console.log('defaultValues', form.formState.defaultValues);
-    console.log('Values', property);
+    // console.log('defaultValues', form.formState.defaultValues);
+    console.log('callbackUrl', callbackUrl);
 
     const onSubmit = (values: TRegisterCategorySchema): void => {
         form.setValue('author', user?._id)
@@ -63,6 +64,8 @@ function AddCategoryForm({ cat, parentId, searchParams }: Props) {
         startTransition(() => {
             form.setValue('parent', parentId)
             parentId ? values.parent = parentId || '' : delete values.parent
+            values.propertys = property
+            console.log('form', values);
 
             createCategory({ values, accessToken })
 
@@ -71,7 +74,7 @@ function AddCategoryForm({ cat, parentId, searchParams }: Props) {
                     if (data.success === true) {
 
                         HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
-
+                        router.push(`/dashboard/siteSettings/${callbackUrl}`)
                     } else {
 
                         HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })

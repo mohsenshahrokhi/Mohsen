@@ -1,4 +1,4 @@
-import { TCategorySchema } from '@/ZSchemas'
+
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getAllCategory } from '@/lib/controllers/categoryController'
 import { verifyJwt } from '@/lib/jwt'
@@ -14,6 +14,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import EditNoteIcon from '@mui/icons-material/EditNote'
 import PreviewIcon from '@mui/icons-material/Preview'
 import BasicModal from '@/components/ui/BasicModal'
+import { TCategorySchema } from '@/ZSchemas/CategorySchema'
 
 async function getData(accessToken: string) {
 

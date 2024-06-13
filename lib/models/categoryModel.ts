@@ -17,15 +17,16 @@ export const CategorySchema = new Schema<TCategorySchema>({
     colorIcon: {
         type: String,
         trim: true,
-        default: null
+        default: ''
     },
     images: {
-        type: [String]
+        type: [String],
+        default: []
     },
     icon: {
         type: String,
         trim: true,
-        default: null
+        default: ''
     },
     slug: {
         type: String,
@@ -41,18 +42,19 @@ export const CategorySchema = new Schema<TCategorySchema>({
         ref: 'categories',
         default: null
     },
-    propertys: {
-        type: Array,
-        default: []
-    },
-    //   propertys: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'CategoryOption',
-    //     default: null
-    // },
+    propertys: [
+        {
+            name: String,
+            values: [String]
+        }
+    ],
     author: {
         type: Schema.Types.ObjectId,
         ref: 'users'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 
 })

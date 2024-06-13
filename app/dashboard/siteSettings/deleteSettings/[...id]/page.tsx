@@ -1,5 +1,5 @@
-import { TCategorySchema } from '@/ZSchemas'
-import { getCatById, getCategories } from '@/actions/category'
+
+import { getCBy, getCategories } from '@/actions/category'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import BasicModal from '@/components/ui/BasicModal'
 import { verifyJwt } from '@/lib/jwt'
@@ -22,13 +22,19 @@ async function getData(catId: string, accessToken: string) {
         parent: catId
     }
     const stringifyParams = queryString.stringify(params)
+
     const exist = await getCategories({ stringifyParams, accessToken })
     return exist
 
 }
 
 async function getCatData(catId: string) {
-    const category = await getCatById(catId)
+
+    const params = {
+        parent: catId
+    }
+    const stringifyParams = queryString.stringify(params)
+    const category = await getCBy(stringifyParams)
     return category
 
 }
@@ -36,7 +42,7 @@ async function getCatData(catId: string) {
 async function DeleteCat({ params, searchParams }: Props) {
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken
-    const verify = accessToken && verifyJwt(accessToken) || null
+    // const verify = accessToken && verifyJwt(accessToken) || null
     // const categories: TCategorySchema[] = []
     // const categories = await getData(params.id.slice(-1)[0], accessToken!)
     const parseSearchParams = queryString.stringify(searchParams)
@@ -71,7 +77,7 @@ async function DeleteCat({ params, searchParams }: Props) {
                     <Box className='flex w-full justify-around items-center'>
                         <BasicModal
                             label='بله حذف شود'
-                            disc='آیا از حذف این دسته بندی مطمین هستید ؟'
+                            disc='آیا از حذف این دسته بندی مطمئن هستید ؟'
                             catId={category._id}
                             accessToken={accessToken}
                         />

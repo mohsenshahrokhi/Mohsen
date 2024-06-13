@@ -2,7 +2,6 @@ import React from 'react'
 import Link from 'next/link'
 import Fab from '@mui/material/Fab'
 import queryString from 'query-string'
-import { TCategorySchema } from '@/ZSchemas'
 import AddIcon from '@mui/icons-material/Add'
 import UndoIcon from '@mui/icons-material/Undo'
 import EditNoteIcon from '@mui/icons-material/EditNote'
@@ -19,6 +18,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import PreviewIcon from '@mui/icons-material/Preview'
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import HandleURL from '@/utils/HandleURL'
+import BasicModal from '@/components/ui/BasicModal'
+import { TCategorySchema } from '@/ZSchemas/CategorySchema'
 
 type Props = {
     params: {
@@ -97,7 +98,7 @@ async function Category({ params, searchParams }: Props) {
                     aria-label="add"
                 >
                     <Link
-                        href={`/dashboard/siteSettings/addSetting/add?${stringified}&${parseSearchParams}`}
+                        href={`/dashboard/siteSettings/addSetting/add?${stringified}&callbackUrl=${url}`}
                     >
                         اضافه کردن ویژگی جدید
                         <AddIcon sx={{ ml: 1 }} />
@@ -147,19 +148,25 @@ async function Category({ params, searchParams }: Props) {
                                             {/* </Fab> */}
                                         </Link>
                                     </Tooltip>
-                                    <Tooltip title={`حذف ${cat.name}`} placement="top">
-
-                                        {/* <BasicModal /> */}
-                                        <Link
-                                            href={`/dashboard/siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                    {/* <Tooltip title={`حذف ${cat.name}`} placement="top"> */}
+                                    <BasicModal
+                                        label={<CloseIcon />}
+                                        disc='آیا از حذف این دسته بندی مطمئن هستید ؟'
+                                        catId={cat._id}
+                                        accessToken={accessToken}
+                                        callbackUrl={url}
+                                    />
+                                    {/* <BasicModal /> */}
+                                    {/* <Link
+                                            href={`/dashboard/siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}&callbackUrl=${url}`}
                                         >
                                             <CloseIcon color="error" />
-                                        </Link>
-                                    </Tooltip>
+                                        </Link> */}
+                                    {/* </Tooltip> */}
 
                                     <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
                                         <Link
-                                            href={`/dashboard/siteSettings/${url}/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                            href={`/dashboard/siteSettings/${url}/${encodeURIComponent(cat._id)}?${parseSearchParams}&callbackUrl=${url}`}
                                         >
                                             {/* <Fab color="info" size="small" aria-label="add"> */}
                                             <PreviewIcon color='info' />
@@ -169,7 +176,7 @@ async function Category({ params, searchParams }: Props) {
 
                                     <Tooltip title={`خواص ${cat.name}`} placement="top">
                                         <Link
-                                            href={`/dashboard/siteSettings/settingsProperties/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
+                                            href={`/dashboard/siteSettings/settingsProperties/${encodeURIComponent(cat._id)}?${parseSearchParams}&callbackUrl=${url}`}
                                         >
                                             {/* <Fab color="info" size="small" aria-label="add"> */}
                                             <ZoomOutMapIcon color='info' />

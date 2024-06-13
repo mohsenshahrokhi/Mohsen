@@ -6,18 +6,21 @@ import { useRouter } from 'next/navigation'
 import React, { startTransition, useCallback, useEffect, useState } from 'react'
 import queryString from 'query-string'
 import { Box, Button, Checkbox } from '@mui/material'
-import { TGallerySchema } from '@/ZSchemas'
 import Lootti from '@/components/publicComponents/Lootti'
 import { updateCategory } from "@/actions/category"
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar"
+import { TGallerySchema } from "@/ZSchemas/GallerySchema"
+import { TCategorySchema } from "@/ZSchemas/CategorySchema"
 
 function GalleryBase({
     gallery,
     searchParams,
     catId,
+    cat,
     catProperty
 }: {
     gallery: TGallerySchema[]
+    cat: TCategorySchema
     searchParams: string
     catId?: string
     catProperty?: 'colorIcon' | 'icon' | 'images' | undefined
@@ -59,18 +62,18 @@ function GalleryBase({
 
     async function updateCat() {
 
-        let values = {}
+        let values = { ...cat }
 
         if (catProperty === 'icon') {
-            values = { icon: images[0] }
+            values.icon = images[0]
         }
 
         if (catProperty === 'colorIcon') {
-            values = { colorIcon: images[0] }
+            values.colorIcon = images[0]
         }
 
         if (catProperty === 'images') {
-            values = { images: images }
+            values.images = images
         }
 
         catProperty && catId && startTransition(() => {

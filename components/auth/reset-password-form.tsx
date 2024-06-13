@@ -18,10 +18,7 @@ import React, {
     useState,
     useTransition
 } from 'react'
-import {
-    TResetPassSchema,
-    ResetPass
-} from '@/ZSchemas'
+
 import {
     zodResolver
 } from '@hookform/resolvers/zod'
@@ -32,6 +29,7 @@ import {
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Visibility from '@mui/icons-material/Visibility'
 import { resetPassword } from '@/actions/register'
+import { ResetPass, TResetPassSchema } from '@/ZSchemas/UserSchema'
 
 function ResetPasswordForm({ jwtUserId }: { jwtUserId: string }) {
     const [isPending, startTransition] = useTransition()

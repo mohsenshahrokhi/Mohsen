@@ -1,6 +1,5 @@
 'use client'
 
-
 import React, { startTransition, useState, useTransition } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
@@ -14,9 +13,9 @@ import { FormControl } from '@mui/material';
 import { title } from 'process'
 import queryString from 'query-string'
 import Link from 'next/link'
-import { RegisterProductSchema, TCategorySchema, TGallerySchema, TProductSchema, TRegisterProductSchema } from '@/ZSchemas'
 import { Controller, useForm } from 'react-hook-form'
 import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
+import { RegisterProductSchema, TProductSchema, TRegisterProductSchema } from '@/ZSchemas/ProductSchema'
 
 type Props = {
     add: boolean
@@ -27,7 +26,7 @@ type Props = {
 function ProductForm({ add, searchParams, productInfo }: Props) {
 
     const router = useRouter()
-
+    const [age, setAge] = useState('');
     const { data: session } = useSession({
         required: true,
         onUnauthenticated() {
@@ -133,7 +132,7 @@ function ProductForm({ add, searchParams, productInfo }: Props) {
         })
     }
 
-    const [age, setAge] = useState('');
+
 
     const handleChange = (event: SelectChangeEvent) => {
         setAge(event.target.value as string);

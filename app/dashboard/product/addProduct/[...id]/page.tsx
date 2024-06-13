@@ -1,9 +1,10 @@
-import { TCategorySchema, TProductSchema } from '@/ZSchemas'
-import { getCategories } from '@/actions/category'
-import { getPById, getProducts } from '@/actions/product'
+import { getCBy, getCategories } from '@/actions/category'
+import { getPBy } from '@/actions/product'
+import { getAllU } from '@/actions/register'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
-import ProductForm from '@/components/adminComponent/products/ProductForm'
-import { verifyJwt } from '@/lib/jwt'
+import EditProductForm from '@/components/adminComponent/Products/EditProductForm'
+import Ppppp from '@/components/adminComponent/Products/Ppppp'
+import { Box } from '@mui/material'
 import { getServerSession } from 'next-auth'
 import queryString from 'query-string'
 import React from 'react'
@@ -15,46 +16,70 @@ type Props = {
     searchParams: { [key: string]: string | string[] | undefined }
 }
 
-async function getData(pId: string) {
+async function getData(pId: string, accessToken: string) {
+    const PParams = {
+        _id: pId,
+        populate: 'category.name,category.images,category.latinName,category.propertys,author.displayName,seller.displayName'
+    }
+    const CParams = {
+        // _id: pId,
+        // populate: 'category.name,category.images,category.-_id,category.latinName,author.displayName,author.-_id,seller.displayName,seller.-_id'
+        limit: 2000
+    }
+    const UParams = {
+        // _id: pId,
+        // populate: 'category.name,category.images,category.-_id,category.latinName,author.displayName,author.-_id,seller.displayName,seller.-_id'
+        limit: 2000
+    }
+    const stringifyPParams = queryString.stringify(PParams)
+    const stringifyCParams = queryString.stringify(CParams)
+    const stringifyUParams = queryString.stringify(UParams)
 
-    // const params = {
-    //     _id: pId,
-    //     populate: 'parent.name,author.username'
-    // }
-    // const stringifyParams = queryString.stringify(params)
+    const [{ product }, { categories }, { users }] = await Promise.all([
+        getPBy(stringifyPParams),
+        getCategories({ stringifyParams: stringifyCParams, accessToken }),
+        getAllU({ stringifyParams: stringifyUParams, accessToken })
+    ])
 
-    const { product, success } = await getPById(pId)
-    return product as TProductSchema
-
+    return { product, categories, users }
 }
 
 async function AddProduct({ params, searchParams }: Props) {
 
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken as string
-    const verify = accessToken && verifyJwt(accessToken) || null
+    // const verify = accessToken && verifyJwt(accessToken) || null
     // const categories = await getData(params.id.slice(-1)[0], accessToken!)
     const stringifyParams = queryString.stringify(searchParams)
     const pId = searchParams.id as string
+    // const callbackUrl = searchParams.callbackUrl
     const { id } = params
 
     const add = id[0] === 'add' ? true : false
-    let product: TProductSchema = {
-        _id: '',
-        title: ''
-    }
 
-    if (!add && pId) product = await getData(pId)
+    const { product, categories, users } = await getData(pId, accessToken)
 
-    const productInfo = {}
     return (
-        <div className='flex relative flex-col w-full'>
-            <ProductForm
-                add={add}
+        <Box
+            className='flex relative flex-col w-full'>
+            {/* {!add && <Ppppp
                 searchParams={stringifyParams}
-                productInfo={product}
-            />
-        </div>
+                product={JSON.stringify(product)}
+            />} */}
+            {!add && <EditProductForm
+                searchParams={stringifyParams}
+                productInfo={JSON.stringify(product)}
+                // stringCats={''}
+                stringCats={JSON.stringify(categories)}
+                users={users}
+            // callbackUrl={callbackUrl}
+            />}
+            {/* {!add && <Ppppp
+                searchParams={stringifyParams}
+                product={product}
+            // callbackUrl={callbackUrl}
+            />} */}
+        </Box>
     )
 }
 

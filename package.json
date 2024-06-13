@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "@mui/x-data-grid": "^7.5.0",
+    "@react-spring/web": "^9.7.3",
     "bcrypt": "^5.1.1",
     "check-password-strength": "^2.0.10",
     "clsx": "^2.1.1",
@@ -39,6 +40,7 @@
     "zod": "^3.23.5"
   },
   "devDependencies": {
+    "@hookform/devtools": "^4.3.1",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.14",

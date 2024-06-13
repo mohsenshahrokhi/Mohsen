@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Paper, Table, TableBody, TableCell, TableContain
 import Link from "next/link";
 import { HiOutlinePencilSquare, HiOutlinePhoto, HiOutlineTrash } from "react-icons/hi2";
 import Image from "next/image"
-import { TProductSchema } from "@/ZSchemas";
+import { TProductSchema } from "@/ZSchemas/ProductSchema"
 
 type Props = {
     products: TProductSchema[]

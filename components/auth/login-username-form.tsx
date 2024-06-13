@@ -4,12 +4,12 @@ import { Box, Button, FormControl, FormHelperText, IconButton, InputAdornment, I
 import { Controller, useForm } from 'react-hook-form'
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded'
 import React, { useState, useTransition } from 'react'
-import { TLoginUsernameSchema, LoginUsernameSchema } from '@/ZSchemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Visibility from '@mui/icons-material/Visibility'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
+import { LoginUsernameSchema, TLoginUsernameSchema } from '@/ZSchemas/UserSchema'
 
 function LoginUsernameForm() {
 

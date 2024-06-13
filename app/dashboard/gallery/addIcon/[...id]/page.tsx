@@ -1,5 +1,5 @@
 import React from 'react'
-import CategoryForm from "@/components/adminComponent/Categories/CategoryForm"
+// import CategoryForm from "@/components/adminComponent/Categories/CategoryForm"
 
 import Link from 'next/link'
 import { HiMiniPlus, HiOutlinePencilSquare, HiOutlinePhoto, HiOutlineTrash } from 'react-icons/hi2'
@@ -15,7 +15,6 @@ import { HiMiniPlus, HiOutlinePencilSquare, HiOutlinePhoto, HiOutlineTrash } fro
 // import LinkWithRipple from '@/components/ui/components/Button/LinkWithRipple'
 import Image from 'next/image'
 import queryString from 'query-string'
-import { TGallerySchema } from '@/ZSchemas'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { verifyJwt } from '@/lib/jwt'
@@ -27,6 +26,9 @@ import AddIcon from '@mui/icons-material/Add'
 import { skip } from 'node:test'
 import GalleryBase from '@/components/adminComponent/Gallery/GalleryBase'
 import Pagination from '@/components/adminComponent/Pagination'
+import { TGallerySchema } from '@/ZSchemas/GallerySchema'
+import { TCategorySchema } from '@/ZSchemas/CategorySchema'
+import { getCBy } from '@/actions/category'
 
 type Props = {
     params: {
@@ -34,25 +36,35 @@ type Props = {
     }
     searchParams: { [key: string]: string | string[] | undefined }
 }
-type Data = {
+type GalleryData = {
     gallerys: TGallerySchema[]
     success: boolean
     qtt: number
 }
-async function getData({ page, perPage, accessToken }: { page: number, perPage: number, accessToken: string }) {
+
+type CatData = {
+
+    success: boolean
+    category: TCategorySchema
+}
+async function getData({ catId, page, perPage, accessToken }: { catId: string, page: number, perPage: number, accessToken: string }) {
 
     const params = {
         // parent: 'null'
         limit: perPage,
         skip: perPage * (page - 1)
     }
+    const params2 = {
+        _id: catId
+    }
 
     const stringifyParams = queryString.stringify(params)
+    const stringifyParams2 = queryString.stringify(params2)
 
     const gallerys = await getAllGallerys({ stringifyParams, accessToken })
+    const category = await getCBy(stringifyParams2)
 
-    return gallerys as Data
-
+    return { gallerys: gallerys as GalleryData, category: category as CatData }
 }
 
 async function Gallery({ params, searchParams }: Props) {
@@ -65,8 +77,9 @@ async function Gallery({ params, searchParams }: Props) {
     page = !page || page < 1 ? 1 : page
     const perPage = 10
 
-    const { gallerys, success, qtt } = await getData({ page: page, perPage: perPage, accessToken: accessToken! })
-    const totalPage = Math.ceil(qtt / perPage)
+    const catId = params.id[0]
+    const { gallerys, category } = await getData({ catId, page: page, perPage: perPage, accessToken: accessToken! })
+    const totalPage = Math.ceil(gallerys.qtt / perPage)
     const outOfRange = page > totalPage
 
     const pageNumber = []
@@ -76,7 +89,6 @@ async function Gallery({ params, searchParams }: Props) {
         if (i >= 1 && i <= totalPage) pageNumber.push(i)
     }
 
-    const catId = params.id[0]
     const catProperty = searchParams.catProperty as 'colorIcon' | 'icon' | 'images' | undefined
     // const router = useRouter()
     // console.log(catProperty);
@@ -354,9 +366,10 @@ async function Gallery({ params, searchParams }: Props) {
                     </Box>
 
                     <GalleryBase
-                        gallery={gallerys}
+                        gallery={gallerys.gallerys}
                         searchParams={stringified}
                         catId={catId}
+                        cat={category.category}
                         catProperty={catProperty}
                     />
 

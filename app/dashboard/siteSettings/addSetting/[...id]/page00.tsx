@@ -1,6 +1,5 @@
 'use client'
 
-import { RegisterCategorySchema, TRegisterCategorySchema } from '@/ZSchemas'
 import { register } from '@/actions/register'
 import { zodResolver } from '@hookform/resolvers/zod'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
@@ -27,6 +26,7 @@ import HandleEnqueueSnackbar from '@/utils/HandleEnqueueSnackbar'
 import { useRouter } from 'next/navigation'
 import { verifyJwt } from '@/lib/jwt'
 import { useSession } from 'next-auth/react'
+import { RegisterCategorySchema, TRegisterCategorySchema } from '@/ZSchemas/CategorySchema'
 
 // type Props = {
 //     params: {},

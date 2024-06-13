@@ -1,7 +1,7 @@
 'use server'
 
-import { CategorySchema, EditCategorySchema, RegisterCategorySchema, TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
-import { createNewCategory, deleteCategory, getAllCategory, getCategoryById, updateCat } from "@/lib/controllers/categoryController"
+import { EditCategorySchema, RegisterCategorySchema, TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas/CategorySchema"
+import { createNewCategory, deleteCategory, getAllCategory, getCategoryBy, updateCat } from "@/lib/controllers/categoryController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose, { UpdateWriteOpResult } from "mongoose"
 import queryString from "query-string"
@@ -99,7 +99,7 @@ export const updateCategory = async (
 ) => {
     const validatedFields = EditCategorySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
-    console.log('validatedFields', validatedFields.data);
+    console.log('validatedFields', values, validatedFields.error);
 
     if (accessToken && verify?.role === '2' && validatedFields.success) {
 
@@ -127,9 +127,9 @@ export const updateCategory = async (
     }
 }
 
-export const getCatById = async (_id: string) => {
+export const getCBy = async (stringifyParams: string) => {
 
-    const category = await getCategoryById(_id) as TCategorySchema
+    const category = await getCategoryBy(stringifyParams) as TCategorySchema
 
     return { success: true, category }
 }

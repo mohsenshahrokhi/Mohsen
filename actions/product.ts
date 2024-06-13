@@ -1,7 +1,7 @@
 'use server'
 
-import { RegisterProductSchema, TProductSchema, TRegisterProductSchema } from "@/ZSchemas"
-import { createNewProduct, deleteProduct, getAllProduct, getProductById, updateCat } from "@/lib/controllers/productController"
+import { EditProductSchema, RegisterProductSchema, TEditProductSchema, TProductSchema, TRegisterProductSchema } from "@/ZSchemas/ProductSchema"
+import { createNewProduct, deleteProduct, getAllProduct, getProductBy, updateCat } from "@/lib/controllers/productController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose, { UpdateWriteOpResult } from "mongoose"
 import queryString from "query-string"
@@ -11,22 +11,14 @@ type All = {
     qtt: number
 }
 
-export const getProducts = async (
-    {
-        stringifyParams,
-        accessToken
-    }: {
-        stringifyParams: any,
-        accessToken: string
-    }
-) => {
-    const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
-        const product = await getAllProduct(stringifyParams) as All
-        return { success: product.qtt > 0, products: product.products, qtt: product.qtt }
-    } else {
-        return { success: false }
-    }
+export const getProducts = async (stringifyParams: string) => {
+    // const verify = accessToken && verifyJwt(accessToken) || null
+    // if (accessToken && verify?.role === '2') {
+    const product = await getAllProduct(stringifyParams) as All
+    return { success: product.qtt > 0, products: product.products, qtt: product.qtt }
+    // } else {
+    //     return { success: false }
+    // }
 }
 
 export const createProduct = async (
@@ -63,7 +55,7 @@ export const createProduct = async (
 
         const stringifyParams = queryString.stringify(existParams)
 
-        const { success, products } = await getProducts({ stringifyParams, accessToken })
+        const { success, products } = await getProducts(stringifyParams)
 
         // console.log('stringifyParams', stringifyParams, products, success)
 
@@ -97,11 +89,11 @@ export const updateProduct = async (
         accessToken
     }: {
         _id: string | undefined
-        values: any,
+        values: TEditProductSchema,
         accessToken: string
     }
 ) => {
-    const validatedFields = RegisterProductSchema.safeParse(values)
+    const validatedFields = EditProductSchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && verify?.role === '2') {
 
@@ -129,9 +121,10 @@ export const updateProduct = async (
     }
 }
 
-export const getPById = async (_id: string) => {
+export const getPBy = async (stringifyParams: string) => {
 
-    const product = await getProductById(_id) as TProductSchema
+
+    const product = await getProductBy(stringifyParams) as TProductSchema
 
     return { success: true, product }
 }
