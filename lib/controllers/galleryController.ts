@@ -1,8 +1,8 @@
-import { MongooseQueryParser } from "mongoose-query-parser";
+import { MongooseQueryParser } from "mongoose-query-parser"
 import connectToMongodb from "../mongodb"
-import fs from "fs";
-import { TGallerySchema, TRegisterGallerySchema } from "@/ZSchemas";
-import PublicGallery from "../models/galleryModel";
+import fs from "fs"
+import PublicGallery from "../models/galleryModel"
+import { TRegisterGallerySchema } from "@/ZSchemas/GallerySchema"
 
 export const getAllGallery = async (req: any) => {
   connectToMongodb()

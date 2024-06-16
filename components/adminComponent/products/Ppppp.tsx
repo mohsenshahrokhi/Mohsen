@@ -10,26 +10,38 @@ import AddIcon from '@mui/icons-material/Add'
 import queryString from "query-string"
 import { HiXMark } from "react-icons/hi2"
 import { useEffect, useState, useTransition } from "react"
-import { updateProduct } from "@/actions/product"
+import { getPBy, getProducts, updateProduct } from "@/actions/product"
 import { DevTool } from "@hookform/devtools"
 import { TUserSchema } from "@/ZSchemas/UserSchema"
 import { EditProductSchema, TEditProductSchema, TProductSchema } from "@/ZSchemas/ProductSchema"
 import { TCategorySchema } from "@/ZSchemas/CategorySchema"
 
 type Props = {
-    productInfo?: string
+    product?: TProductSchema
     stringCats?: string
     users?: TUserSchema[]
-    searchParams: string
+    searchParams?: string
 }
 
-function EditProductForm({ productInfo, searchParams, stringCats, users }: Props) {
+async function pp() {
+    const params = {
+        limit: 1,
+        populate: 'category.name,category.images,category.latinName,author.displayName'
+    }
+
+    const stringifyParams = queryString.stringify(params)
+    return (await getProducts(stringifyParams)).products
+
+}
+
+function EditProductForm({ product, searchParams, stringCats, users }: Props) {
 
     const router = useRouter()
     const [property, setProperty] = useState<{ name: string, values: string }[]>()
-    const product = JSON.parse(productInfo!) as TProductSchema
+    const [p, setP] = useState<TProductSchema[]>()
+    // const product = JSON.parse(productInfo!) as TProductSchema
     // const product = {} as TProductSchema
-    const cats = JSON.parse(stringCats!) as TCategorySchema[]
+    // const cats = JSON.parse(stringCats!) as TCategorySchema[]
     // const cats: TCategorySchema[] = []
     const { data: session } = useSession({
         required: true,
@@ -38,7 +50,25 @@ function EditProductForm({ productInfo, searchParams, stringCats, users }: Props
         },
     })
 
-    // const c = cats && JSON.parse(cats!) as TCategorySchema[]
+    useEffect(() => {
+        async function pp() {
+            const params = {
+                limit: 1000
+            }
+
+            const stringifyParams = queryString.stringify(params)
+            const q = (await getProducts(stringifyParams))
+            setP(q.products)
+
+        }
+
+        pp()
+    }, [])
+
+    const PParams = {
+        populate: 'category.name,category.images,category.latinName,category.propertys,author.displayName,seller.displayName'
+    }
+    const stringifyPParams = queryString.stringify(PParams)
 
     const user = session?.user
     const [isPending, startTransition] = useTransition()
@@ -48,7 +78,7 @@ function EditProductForm({ productInfo, searchParams, stringCats, users }: Props
     //     const catP = cats?.filter((cat) => cat._id === product.category?._id)[0]
     //     catP && setProperty(catP.propertys)
     // }, [product.category?._id])
-    console.log(property);
+    console.log(p)
 
     const {
         category: editCategory,
@@ -68,9 +98,9 @@ function EditProductForm({ productInfo, searchParams, stringCats, users }: Props
         colorIcon: editColorIcon,
         icon: editIcon,
         images: editImages,
-        type: editType
-        // _id,
-    } = product
+        type: editType,
+        _id,
+    } = product as TProductSchema
 
     const form = useForm<TEditProductSchema>({
         resolver: zodResolver(EditProductSchema),
@@ -147,369 +177,7 @@ function EditProductForm({ productInfo, searchParams, stringCats, users }: Props
     console.log('form', form)
 
     return (
-        <Box
-            component="div"
-            sx={{ m: '2px', width: '100%', justifyContent: 'center' }}
-        >
-            <Box
-                component={'div'}
-                sx={
-                    {
-                        p: 2,
-                        bgcolor: 'background.default',
-                        display: 'grid',
-                        gap: 2,
-                        width: '100%'
-                    }
-                }
-            >
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className=" flex flex-col w-full items-start"
-                >
-                    <Controller
-                        name="title"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl component="div" fullWidth sx={{ my: 1 }} variant="outlined">
-                                <InputLabel htmlFor="title">نام محصول</InputLabel>
-                                <OutlinedInput
-                                    id='title'
-                                    // inputComponent={TextMaskCustom as any}
-                                    {...field}
-                                    autoComplete='title'
-                                    disabled={isPending}
-                                    // onInvalid={true}
-                                    error={fieldState.error ? true : false}
-                                    type={'text'}
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                // onClick={handleClickShowPassword}
-                                                // onMouseDown={handleMouseDownPassword}
-                                                edge="start"
-                                            >
-                                                {/* {<SendToMobileRoundedIcon />} */}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    label="نام محصول"
-                                    fullWidth
-                                />
-                                {/* <Input
-                                value={values.textmask}
-                                onChange={handleChange}
-                                name="textmask"
-                                id="formatted-text-mask-input"
-                                inputComponent={TextMaskCustom as any}
-                            /> */}
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    />
-                    <Controller
-                        name="price"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                <InputLabel htmlFor="price">قیمت</InputLabel>
-                                <OutlinedInput
-                                    id='price'
-                                    {...field}
-                                    autoComplete='price'
-                                    disabled={isPending}
-                                    error={fieldState.error ? true : false}
-                                    type={'number'}
-                                    label="قیمت"
-                                    fullWidth
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                edge="start"
-                                            >
-                                                {/* {<EmailRoundedIcon />} */}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    />
-                    <Controller
-                        name="type"
-                        control={form.control}
-                        render={({ field: { onChange, value } }) => (
-                            <FormControlLabel
-                                label="فعال کردن"
-                                labelPlacement='start'
-                                className=" flex w-full mr-0 items-start"
-                                control={
-                                    <Switch
-                                        onChange={onChange}
-                                        checked={value}
-                                        {...{ inputProps: { 'aria-label': 'Switch demo' } }}
-                                        color="info"
-                                    />
-                                }
-                            />
-                        )}
-                    />
-
-                    <Controller
-                        name="category"
-                        control={form.control}
-                        render={({ field: { onChange, value } }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                <InputLabel id="demo-simple-select-label">دسته بندی</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={value}
-                                    label="دسته بندی"
-                                    fullWidth
-                                    onChange={onChange}
-                                >
-                                    {
-                                        cats?.map((cat) => (
-                                            <MenuItem key={cat._id} value={cat._id}>{cat.name}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
-
-                            </FormControl>
-                        )}
-                    />
-
-                    <Controller
-                        name="recipe"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                {/* <InputLabel htmlFor="recipe">توضیحات</InputLabel> */}
-                                <TextField
-                                    id='recipe'
-                                    {...field}
-                                    autoComplete='recipe'
-                                    disabled={isPending}
-                                    multiline
-                                    error={fieldState.error ? true : false}
-                                    type={'textAria'}
-                                    label="مواد تشکیل دهنده"
-                                    fullWidth
-
-                                />
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    />
-
-                    <Controller
-                        name="description"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                {/* <InputLabel htmlFor="description">توضیحات</InputLabel> */}
-                                <TextField
-                                    id='description'
-                                    {...field}
-                                    autoComplete='description'
-                                    disabled={isPending}
-                                    multiline
-                                    error={fieldState.error ? true : false}
-                                    type={'textAria'}
-                                    label="توضیحات"
-                                    fullWidth
-                                    rows={4}
-
-                                />
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    />
-
-                    <Controller
-                        name="discount"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                <InputLabel htmlFor="discount">میزان تخفیف</InputLabel>
-                                <OutlinedInput
-                                    id='discount'
-                                    {...field}
-                                    autoComplete='discount'
-                                    disabled={isPending}
-                                    error={fieldState.error ? true : false}
-                                    type={'number'}
-                                    label="میزان تخفیف"
-                                    fullWidth
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                edge="start"
-                                            >
-                                                {/* {<EmailRoundedIcon />} */}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    />
-
-                    <Controller
-                        name="stock"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                <InputLabel htmlFor="stock">مقدار موجودی</InputLabel>
-                                <OutlinedInput
-                                    id='stock'
-                                    {...field}
-                                    autoComplete='stock'
-                                    disabled={isPending}
-                                    error={fieldState.error ? true : false}
-                                    type={'number'}
-                                    label="مقدار موجودی"
-                                    fullWidth
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                edge="start"
-                                            >
-                                                {/* {<EmailRoundedIcon />} */}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
-                                <FormHelperText
-                                    component={'div'}
-                                    sx={{
-                                        color: 'error.main',
-                                    }}
-                                >
-                                    {fieldState.error?.message ?? ''}
-                                </FormHelperText>
-                            </FormControl>
-                        )}
-                    />
-
-                    <Controller
-                        name="seller"
-                        control={form.control}
-                        render={({ field: { onChange, value } }) => (
-                            <FormControl
-                                component="div"
-                                fullWidth
-                                sx={{ my: 1 }}
-                                variant="outlined"
-                            >
-                                <InputLabel id="demo-simple-select-label">خریدار این محصول</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={value}
-                                    label='خریدار این محصول'
-                                    fullWidth
-                                    onChange={onChange}
-                                >
-                                    {
-                                        users?.map((user) => (
-
-                                            <MenuItem key={user._id} value={user._id}>{user.displayName || user.username}</MenuItem>
-                                        ))
-                                    }
-                                </Select>
-
-                            </FormControl>
-                        )}
-                    />
-
-                    <Button
-                        type='submit'
-                        disabled={isPending}
-                        variant='contained'
-                        color='info'
-                        sx={{ width: '100%', marginTop: '10px' }}
-                    >
-
-                        <Box component={'span'}>ویرایش</Box>
-
-                    </Button>
-                </form>
-            </Box>
-            {/* <DevTool control={control} /> */}
-        </Box>
+        <div></div>
     )
 }
 

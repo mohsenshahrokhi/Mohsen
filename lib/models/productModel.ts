@@ -1,7 +1,7 @@
 import mongoose, { Schema, model, models } from "mongoose"
 import { CategorySchema } from "./categoryModel"
 import { UserSchema } from "./userModel"
-import { TProductSchema } from "@/ZSchemas"
+import { TProductSchema } from "@/ZSchemas/ProductSchema"
 
 const ProductSchema = new Schema<TProductSchema>({
     title: {

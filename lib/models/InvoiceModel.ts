@@ -1,7 +1,6 @@
-import { InvoiceDocument, Methods } from "@/type"
 import { Schema, model, models } from "mongoose"
 
-const InvoiceSchema = new Schema<InvoiceDocument, {}, Methods>({
+const InvoiceSchema = new Schema({
     title: {
         type: String,
         required: [true, 'لطفا نام محصول را وارد کنید'],

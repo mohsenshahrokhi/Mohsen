@@ -1,10 +1,10 @@
 import { MongooseQueryParser } from "mongoose-query-parser"
 import Category from "../models/categoryModel"
 import connectToMongodb from "../mongodb"
-import { TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas"
 import CategoryOption from "../models/categoryOptionModel"
 import mongoose from "mongoose"
 import Users from "../models/userModel"
+import { TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas/CategorySchema"
 
 export const getAllCategory = async (req: any) => {
   connectToMongodb()

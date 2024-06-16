@@ -1,4 +1,4 @@
-import { getCBy, getCategories } from '@/actions/category'
+import { getCategories } from '@/actions/category'
 import { getPBy } from '@/actions/product'
 import { getAllU } from '@/actions/register'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
@@ -48,31 +48,27 @@ async function AddProduct({ params, searchParams }: Props) {
 
     const session = await getServerSession(authOptions)
     const accessToken = session?.user.accessToken as string
-    // const verify = accessToken && verifyJwt(accessToken) || null
-    // const categories = await getData(params.id.slice(-1)[0], accessToken!)
     const stringifyParams = queryString.stringify(searchParams)
     const pId = searchParams.id as string
-    // const callbackUrl = searchParams.callbackUrl
     const { id } = params
 
-    const add = id[0] === 'add' ? true : false
+    const edit = id[0] === 'edit' ? true : false
 
     const { product, categories, users } = await getData(pId, accessToken)
+    console.log(categories);
 
     return (
         <Box
             className='flex relative flex-col w-full'>
-            {/* {!add && <Ppppp
+            {/* {edit && <Ppppp
                 searchParams={stringifyParams}
-                product={JSON.stringify(product)}
+                product={[]}
             />} */}
-            {!add && <EditProductForm
+            {edit && <EditProductForm
                 searchParams={stringifyParams}
                 productInfo={JSON.stringify(product)}
-                // stringCats={''}
                 stringCats={JSON.stringify(categories)}
                 users={users}
-            // callbackUrl={callbackUrl}
             />}
             {/* {!add && <Ppppp
                 searchParams={stringifyParams}

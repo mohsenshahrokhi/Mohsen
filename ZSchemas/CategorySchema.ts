@@ -12,7 +12,7 @@ export const CategorySchema = z.object({
     type: z.boolean().optional().default(false),
     parent: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.object({ name: z.string(), values: z.array(z.string()) })).default([]).optional(),
+    propertys: z.array(z.object({ name: z.string(), values: z.array(z.object({ id: z.string(), label: z.string() })) })).default([]).optional(),
     createdAt: z.date().optional()
 
 })
@@ -29,7 +29,7 @@ export const EditCategorySchema = z.object({
     type: z.boolean().optional().default(false),
     parent: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.object({ name: z.string(), values: z.array(z.string()) })).default([]).optional()
+    propertys: z.array(z.object({ name: z.string(), values: z.array(z.object({ id: z.string(), label: z.string() })) })).default([]).optional()
 
 })
 export type TEditCategorySchema = z.infer<typeof EditCategorySchema>
@@ -48,7 +48,7 @@ export const RegisterCategorySchema = z.object({
     type: z.boolean().default(false).optional(),
     parent: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.object({ name: z.string(), values: z.array(z.string()) })).default([]).optional()
+    propertys: z.array(z.object({ name: z.string(), values: z.array(z.object({ id: z.string(), label: z.string() })) })).default([]).optional()
 }).superRefine((data, ctx) => {
     if (data.latinName) {
         data.slug = slugify(data.latinName, {
@@ -62,10 +62,3 @@ export const RegisterCategorySchema = z.object({
     }
 })
 export type TRegisterCategorySchema = z.infer<typeof RegisterCategorySchema>
-
-export const CategoryOptionSchema = z.object({
-    _id: z.string().uuid(),
-    parent: z.string().uuid().optional(),
-    propertys: z.array(z.string())
-})
-export type TCategoryOptionSchema = z.infer<typeof CategoryOptionSchema>

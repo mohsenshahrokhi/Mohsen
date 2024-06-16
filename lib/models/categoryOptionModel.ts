@@ -1,8 +1,7 @@
-import { Methods, TCategoryOptionSchema } from "@/ZSchemas"
 import mongoose, { Model, Schema, model, models } from "mongoose"
 import Category, { CategorySchema } from "./categoryModel"
 
-const CategoryOptionSchema = new Schema<TCategoryOptionSchema>({
+const CategoryOptionSchema = new Schema({
     _id: {
         type: "string",
         unique: true,

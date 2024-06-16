@@ -1,6 +1,6 @@
 import { Model, Schema, model, models } from "mongoose"
 import bcrypt from 'bcrypt'
-import { Methods, TUserSchema } from "@/ZSchemas"
+import { Methods, TUserSchema } from "@/ZSchemas/UserSchema"
 
 export const UserSchema = new Schema<TUserSchema, {}, Methods>({
     // _id: {

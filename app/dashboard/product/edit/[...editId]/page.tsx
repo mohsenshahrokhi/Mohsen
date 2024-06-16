@@ -26,26 +26,6 @@ type Props = {
 
 async function EditOnProduct({ params }: Props) {
 
-
-    // const router = useRouter()
-    // const { data: session } = useSession({
-    //     required: true,
-    //     onUnauthenticated() {
-    //         router.push('/login')
-    //     },
-    // })
-
-    // const accessToken = session?.user && session?.user?.accessToken || ''
-
-    // const verify = accessToken && verifyJwt(accessToken!) || null
-    // if (verify?.role !== "مدیر کل") {
-    //     router.push('/login')
-    // }
-    const session = await getServerSession(authOptions)
-    const accessToken = session?.user.accessToken
-
-    const { editId } = params
-
     return (
         <div className='flex flex-col w-full border rounded-md shadow-md p-10 my-2'>
             {/* <ProductForm productInfo={product} /> */}

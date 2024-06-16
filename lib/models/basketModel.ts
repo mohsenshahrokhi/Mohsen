@@ -1,7 +1,7 @@
+import { Methods } from "@/ZSchemas/UserSchema"
 import { Model, Schema, model, models } from "mongoose"
-import { BasketsDocument, Methods, } from "@/type"
 
-const BasketsSchema = new Schema<BasketsDocument, {}, Methods>({
+const BasketsSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'user',
@@ -25,4 +25,6 @@ const BasketsSchema = new Schema<BasketsDocument, {}, Methods>({
 
 const Baskets = models.baskets || model("baskets", BasketsSchema)
 
-export default Baskets as Model<BasketsDocument, {}, Methods>
+export default Baskets
+
+// export default Baskets as Model<BasketsDocument, {}, Methods>

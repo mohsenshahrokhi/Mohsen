@@ -1,4 +1,4 @@
-import { TGallerySchema } from "@/ZSchemas"
+import { TGallerySchema } from "@/ZSchemas/GallerySchema"
 import { Schema, model, models } from "mongoose"
 
 const GallerySchema = new Schema<TGallerySchema>({

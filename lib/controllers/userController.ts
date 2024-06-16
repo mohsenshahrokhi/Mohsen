@@ -2,7 +2,7 @@ import Users from "@/lib/models/userModel"
 import connectToMongodb from "../mongodb"
 import { NextResponse } from "next/server"
 import { MongooseQueryParser } from "mongoose-query-parser"
-import { TRegisterUserSchema, TUserSchema } from "@/ZSchemas"
+import { TRegisterUserSchema } from "@/ZSchemas/UserSchema"
 
 export const getAllUsers = async (req: any) => {
     try {

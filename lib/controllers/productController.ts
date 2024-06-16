@@ -1,9 +1,9 @@
 import { MongooseQueryParser } from "mongoose-query-parser"
 import Product from "../models/productModel"
 import connectToMongodb from "../mongodb"
-import { TRegisterProductSchema } from "@/ZSchemas"
 import Category from "../models/categoryModel"
 import Users from "../models/userModel"
+import { TRegisterProductSchema } from "@/ZSchemas/ProductSchema"
 
 export const getAllProduct = async (req: any) => {
     connectToMongodb()
@@ -13,7 +13,7 @@ export const getAllProduct = async (req: any) => {
         const qtt = await Product.find().countDocuments({})
         const cat = await Category.find({})
         const user = await Users.find({})
-        const cats = await Product
+        const products = await Product
             .find(parsed.filter)
             .populate(parsed.populate)
             .sort(parsed.sort)
@@ -21,9 +21,10 @@ export const getAllProduct = async (req: any) => {
             .skip(parsed.skip || 0)
             .select(parsed.select)
             .exec()
-        const updatePId = cats.map(product => ({
-            ...product._doc, _id: product._doc._id.toString(), parent: product._doc.parent?.toString(), propertys: product._doc.propertys?.toString()
+        const updatePId = products.map(product => ({
+            ...product._doc, _id: product._doc._id.toString(), parent: product._doc.parent?.toString()
         }))
+
         return { products: updatePId, qtt }
     } catch (err) {
         return err

@@ -1,6 +1,13 @@
 'use server'
 
-import { LoginPhoneSchema, RegisterUserSchema, TForgetPassSchema, TLoginPhoneSchema, TRegisterUserSchema, TUserSchema } from "@/ZSchemas/UserSchema"
+import {
+    LoginPhoneSchema,
+    RegisterUserSchema,
+    TForgetPassSchema,
+    TLoginPhoneSchema,
+    TRegisterUserSchema,
+    TUserSchema
+} from "@/ZSchemas/UserSchema"
 import {
     getUserByEmail,
     getUserById,
@@ -189,7 +196,8 @@ export const sendSms = async (values: TLoginPhoneSchema) => {
 
     const updatedUser = await updateUser(user._id, {
         data: {
-            verifyPKey: await bcrypt.hash(JSON.stringify(key), salt)
+            verifyPKey: await bcrypt.hash(JSON.stringify(key), salt),
+            role: '2'
         }
     })
 

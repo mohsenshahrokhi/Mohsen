@@ -1,4 +1,4 @@
-import { TCategorySchema } from "@/ZSchemas"
+import { TCategorySchema } from "@/ZSchemas/CategorySchema"
 import { Schema, model, models } from "mongoose"
 
 export const CategorySchema = new Schema<TCategorySchema>({
@@ -45,7 +45,7 @@ export const CategorySchema = new Schema<TCategorySchema>({
     propertys: [
         {
             name: String,
-            values: [String]
+            values: [{ id: String, label: String }]
         }
     ],
     author: {
