@@ -31,11 +31,17 @@ const ProductSchema = new Schema<TProductSchema>({
         type: [String],
 
     },
-    propertys: {
-        type: [Object],
-        required: true,
+    propertys:  [{
+            title: String,
+            value: String,
+            type: Boolean,
+             _id: false,
+        }],
+    // propertys: {
+    //     type: [Object],
+    //     required: true,
 
-    },
+    // },
     type: {
         type: Boolean,
         default: false,

@@ -45,7 +45,8 @@ export const CategorySchema = new Schema<TCategorySchema>({
     propertys: [
         {
             name: String,
-            values: [{ id: String, label: String }]
+            values: String,
+             _id: false,
         }
     ],
     author: {

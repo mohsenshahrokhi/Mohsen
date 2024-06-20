@@ -28,7 +28,8 @@ export const ProductSchema = z.object({
     // seller: z.string().uuid().optional(),
     author: UserSchema.optional(),
     // author: z.string().uuid().optional(),
-    propertys: z.array(z.object({ title: z.string(), value: z.object({ id: z.string(), label: z.string() }) })),
+    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean() })),
+    // propertys: z.array(z.object({ title: z.string(), value: z.object({ id: z.string(), label: z.string() }) })),
     // propertys: z.array(z.string()).optional(),
     createdAt: z.date().optional()
 })
@@ -54,7 +55,7 @@ export const EditProductSchema = z.object({
     category: z.string(),
     seller: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.object({ title: z.string(), value: z.object({ id: z.string(), label: z.string() }) }))
+    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean() }))
 
 })
 export type TEditProductSchema = z.infer<typeof EditProductSchema>
@@ -78,7 +79,7 @@ export const RegisterProductSchema = z.object({
     category: z.string(),
     seller: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.object({ title: z.string(), value: z.object({ id: z.string(), label: z.string() }) }))
+    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean() }))
 }).superRefine((data, ctx) => {
     if (data.title) {
         data.slug = slugify(data.title, {

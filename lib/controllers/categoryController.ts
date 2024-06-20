@@ -37,7 +37,6 @@ export const getCategoryBy = async (stringifyParams: string) => {
     connectToMongodb()
     const parser = new MongooseQueryParser()
     const parsed = parser.parse(stringifyParams)
-    console.log('req', parsed);
     const cat = await Category.find({})
     const user = await Users.find({})
     const category = await Category.findById(parsed.filter)
@@ -83,7 +82,7 @@ export const createNewCategory = async (params: TRegisterCategorySchema) => {
   }
 }
 
-export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TEditCategorySchema }) => {
+export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TRegisterCategorySchema }) => {
   try {
     if (values.parent === '') {
       delete values.parent

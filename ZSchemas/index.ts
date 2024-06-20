@@ -1,3 +1,4 @@
+import { z } from "zod"
 import { TUserSchema } from "./UserSchema"
 
 declare module 'next-auth' {
@@ -6,6 +7,9 @@ declare module 'next-auth' {
     }
 }
 
+export const Option= z.object({id:z.string(),label:z.string()})
+
+export type TOptionSchema = z.infer<typeof Option>
 // /* AuthSchema */
 
 // export interface Methods {

@@ -82,7 +82,7 @@ export const activateUser: ActiveUserSchema = async (jwtUserId) => {
 
     const payload = verifyJwt(jwtUserId)
 
-    const userId = payload?._id
+    const userId = payload?.id
 
     if (!userId) return 'userNotExist'
 
@@ -156,7 +156,7 @@ export const resetPassword: ResetPasswordSchema = async (jwtUserId, password) =>
 
     const payload = verifyJwt(jwtUserId)
 
-    const userId = payload?._id
+    const userId = payload?.id
 
     if (!userId) return 'userNotExist'
 

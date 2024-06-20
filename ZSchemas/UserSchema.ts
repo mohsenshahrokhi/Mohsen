@@ -40,6 +40,7 @@ export interface Methods {
 }
 
 const SessionExp = z.object({
+    id:z.string(),
     iat: z.number(),
     exp: z.number()
 })

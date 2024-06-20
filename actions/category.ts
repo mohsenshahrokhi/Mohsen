@@ -3,7 +3,7 @@
 import { EditCategorySchema, RegisterCategorySchema, TCategorySchema, TEditCategorySchema, TRegisterCategorySchema } from "@/ZSchemas/CategorySchema"
 import { createNewCategory, deleteCategory, getAllCategory, getCategoryBy, updateCat } from "@/lib/controllers/categoryController"
 import { verifyJwt } from "@/lib/jwt"
-import mongoose, { UpdateWriteOpResult } from "mongoose"
+import mongoose from "mongoose"
 import queryString from "query-string"
 
 export const getCategories = async (
@@ -61,8 +61,6 @@ export const createCategory = async (
 
         const { success, categories } = await getCategories({ stringifyParams, accessToken })
 
-        // console.log('stringifyParams', stringifyParams, categories, success)
-
         if (success === true) {
             return {
                 error: true,
@@ -70,17 +68,24 @@ export const createCategory = async (
             }
         }
 
-        await createNewCategory({
+        const newCat = await createNewCategory({
             ...validatedFields.data
-        })
+        }) as TCategorySchema
+
+        if (newCat._id) {
+            return {
+                success: true,
+              msg: 'حساب کاربری با موفقیت ایجاد شد'
+            }
+        }
 
         return {
-            success: true,
-            msg: 'حساب کاربری با موفقیت ایجاد شد'
+            error: true,
+            msg: 'سرور با مشکل مواجه شده دوباره سعی کنید'
         }
     } else {
         return {
-            success: false,
+            error: true,
             msg: 'شما دسترسی های لازم را ندارید !'
         }
     }
@@ -93,20 +98,19 @@ export const updateCategory = async (
         accessToken
     }: {
         _id: string | undefined
-        values: TEditCategorySchema,
+        values: TRegisterCategorySchema,
         accessToken: string
     }
 ) => {
-    const validatedFields = EditCategorySchema.safeParse(values)
+    const validatedFields = RegisterCategorySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
-    console.log('validatedFields', values, validatedFields.error);
-
+  
     if (accessToken && verify?.role === '2' && validatedFields.success) {
 
         const update = await updateCat({
             _id,
             values: validatedFields.data
-        }) as UpdateWriteOpResult
+        }) as mongoose.UpdateWriteOpResult
 
         if (!update?.acknowledged) {
             return {

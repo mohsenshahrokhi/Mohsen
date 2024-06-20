@@ -108,12 +108,7 @@ export const authOptions: NextAuthOptions = {
                 })
                 const accessToken = signJwtAccessToken(user)
                 return {
-                    _id: user._id,
-                    email: user.email,
-                    username: user.username,
-                    displayName: user.displayName,
-                    role: user.role,
-                    accessToken: accessToken
+                 ...user,accessToken:accessToken
                 }
             },
         }),

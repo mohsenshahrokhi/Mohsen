@@ -1,4 +1,4 @@
-import { TSessionType } from "@/ZSchemas"
+import { TSessionType } from "@/ZSchemas/UserSchema"
 import jwt, { JwtPayload } from "jsonwebtoken"
 
 interface SignOptions {
