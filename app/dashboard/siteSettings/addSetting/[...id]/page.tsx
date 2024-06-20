@@ -6,10 +6,7 @@ import React from "react";
 import { getCBy, getCategories } from "@/actions/category";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { verifyJwt } from "@/lib/jwt";
 import AddCategoryForm from "@/components/adminComponent/Categories/AddCategoryForm";
-// import EditCategoryForm from "@/components/adminComponent/Categories/EditCategoryForm";
-import HandleURL from "@/utils/HandleURL";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
 import { TOptionSchema } from "@/ZSchemas";
 
@@ -49,13 +46,12 @@ async function getCats(accessToken: string) {
 async function AddSetting({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken;
-  const parentCat = searchParams.parentCat ? searchParams.parentCat : "";
+  const pId = searchParams.parentCat ? searchParams.parentCat : "";
   const stringifyParams = queryString.stringify(searchParams);
   const callbackUrl = searchParams.callbackUrl;
   const { id } = params;
-
+  const catId = searchParams.parentCat;
   const add_new_cat = id[0] === "add_new_cat" ? true : false;
-
   let category: TCategorySchema;
 
   add_new_cat
@@ -65,7 +61,7 @@ async function AddSetting({ params, searchParams }: Props) {
         latinName: "",
         slug: "",
         type: false,
-        parent: undefined,
+        parent: catId,
         images: [],
         propertys: [],
         author: session?.user._id,

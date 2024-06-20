@@ -141,11 +141,28 @@ export const getCBy = async (stringifyParams: string) => {
 export const deleteCat = async ({ id, accessToken }: { id: string, accessToken: string | undefined }) => {
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && (verify?.role) === '2') {
+
+         const existParams = {
+            parent: id
+        }
+
+        const stringifyParams = queryString.stringify(existParams)
+
+        const { success } = await getCategories({ stringifyParams, accessToken })
+
+        if (success) {
+            return {
+                error: true,
+                msg: 'این مورد دارای زیر شاخه میباشد ابتدا آنها را پاگ کنید !'
+            }
+        }
+
         const { acknowledged } = await deleteCategory(id) as mongoose.mongo.DeleteResult
         return {
             success: acknowledged ? true : false,
             msg: acknowledged ? 'دسته بندی با موفقیت حذف شد !' : 'دسته بندی با موفقیت حذف نشد !'
         }
+       
     } else {
         return {
             success: false,

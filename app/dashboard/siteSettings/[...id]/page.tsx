@@ -1,32 +1,16 @@
 import React from "react";
 import Link from "next/link";
-import Fab from "@mui/material/Fab";
 import queryString from "query-string";
 import AddIcon from "@mui/icons-material/Add";
 import UndoIcon from "@mui/icons-material/Undo";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import {
-  Accordion,
-  AccordionSummary,
-  Box,
-  Button,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
-// import CatList from '@/components/adminComponent/Categories/CatList'
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Box, Button } from "@mui/material";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { verifyJwt } from "@/lib/jwt";
 import { getCategories } from "@/actions/category";
-import CloseIcon from "@mui/icons-material/Close";
-import PreviewIcon from "@mui/icons-material/Preview";
-import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 import HandleURL from "@/utils/HandleURL";
-import BasicModal from "@/components/ui/BasicModal";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
+import CatList from "@/components/adminComponent/Categories/CatList";
 
 type Props = {
   params: {
@@ -53,7 +37,6 @@ async function getData(cId: string, accessToken: string) {
 async function Category({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken;
-  const verify = (accessToken && verifyJwt(accessToken)) || null;
 
   const { id } = params;
 
@@ -64,28 +47,6 @@ async function Category({ params, searchParams }: Props) {
   const parseSearchParams = queryString.stringify(searchParams);
 
   const { url, backUrl } = HandleURL(id);
-  console.log("ss", url);
-  // let url = ''
-
-  // let backUrl = ''
-
-  // // let u = ''
-
-  // if (Array.isArray(id)) {
-  //     const addId = [...id]
-  //     // u = addId.join('/')
-  //     if (id.length > 1) {
-  //         url = ''
-  //         backUrl = ''
-  //         url = id.join('/')
-  //         const copyUrl = [...id]
-  //         copyUrl.pop()
-  //         backUrl = copyUrl.join('/')
-  //     } else {
-  //         url = id[0]
-  //     }
-  // }
-  // console.log('searchParams', u)
 
   const stringified = queryString.stringify({ parentCat: params.id.slice(-1) });
 
@@ -137,68 +98,23 @@ async function Category({ params, searchParams }: Props) {
         }}
       >
         {
-          <Box>
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: "background.default",
+              display: "grid",
+              gap: 2,
+              m: 2,
+            }}
+          >
             {categories.length > 0 &&
               categories.map((cat: TCategorySchema) => (
-                <Box
+                <CatList
                   key={cat._id}
-                  className=" flex mb-2 w-full justify-between border rounded-md p-3 border-gray-300"
-                >
-                  {cat.name}
-
-                  <Box className="flex gap-3">
-                    <Tooltip title={`ویرایش ${cat.name}`} placement="top">
-                      <Link
-                        href={`/dashboard/siteSettings/addSetting/${encodeURIComponent(
-                          cat._id
-                        )}?${parseSearchParams}&callbackUrl=${url}`}
-                      >
-                        {/* <Fab color="error" size="small" aria-label="add"> */}
-                        <EditNoteIcon color="info" />
-                        {/* </Fab> */}
-                      </Link>
-                    </Tooltip>
-                    {/* <Tooltip title={`حذف ${cat.name}`} placement="top"> */}
-                    <BasicModal
-                      label={<CloseIcon />}
-                      disc="آیا از حذف این دسته بندی مطمئن هستید ؟"
-                      catId={cat._id}
-                      accessToken={accessToken}
-                      callbackUrl={url}
-                    />
-                    {/* <BasicModal /> */}
-                    {/* <Link
-                                            href={`/dashboard/siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}&callbackUrl=${url}`}
-                                        >
-                                            <CloseIcon color="error" />
-                                        </Link> */}
-                    {/* </Tooltip> */}
-
-                    <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
-                      <Link
-                        href={`/dashboard/siteSettings/${url}/${encodeURIComponent(
-                          cat._id
-                        )}?${parseSearchParams}&callbackUrl=${url}`}
-                      >
-                        {/* <Fab color="info" size="small" aria-label="add"> */}
-                        <PreviewIcon color="info" />
-                        {/* </Fab> */}
-                      </Link>
-                    </Tooltip>
-
-                    <Tooltip title={`خواص ${cat.name}`} placement="top">
-                      <Link
-                        href={`/dashboard/siteSettings/settingsProperties/${encodeURIComponent(
-                          cat._id
-                        )}?${parseSearchParams}&callbackUrl=${url}`}
-                      >
-                        {/* <Fab color="info" size="small" aria-label="add"> */}
-                        <ZoomOutMapIcon color="info" />
-                        {/* </Fab> */}
-                      </Link>
-                    </Tooltip>
-                  </Box>
-                </Box>
+                  catString={JSON.stringify(cat)}
+                  stringifyParams={stringifyParams}
+                  accessToken={accessToken!}
+                />
               ))}
           </Box>
         }
