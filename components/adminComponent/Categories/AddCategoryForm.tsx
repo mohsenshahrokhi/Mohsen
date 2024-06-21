@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
+  CategorySchema,
   RegisterCategorySchema,
   TCategorySchema,
   TRegisterCategorySchema,
@@ -51,15 +52,15 @@ function AddCategoryForm({
 
   const accessToken = user?.accessToken || "";
 
-  const form = useForm<TRegisterCategorySchema>({
+  const form = useForm<TCategorySchema>({
     mode: "all",
-    resolver: zodResolver(RegisterCategorySchema),
+    resolver: zodResolver(CategorySchema),
     defaultValues: {
       ...cat,
     },
   });
 
-  const { control } = form;
+  const { control, handleSubmit } = form;
   const { fields, append, remove } = useFieldArray({
     control: control,
     name: "propertys",
@@ -106,7 +107,7 @@ function AddCategoryForm({
           width: "100%",
         }}
       >
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
             <TextFieldElement
               name={"name"}

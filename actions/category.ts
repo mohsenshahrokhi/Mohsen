@@ -8,21 +8,14 @@ import queryString from "query-string"
 
 export const getCategories = async (
     {
-        stringifyParams,
-        accessToken
+        stringifyParams
     }: {
-        stringifyParams: any,
-        accessToken: string
+        stringifyParams: any
     }
 ) => {
-    const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
         let categories: TCategorySchema[] = []
         categories = await getAllCategory(stringifyParams) as TCategorySchema[]
         return { success: categories.length > 0, categories }
-    } else {
-        return { success: false }
-    }
 }
 
 export const createCategory = async (
@@ -59,7 +52,7 @@ export const createCategory = async (
 
         const stringifyParams = queryString.stringify(existParams)
 
-        const { success, categories } = await getCategories({ stringifyParams, accessToken })
+        const { success, categories } = await getCategories({ stringifyParams })
 
         if (success === true) {
             return {
@@ -148,7 +141,7 @@ export const deleteCat = async ({ id, accessToken }: { id: string, accessToken: 
 
         const stringifyParams = queryString.stringify(existParams)
 
-        const { success } = await getCategories({ stringifyParams, accessToken })
+        const { success } = await getCategories({ stringifyParams })
 
         if (success) {
             return {

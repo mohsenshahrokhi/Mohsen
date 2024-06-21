@@ -124,7 +124,7 @@ export const updateProduct = async (
 export const getPBy = async (stringifyParams: string) => {
 
 
-    const product = await getProductBy(stringifyParams) as TProductSchema
+    const product = await getProductBy(stringifyParams) as TEditProductSchema
 
     return { success: true, product }
 }

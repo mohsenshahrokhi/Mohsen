@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "@mui/x-data-grid": "^7.5.0",
+    "@persian-tools/persian-tools": "^3.5.2",
     "@react-spring/web": "^9.7.3",
     "bcrypt": "^5.1.1",
     "check-password-strength": "^2.0.10",

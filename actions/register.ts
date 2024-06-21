@@ -106,13 +106,11 @@ export const activateUser: ActiveUserSchema = async (jwtUserId) => {
 
 export const getAllU = async (
     {
-        stringifyParams,
-        accessToken
+        stringifyParams
     }
         :
         {
-            stringifyParams: string,
-            accessToken: string
+            stringifyParams: string
         }
 ) => {
 

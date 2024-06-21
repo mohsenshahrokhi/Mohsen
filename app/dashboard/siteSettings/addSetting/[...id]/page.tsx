@@ -38,7 +38,6 @@ async function getCats(accessToken: string) {
   const stringifyParams = queryString.stringify(params);
   const { categories, success } = await getCategories({
     stringifyParams,
-    accessToken,
   });
   return categories;
 }
@@ -46,11 +45,10 @@ async function getCats(accessToken: string) {
 async function AddSetting({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken;
-  const pId = searchParams.parentCat ? searchParams.parentCat : "";
+  const catId = searchParams.parentCat ? searchParams.parentCat : "";
   const stringifyParams = queryString.stringify(searchParams);
   const callbackUrl = searchParams.callbackUrl;
   const { id } = params;
-  const catId = searchParams.parentCat;
   const add_new_cat = id[0] === "add_new_cat" ? true : false;
   let category: TCategorySchema;
 

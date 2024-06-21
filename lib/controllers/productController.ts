@@ -36,11 +36,10 @@ export const getProductBy = async (stringifyParams: string) => {
         connectToMongodb()
         const parser = new MongooseQueryParser()
         const parsed = parser.parse(stringifyParams)
-        console.log('req', parsed);
         const cat = await Category.find({})
         const user = await Users.find({})
         const product = await Product
-            .findById(parsed.filter)
+            .findOne(parsed.filter)
             .populate(parsed.populate)
             .select(parsed.select)
             .exec()

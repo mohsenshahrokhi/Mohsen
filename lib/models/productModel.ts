@@ -26,6 +26,7 @@ const ProductSchema = new Schema<TProductSchema>({
     },
     discount: {
         type: String,
+        default:'0'
     },
     images: {
         type: [String],
@@ -49,13 +50,13 @@ const ProductSchema = new Schema<TProductSchema>({
     category: {
         type: Schema.Types.ObjectId,
         ref: 'categories',
-        required: [true, 'لطفا دسته بندی محصول را وارد کنید']
+        // required: [true, 'لطفا دسته بندی محصول را وارد کنید']
     },
-    seller: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
-        required: [true, 'لطفا نام خریدار محصول را وارد کنید'],
-    },
+    // seller: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'users',
+    //     required: [true, 'لطفا نام خریدار محصول را وارد کنید'],
+    // },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'users',
