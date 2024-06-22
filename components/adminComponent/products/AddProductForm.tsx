@@ -138,14 +138,19 @@ function AddProductForm({
       title: string;
       value: string;
       type: boolean;
-      options: string[];
+      options: TOptionSchema[];
     }[] = [];
     cP[0]?.map((c: { name: string; values: string }) => {
+      const cOp: TOptionSchema[] = [];
+      values?.map((value: string) => {
+        cOp.push({ id: value, label: value });
+      });
+
       append({
         title: c.name,
-        value: "",
+        value: cOp[0].id,
         type: false,
-        options: c.values.split(","),
+        options: cOp,
       });
     });
     // setProperty(cP?.propertys);
@@ -308,7 +313,7 @@ function AddProductForm({
                   fullWidth
                 />
                 <SwitchElement
-                  name={`propertys.${index}.title`}
+                  name={`propertys.${index}.type`}
                   label={"فعال سازی"}
                   color="info"
                   control={control}
