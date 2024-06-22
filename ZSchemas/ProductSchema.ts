@@ -29,7 +29,7 @@ export const ProductSchema = z.object({
     // seller: z.string().uuid().optional(),
     author: UserSchema.optional(),
     // author: z.string().optional(),
-    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean() ,options:z.array(z.string())})),
+    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean()})),
     // propertys: z.array(z.object({ title: z.string(), value: z.object({ id: z.string(), label: z.string() }) })),
     // propertys: z.array(z.string()).optional(),
     createdAt: z.date().optional()
@@ -37,7 +37,7 @@ export const ProductSchema = z.object({
 export type TProductSchema = z.infer<typeof ProductSchema>
 
 export const EditProductSchema = z.object({
-_id: z.string(),
+_id: z.string().optional(),
     title: z.string().min(4, {
         message: 'حداقل ۴ حرف را وارد کنید'
     }),
@@ -53,10 +53,11 @@ _id: z.string(),
     icon: z.string().optional(),
     images: z.array(z.string()).optional(),
     type: z.boolean().optional(),
-    category: z.string(),
+    category: z.string().optional(),
     // seller: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean(),options:z.array(z.string()) }))
+    propertys: z.array(z.object({ title: z.string(), value: z.string(), type: z.boolean() })),
+    createdAt:z.date()
 
 })
 export type TEditProductSchema = z.infer<typeof EditProductSchema>
@@ -65,22 +66,22 @@ export const RegisterProductSchema = z.object({
     title: z.string().min(4, {
         message: 'حداقل ۴ حرف را وارد کنید'
     }),
-    price: z.string(),
-    discount: z.string(),
-    description: z.string(),
+    price: z.string().optional(),
+    discount: z.string().optional(),
+    description: z.string().optional(),
     ratings: z.string().optional(),
-    recipe: z.string(),
+    recipe: z.string().optional(),
     reviews: z.string().optional(),
-    stock: z.string(),
+    stock: z.string().optional(),
     slug: z.string().optional(),
     colorIcon: z.string().optional(),
     icon: z.string().uuid().optional(),
     images: z.array(z.string()).optional(),
     type: z.boolean().optional(),
-    category: z.string(),
+    category: z.string().optional(),
     // seller: z.string().optional(),
     author: z.string().optional(),
-    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean().optional(),options:z.array(z.string()) }))
+    propertys: z.array(z.object({ title: z.string(), value: z.string(),type: z.boolean().optional() }))
 }).superRefine((data, ctx) => {
     if (data.title) {
         data.slug = slugify(data.title, {

@@ -74,7 +74,9 @@ async function AddProduct({ params, searchParams }: Props) {
         description: "",
         propertys: [],
         category: "",
+        type: false,
         author: session?.user._id,
+        createdAt: new Date(),
       })
     : (product = await getP(id[0]));
 
@@ -86,7 +88,7 @@ async function AddProduct({ params, searchParams }: Props) {
 
   const userOptions: TOptionSchema[] = [];
   users?.map((user: TUserSchema) => {
-    userOptions.push({ id: user._id, label: user.username });
+    userOptions.push({ id: user._id, label: user._id });
   });
   // const session = await getServerSession(authOptions)
   // const accessToken = session?.user.accessToken as string

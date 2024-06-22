@@ -4,6 +4,7 @@ import connectToMongodb from "../mongodb"
 import Category from "../models/categoryModel"
 import Users from "../models/userModel"
 import { TRegisterProductSchema } from "@/ZSchemas/ProductSchema"
+import { log } from "handlebars"
 
 export const getAllProduct = async (req: any) => {
     connectToMongodb()
@@ -69,6 +70,7 @@ export const createNewProduct = async (params: TRegisterProductSchema) => {
     try {
         connectToMongodb()
         const product = await Product.create({ ...params })
+        console.log('product',product);
         const updatePId = {
             ...product._doc, _id: product._doc._id.toString()
         }
@@ -78,7 +80,7 @@ export const createNewProduct = async (params: TRegisterProductSchema) => {
     }
 }
 
-export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TRegisterProductSchema }) => {
+export const updateP = async ({ _id, values }: { _id: string | undefined, values: TRegisterProductSchema }) => {
     try {
         connectToMongodb()
         const product = await Product.updateOne({ _id }, { ...values })

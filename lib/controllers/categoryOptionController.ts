@@ -1,7 +1,7 @@
 import { MongooseQueryParser } from "mongoose-query-parser"
 import CategoryOption from "../models/categoryOptionModel"
 import connectToMongodb from "../mongodb"
-import { TCategoryOptionSchema } from "@/ZSchemas"
+import { TCategorySchema } from "@/ZSchemas/CategorySchema"
 
 export const getAllCategoryOption = async (req: any) => {
   try {
@@ -46,7 +46,7 @@ export const getCategoryBySlug = async (slug: string) => {
   }
 }
 
-export const createCategory = async (params: TCategoryOptionSchema) => {
+export const createCategory = async (params: TCategorySchema) => {
   try {
     connectToMongodb()
     const category = await CategoryOption.create({ ...params })

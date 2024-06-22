@@ -1,9 +1,9 @@
 import mongoose, { Schema, model, models } from "mongoose"
 import { CategorySchema } from "./categoryModel"
 import { UserSchema } from "./userModel"
-import { TProductSchema } from "@/ZSchemas/ProductSchema"
+import { TEditProductSchema, TProductSchema } from "@/ZSchemas/ProductSchema"
 
-const ProductSchema = new Schema<TProductSchema>({
+const ProductSchema = new Schema({
     title: {
         type: String,
         required: [true, 'لطفا نام محصول را وارد کنید'],
@@ -32,17 +32,15 @@ const ProductSchema = new Schema<TProductSchema>({
         type: [String],
 
     },
-    propertys:  [{
-            title: String,
-            value: String,
-            type: Boolean,
-             _id: false,
-        }],
-    // propertys: {
-    //     type: [Object],
-    //     required: true,
+    // propertys:  [{
+    //         title: String,
+    //         value: String,
+    //         type: Boolean,
+    //     }],
+    propertys: {
+        type: [Object]
 
-    // },
+    },
     type: {
         type: Boolean,
         default: false,
@@ -50,7 +48,7 @@ const ProductSchema = new Schema<TProductSchema>({
     category: {
         type: Schema.Types.ObjectId,
         ref: 'categories',
-        // required: [true, 'لطفا دسته بندی محصول را وارد کنید']
+        required: [true, 'لطفا دسته بندی محصول را وارد کنید']
     },
     // seller: {
     //     type: Schema.Types.ObjectId,

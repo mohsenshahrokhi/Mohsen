@@ -1,7 +1,7 @@
 'use server'
 
 import { EditProductSchema, RegisterProductSchema, TEditProductSchema, TProductSchema, TRegisterProductSchema } from "@/ZSchemas/ProductSchema"
-import { createNewProduct, deleteProduct, getAllProduct, getProductBy, updateCat } from "@/lib/controllers/productController"
+import { createNewProduct, deleteProduct, getAllProduct, getProductBy, updateP } from "@/lib/controllers/productController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose, { UpdateWriteOpResult } from "mongoose"
 import queryString from "query-string"
@@ -37,7 +37,6 @@ export const createProduct = async (
             return {
                 error: true,
                 msg: 'ارتباط با سرور برقرار نشد !'
-                // msg: validatedFields.error
             }
         }
 
@@ -55,24 +54,27 @@ export const createProduct = async (
 
         const stringifyParams = queryString.stringify(existParams)
 
-        const { success, products } = await getProducts(stringifyParams)
-
-        // console.log('stringifyParams', stringifyParams, products, success)
-
-        if (success === true) {
+     /*    const { success, products } = await getProducts(stringifyParams)
+        if (success === true&& products) {
             return {
                 error: true,
                 msg: 'این مورد وجود دارد !'
             }
+        } */
+        const newP =await createNewProduct({
+            ...validatedFields.data
+        }) as TProductSchema
+
+        if (newP._id) {
+            return {
+                success: true,
+              msg: 'حساب کاربری با موفقیت ایجاد شد'
+            }
         }
 
-        await createNewProduct({
-            ...validatedFields.data
-        })
-
         return {
-            success: true,
-            msg: 'حساب کاربری با موفقیت ایجاد شد'
+            error: true,
+            msg: 'سرور با مشکل مواجه شده دوباره سعی کنید'
         }
     } else {
         return {
@@ -97,7 +99,7 @@ export const updateProduct = async (
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && verify?.role === '2') {
 
-        const update = await updateCat({
+        const update = await updateP({
             _id,
             values
         }) as UpdateWriteOpResult
