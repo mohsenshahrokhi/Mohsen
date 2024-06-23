@@ -25,6 +25,8 @@ type Props = {
 };
 
 export default function ProductList({ products, stringified }: Props) {
+  function handleDelete(product: TProductSchema) {}
+
   return (
     <Box sx={{ width: "100%" }}>
       <TableContainer component={Paper}>
@@ -37,20 +39,13 @@ export default function ProductList({ products, stringified }: Props) {
                   <Box component={"span"}>نام</Box>
                 </Box>
               </TableCell>
-
               <TableCell>قیمت</TableCell>
-
               <TableCell>موجودی</TableCell>
-
               <TableCell>توضیحات</TableCell>
-
               <TableCell>دسته بندی</TableCell>
-
               <TableCell>ثبت کننده</TableCell>
-
               <TableCell>خواص محصول</TableCell>
               <TableCell>گالری محصول</TableCell>
-
               <TableCell>عملیات</TableCell>
             </TableRow>
           </TableHead>
@@ -107,24 +102,19 @@ export default function ProductList({ products, stringified }: Props) {
                   <TableCell>{product?.category?.name}</TableCell>
                   <TableCell>{product?.author?.displayName}</TableCell>
                   <TableCell>
-                    {
-                      // product.propertys?.length && product.propertys.map((p, index) => (
-                      //     <div
-                      //         className=" flex flex-col mb-2"
-                      //         key={index}>
-                      //         <div className=" flex justify-between">
-                      //             <span
-                      //                 className="inline-block whitespace-nowrap rounded-[0.27rem] bg-primary-100 dark:bg-primary-700 px-[0.65em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.75em] font-bold leading-none text-primary-700 dark:text-primary-200">
-                      //                 {p[0]?.title}
-                      //             </span>
-                      //             <span
-                      //                 className="inline-block whitespace-nowrap rounded-[0.27rem] bg-secondary-100 dark:bg-secondary-700 px-[0.65em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.75em] font-bold leading-none text-secondary-800 dark:text-secondary-200">
-                      //                 {p[0]?.value}
-                      //             </span>
-                      //         </div>
-                      //     </div>
-                      // ))
-                    }
+                    {product.propertys?.length &&
+                      product.propertys.map((p, index) => (
+                        <div className=" flex flex-col mb-2" key={index}>
+                          <div className=" flex justify-between">
+                            <span className="inline-block whitespace-nowrap rounded-[0.27rem] bg-primary-100 dark:bg-primary-700 px-[0.65em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.75em] font-bold leading-none text-primary-700 dark:text-primary-200">
+                              {p?.title}
+                            </span>
+                            <span className="inline-block whitespace-nowrap rounded-[0.27rem] bg-secondary-100 dark:bg-secondary-700 px-[0.65em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.75em] font-bold leading-none text-secondary-800 dark:text-secondary-200">
+                              {p?.value}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                   </TableCell>
                   <TableCell>
                     {!!product?.images?.length &&
