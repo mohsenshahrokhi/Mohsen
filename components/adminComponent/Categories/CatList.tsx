@@ -1,13 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
-import PreviewIcon from "@mui/icons-material/Preview";
 import BasicModal from "@/components/ui/BasicModal";
+import PreviewIcon from "@mui/icons-material/Preview";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
+import { ModalProps } from "@/ZSchemas";
+import { deleteCat } from "@/actions/category";
+import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
+import DeleteModal from "@/components/ui/DeleteModal";
 
 type Props = {
   catString: string;
@@ -18,6 +22,23 @@ type Props = {
 function CatList({ catString, stringifyParams, accessToken }: Props) {
   const cat = JSON.parse(catString) as TCategorySchema;
   const path = cat.parent === null ? "siteSettings/" : "";
+  const modalRef = useRef<ModalProps>(null);
+
+  function deleteCategory(id: string) {
+    React.startTransition(() => {
+      deleteCat({ id, accessToken }).then((data) => {
+        console.log("data", data);
+        if (data?.success === true) {
+          HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+          //  handleClose();
+
+          // router.push(`/dashboard/siteSettings/${callbackUrl}`);
+        } else {
+          HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+        }
+      });
+    });
+  }
 
   return (
     <Box
@@ -37,14 +58,22 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
             </Link>
           </IconButton>
         </Tooltip>
-
-        <BasicModal
+        <DeleteModal
+          deleteProduct={(id) => deleteCategory(id)}
+          ref={modalRef}
+          label={<CloseIcon />}
+          // disc="آیا از حذف دسته بندی مطمئن هستید ؟"
+          disc={`آیا از حذف دسته بندی ${cat.name} مطمئن هستید ? `}
+          id={cat._id}
+          ModalTitle={`${cat.name}حذف `}
+        />
+        {/* <BasicModal
           label={<CloseIcon />}
           disc="آیا از حذف این دسته بندی مطمئن هستید ؟"
           catString={JSON.stringify(cat)}
           accessToken={accessToken}
           callbackUrl={"/"}
-        />
+        /> */}
 
         <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
           <IconButton className=" flex w-5">

@@ -13,6 +13,7 @@ import { getProducts } from "@/actions/product";
 import ProductList from "@/components/adminComponent/Products/ProductList";
 import Pagination from "@/components/adminComponent/Pagination";
 import { TProductSchema } from "@/ZSchemas/ProductSchema";
+import { useRef } from "react";
 
 type Data = {
   products: TProductSchema[];
@@ -59,7 +60,7 @@ export default async function Product({ searchParams }: Props) {
   delete searchParams.pId;
   const stringified = queryString.stringify(searchParams);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 1;
+  const perPage = 10;
 
   const { products, qtt } = await getData({
     page: page,
@@ -115,7 +116,11 @@ export default async function Product({ searchParams }: Props) {
                 <Box component={"div"}>این صفحه وجود ندارد</Box>
               ) : (
                 <Box component={"div"}>
-                  <ProductList products={products} stringified={stringified} />
+                  <ProductList
+                    stringProducts={JSON.stringify(products)}
+                    accessToken={accessToken!}
+                    stringified={stringified}
+                  />
                   <Pagination
                     page={page}
                     stringified={stringified}

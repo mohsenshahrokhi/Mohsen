@@ -101,7 +101,7 @@ async function AddProduct({ params, searchParams }: Props) {
       <AddProductForm
         catsString={JSON.stringify(categories)}
         productString={JSON.stringify(product)}
-        add_new_product
+        add_new_product={add_new_product}
         accessToken={accessToken}
         catOptions={catOptions}
       />

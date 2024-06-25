@@ -7,6 +7,10 @@ declare module 'next-auth' {
     }
 }
 
+export type ModalProps = {
+  handleClose: () => void;
+};
+
 export const Option= z.object({id:z.string(),label:z.string()})
 
 export type TOptionSchema = z.infer<typeof Option>

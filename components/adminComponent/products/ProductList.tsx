@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Button,
@@ -20,14 +22,49 @@ import {
 } from "react-icons/hi2";
 import Image from "next/image";
 import { TProductSchema } from "@/ZSchemas/ProductSchema";
+import CloseIcon from "@mui/icons-material/Close";
+import BasicModal from "@/components/ui/BasicModal";
+import {
+  forwardRef,
+  startTransition,
+  useImperativeHandle,
+  useState,
+  useRef,
+} from "react";
+import { deleteCat } from "@/actions/category";
+import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
+import { deleteP } from "@/actions/product";
+import { ModalProps } from "@/ZSchemas";
+import DeleteModal from "@/components/ui/DeleteModal";
 
 type Props = {
-  products: TProductSchema[];
+  stringProducts: string;
   stringified: string;
+  accessToken: string;
 };
 
-export default function ProductList({ products, stringified }: Props) {
-  function handleDelete(product: TProductSchema) {}
+export default function ProductList({
+  stringProducts,
+  stringified,
+  accessToken,
+}: Props) {
+  const modalRef = useRef<ModalProps>(null);
+
+  const products = JSON.parse(stringProducts) as TProductSchema[];
+
+  function deleteProduct(id: string) {
+    startTransition(() => {
+      deleteP({ id, accessToken }).then((data) => {
+        console.log("data", data);
+        if (data?.success === true) {
+          modalRef.current?.handleClose();
+          HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+        } else {
+          HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+        }
+      });
+    });
+  }
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -169,28 +206,14 @@ export default function ProductList({ products, stringified }: Props) {
                       >
                         <HiOutlinePhoto color="blue" />
                       </Link>
-                      <Link
-                        href={"#"}
-                        id={`delete-${product._id}`}
-                        // onClick={() => handleDelete(product)}
-                      >
-                        <HiOutlineTrash color="red" />
-                      </Link>
-
-                      {/* <TEMModal
-                                                        id={product._id}
-                                                        close={isOpen}
-                                                        headerTitle="اخطار"
-                                                        bodyTitle={`آیا از حذف محصول ${product.title} مطمئن هستید ؟`}
-                                                    >
-                                                        <TERipple rippleColor="white">
-                                                            <button
-                                                                onClick={() => deleteP(product?._id)}
-                                                                className="  text-slate-100 py-1 px-4 rounded shadow-sm bg-red-600 text-center justify-center items-center">
-                                                                {!isLoading ? <span>بله</span> : <span>Deleting...</span>}
-                                                            </button>
-                                                        </TERipple>
-                                                    </TEMModal> */}
+                      <DeleteModal
+                        deleteProduct={(id) => deleteProduct(id)}
+                        ref={modalRef}
+                        label={<CloseIcon />}
+                        disc={`آیا از حذف محصول ${product.title} مطمئن هستید ؟`}
+                        id={product._id}
+                        ModalTitle={` حذف ${product.title}`}
+                      />
                     </Box>
                   </TableCell>
                 </TableRow>

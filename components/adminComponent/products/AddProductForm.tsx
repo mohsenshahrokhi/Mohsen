@@ -67,6 +67,11 @@ function AddProductForm({
   });
 
   useEffect(() => {
+    const category: TCategorySchema = cats?.filter((c) => c._id === watchC)[0];
+    setNewCat(category);
+  }, [watchC]);
+
+  useEffect(() => {
     const pOptions: TOptionSchema[][] =
       newCat?.propertys?.map((op: { name: string; values: string }) => {
         return op.values.split(",").map((p: string) => {
@@ -93,11 +98,6 @@ function AddProductForm({
   // useEffect(() => {
   //   replace(product.propertys);
   // }, [product]);
-
-  useEffect(() => {
-    const category: TCategorySchema = cats?.filter((c) => c._id === watchC)[0];
-    setNewCat(category);
-  }, [watchC]);
 
   const onSubmit = (values: TRegisterProductSchema) => {
     console.log("values", values);
@@ -130,7 +130,7 @@ function AddProductForm({
       });
   };
 
-  // console.log("fields", fields);
+  console.log("add_new_product", add_new_product);
   console.log("pOptions", pSelectOp);
   console.log("newFields", newFields);
   console.log("newCat", newCat);

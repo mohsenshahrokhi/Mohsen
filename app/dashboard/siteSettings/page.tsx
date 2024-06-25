@@ -19,7 +19,6 @@ async function getData(accessToken: string) {
 
   const { categories } = await getCategories({
     stringifyParams,
-    accessToken,
   });
 
   return categories as TCategorySchema[];
