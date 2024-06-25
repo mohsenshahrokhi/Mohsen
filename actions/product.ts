@@ -91,7 +91,7 @@ export const updateProduct = async (
         accessToken
     }: {
         _id: string | undefined
-        values: TEditProductSchema,
+        values: TRegisterProductSchema,
         accessToken: string
     }
 ) => {

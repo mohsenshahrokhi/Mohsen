@@ -1,82 +1,54 @@
 "use client";
 
-import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, Stack } from "@mui/material";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { Controller, useForm, useFieldArray } from "react-hook-form";
-import AddIcon from "@mui/icons-material/Add";
-import queryString from "query-string";
-import { HiXMark } from "react-icons/hi2";
-import { useEffect, useState, useTransition } from "react";
-import { createProduct, updateProduct } from "@/actions/product";
-import { DevTool } from "@hookform/devtools";
+import { TOptionSchema } from "@/ZSchemas";
+import { TCategorySchema } from "@/ZSchemas/CategorySchema";
 import {
-  EditProductSchema,
-  ProductSchema,
   RegisterProductSchema,
   TEditProductSchema,
-  TProductSchema,
   TRegisterProductSchema,
 } from "@/ZSchemas/ProductSchema";
-import { TUserSchema } from "@/ZSchemas/UserSchema";
+import { Box, Button, Stack } from "@mui/material";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
+import { useEffect, useState, useTransition } from "react";
+import { createProduct, updateProduct } from "@/actions/product";
+import { useRouter } from "next/navigation";
 import {
-  TCategorySchema,
-  TRegisterCategorySchema,
-} from "@/ZSchemas/CategorySchema";
-import { getCategories } from "@/actions/category";
-import {
-  TextFieldElement,
   SelectElement,
   SwitchElement,
+  TextFieldElement,
   TextareaAutosizeElement,
 } from "react-hook-form-mui";
-import { TOptionSchema } from "@/ZSchemas";
-import { append } from "stylis";
 
 type Props = {
-  productString?: string;
+  catsString: string;
+  productString: string;
   add_new_product: boolean;
+  accessToken: string;
   catOptions: TOptionSchema[];
-  userOptions: TOptionSchema[];
-  CatsString?: string;
-  usersString?: string;
-  searchParams: string;
 };
 
 function AddProductForm({
+  catsString,
   productString,
-  catOptions,
-  userOptions,
-  searchParams,
   add_new_product,
-  CatsString,
-  usersString,
+  accessToken,
+  catOptions,
 }: Props) {
-  const router = useRouter();
-  const [propertyOp, setPropertyOp] = useState<
-    {
-      id: string;
-      label: string;
-    }[][]
-  >();
-
-  const [category, setCategory] = useState<TCategorySchema | undefined>();
-
+  const cats = JSON.parse(catsString!) as TCategorySchema[];
   const product = JSON.parse(productString!) as TEditProductSchema;
-  const cats = JSON.parse(CatsString!) as TCategorySchema[];
-  const users = JSON.parse(usersString!) as TUserSchema[];
-  // const cats: TCategorySchema[] = []
-  const { data: session } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.push("/login");
-    },
-  });
-  const user = session?.user;
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const accessToken = user?.accessToken || "";
+  const [pSelectOp, setPSelectOp] = useState<TOptionSchema[][]>();
+  const [newCat, setNewCat] = useState<TCategorySchema>();
+  const [newFields, setNewFields] = useState<
+    {
+      title: string;
+      value: string;
+      type: boolean;
+    }[]
+  >();
 
   const form = useForm<TRegisterProductSchema>({
     mode: "all",
@@ -85,134 +57,83 @@ function AddProductForm({
       ...product,
     },
   });
-  // const form = useForm<TEditProductSchema>({
-  //   resolver: zodResolver(EditProductSchema),
-  //   defaultValues: {
-  //     category: editCategory?._id || "",
-  //     description: editDescription || "",
-  //     images: editImage || [],
-  //     price: editPrice || "0",
-  //     discount: editDiscount || "",
-  //     ratings: editRatings || "",
-  //     recipe: editRecipe || "",
-  //     seller: editSeller?._id || "",
-  //     author: editAuthor?._id || "",
-  //     slug: editSlug || "",
-  //     title: editTitle || "",
-  //     stock: editStock || "",
-  //     colorIcon: editColorIcon,
-  //     icon: editIcon,
-  //     type: editType,
-  //     propertys: editPropertys,
-  //   },
-  // });
 
   const { control, handleSubmit, watch, setValue } = form;
   const watchC = watch("category");
-  // console.log("watch", watchC);
-  // const fields = [];
-  const { fields, append } = useFieldArray({
+  console.log("watch", watchC);
+  const { fields, append, replace, remove } = useFieldArray({
     control,
     name: "propertys",
   });
 
   useEffect(() => {
-    let cP: {
-      name: string;
-      values: string;
-    }[] = [];
-    cats.map((c: TCategorySchema) => {
-      if (c._id === watchC) {
-        if (c.propertys && c.propertys.length > 1) cP = c.propertys;
-        return;
-      }
-    });
-
-    const allCOp: TOptionSchema[][] = [];
-    cP &&
-      cP.map((c: { name: string; values: string }) => {
-        const cOp: TOptionSchema[] = [];
-        console.log("c.values", c.values);
-        const vS = c.values?.split(",") || [];
-        vS.map((value: string) => {
-          cOp.push({ id: value, label: value });
+    const pOptions: TOptionSchema[][] =
+      newCat?.propertys?.map((op: { name: string; values: string }) => {
+        return op.values.split(",").map((p: string) => {
+          return { id: p, label: p };
         });
+      }) || [];
+    setPSelectOp(pOptions);
 
-        allCOp.push(cOp);
+    const newFields: {
+      title: string;
+      value: string;
+      type: boolean;
+    }[] =
+      newCat?.propertys?.map((op: { name: string; values: string }) => {
+        return { title: op.name, value: "", type: false };
+      }) || [];
+    setNewFields(newFields);
+  }, [newCat]);
 
-        append({
-          title: c.name,
-          value: cOp[0].id,
-          type: false,
-        });
-      });
-    setPropertyOp(allCOp);
+  useEffect(() => {
+    replace(newFields!);
+  }, [newFields]);
+
+  // useEffect(() => {
+  //   replace(product.propertys);
+  // }, [product]);
+
+  useEffect(() => {
+    const category: TCategorySchema = cats?.filter((c) => c._id === watchC)[0];
+    setNewCat(category);
   }, [watchC]);
 
-  // useEffect(() => {
-  //   // setCategory(category?.propertys);
-  // }, [category?.propertys]);
-
-  // useEffect(() => {
-  //   setValue("propertys", property);
-  // }, [property, setValue, watchC]);
-
-  // const c = cats && JSON.parse(cats!) as TCategorySchema[]
-  // useEffect(() => {
-  //     const catP = cats?.filter((cat) => cat._id === product.category._id)[0]
-  //     setProperty(catP.propertys)
-  // }, [product.category._id])
-
-  // const w = w
-
-  if (form === undefined) {
-    return <h3>loading...</h3>;
-  }
-
   const onSubmit = (values: TRegisterProductSchema) => {
-    createProduct({ values, accessToken }).then((data) => {
-      if (data.success === true) {
-        HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+    console.log("values", values);
 
-        // parent ?
-        router.push(`/dashboard/product`);
-        //     router.push(`/dashboard/siteSettings`)
-      } else {
-        HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
-      }
-    });
+    add_new_product &&
+      startTransition(() => {
+        createProduct({ values, accessToken }).then((data) => {
+          if (data.success === true) {
+            HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+            router.push(`/dashboard/product`);
+          } else {
+            HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+          }
+        });
+      });
+    !add_new_product &&
+      startTransition(() => {
+        updateProduct({ _id: product._id, values, accessToken }).then(
+          (data) => {
+            console.log(data);
 
-    // startTransition(() => {
-    //     updateProduct({ _id: product._id, values, accessToken })
-    //         .then((data) => {
-    //             console.log(data)
-
-    //             if (data.success === true) {
-
-    //                 HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
-    //                 router.push(`/dashboard/product`)
-    //             } else {
-
-    //                 HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })
-    //             }
-
-    //         })
-    // })
+            if (data.success === true) {
+              HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+              router.push(`/dashboard/product`);
+            } else {
+              HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+            }
+          }
+        );
+      });
   };
 
-  // const { fields, append, remove } = useFieldArray({
-  //     name: 'propertys',
-  //     control
-  // })
-
-  // const allCategory = cats.filter(cat=>cat._id===category)
-
-  // console.log("category", category);
-  // console.log("property", propertyOp);
-  console.log("fields", fields);
-
-  console.log("defaultValue", form.formState.defaultValues);
-  console.log("errors", form.formState.errors);
+  // console.log("fields", fields);
+  console.log("pOptions", pSelectOp);
+  console.log("newFields", newFields);
+  console.log("newCat", newCat);
 
   return (
     <Box
@@ -282,24 +203,27 @@ function AddProductForm({
               // required
               fullWidth
             />
-            {fields.map((field, index) => (
-              <Box className={" flex"} key={field.id}>
-                <SelectElement
-                  name={`propertys.${index}.value`}
-                  label={field.title}
-                  control={control}
-                  // options={`propertys.${index}.options`}
-                  options={propertyOp![index]}
-                  fullWidth
-                />
-                <SwitchElement
-                  control={control}
-                  name={`propertys.${index}.type`}
-                  label={"فعال سازی"}
-                  color="info"
-                />
-              </Box>
-            ))}
+            {pSelectOp &&
+              fields.map((field, index) => (
+                <Box className={" flex gap-5"} key={field.id}>
+                  <SelectElement
+                    name={`propertys.${index}.value`}
+                    label={field.title}
+                    control={control}
+                    // options={`propertys.${index}.options`}
+                    options={pSelectOp![index]}
+                    // fullWidth
+                    className=" flex w-4/5"
+                  />
+                  <SwitchElement
+                    control={control}
+                    name={`propertys.${index}.type`}
+                    label={"فعال سازی"}
+                    color="info"
+                    className=" flex w-1/5"
+                  />
+                </Box>
+              ))}
             <SwitchElement
               name={"type"}
               label={"فعال سازی"}
@@ -319,7 +243,6 @@ function AddProductForm({
           </Button>
         </form>
       </Box>
-      {/* <DevTool control={control} /> */}
     </Box>
   );
 }

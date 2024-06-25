@@ -33,7 +33,7 @@ export default function RootLayout({
   });
 
   useEffect(() => {
-    router.push(`/dashboard?${stringified}`);
+    // router.push(`/dashboard?${stringified}`);
     localStorage.setItem("theme", theme);
   }, [theme, router]);
 

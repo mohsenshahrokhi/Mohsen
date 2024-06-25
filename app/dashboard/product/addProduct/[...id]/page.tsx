@@ -55,12 +55,13 @@ async function getP(pId: string) {
 
 async function AddProduct({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
-  const accessToken = session?.user.accessToken;
+  const accessToken = session?.user.accessToken || "";
   const pId = searchParams.pId ? searchParams.pId : "";
   const stringifyParams = queryString.stringify(searchParams);
   const callbackUrl = searchParams.callbackUrl;
   const { id } = params;
   const add_new_product = id[0] === "add_new_product" ? true : false;
+
   let product: TEditProductSchema;
 
   add_new_product
@@ -90,39 +91,30 @@ async function AddProduct({ params, searchParams }: Props) {
   users?.map((user: TUserSchema) => {
     userOptions.push({ id: user._id, label: user._id });
   });
-  // const session = await getServerSession(authOptions)
-  // const accessToken = session?.user.accessToken as string
-  // const stringifyParams = queryString.stringify(searchParams)
-  // const pId = searchParams.id as string
-  // const { id } = params
 
-  // const edit = id[0] === 'edit' ? true : false
-
-  // const { product, categories, users } = await getData(pId, accessToken)
-  // console.log(categories);
+  // console.log("categories", categories);
+  // console.log("product", product);
+  // console.log("pOptions", pOptions);
 
   return (
     <Box className="flex relative flex-col w-full">
-      {/* {edit && <Ppppp
-                searchParams={stringifyParams}
-                product={[]}
-            />} */}
-      {add_new_product && (
-        <AddProductForm
-          add_new_product={add_new_product}
-          searchParams={stringifyParams}
-          catOptions={catOptions}
-          userOptions={userOptions}
-          productString={JSON.stringify(product)}
-          CatsString={JSON.stringify(categories)}
-          usersString={JSON.stringify(users)}
-        />
-      )}
-      {/* {!add && <Ppppp
-                searchParams={stringifyParams}
-                product={product}
-            // callbackUrl={callbackUrl}
-            />} */}
+      <AddProductForm
+        catsString={JSON.stringify(categories)}
+        productString={JSON.stringify(product)}
+        add_new_product
+        accessToken={accessToken}
+        catOptions={catOptions}
+      />
+      {/* <AddProductForm
+        add_new_product={add_new_product}
+        searchParams={stringifyParams}
+        catOptions={catOptions}
+        userOptions={userOptions}
+        property={propertys}
+        productString={JSON.stringify(product)}
+        CatsString={JSON.stringify(categories)}
+        usersString={JSON.stringify(users)}
+      /> */}
     </Box>
   );
 }

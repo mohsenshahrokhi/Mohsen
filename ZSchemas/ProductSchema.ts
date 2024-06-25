@@ -72,6 +72,7 @@ export const RegisterProductSchema = z.object({
     ratings: z.string().optional(),
     recipe: z.string().optional(),
     reviews: z.string().optional(),
+    // reviews: z.array(z.object({rating:z.string(),comment:z.string(),createdAt:z.date()})).optional(),
     stock: z.string().optional(),
     slug: z.string().optional(),
     colorIcon: z.string().optional(),

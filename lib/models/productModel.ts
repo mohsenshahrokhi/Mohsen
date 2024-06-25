@@ -68,22 +68,27 @@ const ProductSchema = new Schema({
         type: String,
         default: 0
     },
-    reviews: [
-        {
-            rating: {
+    reviews: {
                 type: String,
                 // required: [true, 'لطفا تعداد محصول را وارد کنید']
-            },
-            comment: {
-                type: String,
-                // required: [true, 'لطفا تعداد محصول را وارد کنید']
-            },
-            createdAt: {
-                type: Date,
-                default: Date.now
-            }
         },
-    ],
+    
+    // reviews: [
+    //     {
+    //         rating: {
+    //             type: String,
+    //             // required: [true, 'لطفا تعداد محصول را وارد کنید']
+    //         },
+    //         comment: {
+    //             type: String,
+    //             // required: [true, 'لطفا تعداد محصول را وارد کنید']
+    //         },
+    //         createdAt: {
+    //             type: Date,
+    //             default: Date.now
+    //         }
+    //     },
+    // ],
     createdAt: {
         type: Date,
         default: Date.now
