@@ -88,7 +88,7 @@ export const updateGallery = async ({ _id, data }: { _id: string, data: TRegiste
   }
 }
 
-export const deleteGallery = async (urls: string[]) => {
+export const deleteImage = async (urls: string[]) => {
   try {
     connectToMongodb()
     for (let index = 0; index < urls.length; index++) {

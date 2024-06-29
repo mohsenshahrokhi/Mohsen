@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   Chip,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -13,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import Link from "next/link";
 import {
@@ -190,22 +192,34 @@ export default function ProductList({
                   <TableCell>
                     <Box
                       component={"div"}
-                      className=" flex w-full justify-around items-center"
+                      className=" flex sm:flex-col sm:max-h-20 w-full gap-3 justify-around items-center"
                     >
-                      <Link
-                        id={`edit-${product._id}`}
-                        href={`/dashboard/product/addProduct/${product?._id}?${stringified}`}
-                        className=" "
+                      <Tooltip
+                        title={`ویرایش ${product.title}`}
+                        placement="top"
                       >
-                        <HiOutlinePencilSquare color="orange" />
-                      </Link>
-                      <Link
-                        id={`gallery-${product._id}`}
-                        href={`/dashboard/product/gallery/${product?._id}?${stringified}`}
-                        className=" "
-                      >
-                        <HiOutlinePhoto color="blue" />
-                      </Link>
+                        <IconButton color="warning" className=" flex w-5">
+                          <Link
+                            id={`edit-${product._id}`}
+                            href={`/dashboard/product/addProduct/${product?._id}?${stringified}`}
+                            className=" "
+                          >
+                            <HiOutlinePencilSquare color="orange" />
+                          </Link>
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={"عکس ها"} placement="top">
+                        <IconButton color="warning" className=" flex w-5">
+                          <Link
+                            id={`gallery-${product._id}`}
+                            href={`/dashboard/product/gallery/${product?._id}?${stringified}`}
+                            className=" "
+                          >
+                            <HiOutlinePhoto color="blue" />
+                          </Link>
+                        </IconButton>
+                      </Tooltip>
+
                       <DeleteModal
                         deleteProduct={(id) => deleteProduct(id)}
                         ref={modalRef}

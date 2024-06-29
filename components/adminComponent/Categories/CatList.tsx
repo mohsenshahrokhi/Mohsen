@@ -5,14 +5,13 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
-import BasicModal from "@/components/ui/BasicModal";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
 import { ModalProps } from "@/ZSchemas";
 import { deleteCat } from "@/actions/category";
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
 import DeleteModal from "@/components/ui/DeleteModal";
-
+import CollectionsIcon from "@mui/icons-material/Collections";
 type Props = {
   catString: string;
   stringifyParams: string;
@@ -58,6 +57,17 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
             </Link>
           </IconButton>
         </Tooltip>
+        <Tooltip title={`گالری ${cat.name}`} placement="top">
+          <IconButton className=" flex w-5">
+            <Link
+              href={`${path}settingsProperties/${encodeURIComponent(
+                cat._id
+              )}?${stringifyParams}`}
+            >
+              <CollectionsIcon className=" flex w-5" color="info" />
+            </Link>
+          </IconButton>
+        </Tooltip>
         <DeleteModal
           deleteProduct={(id) => deleteCategory(id)}
           ref={modalRef}
@@ -67,13 +77,6 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
           id={cat._id}
           ModalTitle={`${cat.name}حذف `}
         />
-        {/* <BasicModal
-          label={<CloseIcon />}
-          disc="آیا از حذف این دسته بندی مطمئن هستید ؟"
-          catString={JSON.stringify(cat)}
-          accessToken={accessToken}
-          callbackUrl={"/"}
-        /> */}
 
         <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
           <IconButton className=" flex w-5">

@@ -6,7 +6,6 @@ import UndoIcon from "@mui/icons-material/Undo";
 import { Box, Button } from "@mui/material";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { verifyJwt } from "@/lib/jwt";
 import { getCategories } from "@/actions/category";
 import HandleURL from "@/utils/HandleURL";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
@@ -16,7 +15,7 @@ type Props = {
   params: {
     id: string[] | string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | undefined };
 };
 
 async function getData(cId: string, accessToken: string) {
@@ -28,7 +27,6 @@ async function getData(cId: string, accessToken: string) {
 
   const { categories, success } = await getCategories({
     stringifyParams,
-    accessToken,
   });
 
   return categories as TCategorySchema[];
@@ -37,7 +35,7 @@ async function getData(cId: string, accessToken: string) {
 async function Category({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken;
-
+  delete searchParams.id;
   const { id } = params;
 
   const categories = await getData(id.slice(-1)[0], accessToken!);
@@ -124,63 +122,3 @@ async function Category({ params, searchParams }: Props) {
 }
 
 export default Category;
-
-{
-  /* <Accordion key={cat._id} >
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls={`panel-${cat._id}-bh-content`}
-                                    id={`panel-${cat._id}-bh-header`}
-                                >
-                                    <Box className=' flex w-full justify-between items-center ml-5'>
-
-                                        <Typography sx={{ flexShrink: 0 }}>
-                                            {cat.name}
-                                        </Typography>
-
-                                        <Box className=' flex gap-3'>
-                                            <Tooltip title={`حذف ${cat.name}`} placement="top">
-                                                <Link
-                                                    href={`/dashboard/siteSettings/deleteSettings/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
-                                                >
-                          
-                                                    <CloseIcon color="error" />
-                                              
-                                                </Link>
-                                            </Tooltip>
-
-                                            <Tooltip title={`ویرایش ${cat.name}`} placement="top">
-                                                <Link
-                                                    href={`/dashboard/siteSettings/addSetting/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
-                                                >
-                     
-                                                    <EditNoteIcon color='info' />
-                                                   
-                                                </Link>
-                                            </Tooltip>
-                                            <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
-                                                <Link
-                                                    href={`/dashboard/siteSettings/${url}/${encodeURIComponent(cat._id)}?${parseSearchParams}`}
-                                                >
-                           
-                                                    <PreviewIcon color='info' />
-                                                 
-                                                </Link>
-                                            </Tooltip>
-                                        </Box>
-                                    </Box>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <Box
-                                        component={'div'}
-                                    >
-                                        <CatList
-                                            backUrl={backUrl}
-                                            pathname={`/dashboard/siteSettings/${url}`}
-                                            parentId={`${cat._id}`}
-                                            parseSearchParams={parseSearchParams}
-                                        />
-                                    </Box>
-                                </AccordionDetails>
-                            </Accordion> */
-}

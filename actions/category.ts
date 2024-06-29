@@ -91,7 +91,7 @@ export const updateCategory = async (
         accessToken
     }: {
         _id: string | undefined
-        values: TRegisterCategorySchema,
+        values: any,
         accessToken: string
     }
 ) => {

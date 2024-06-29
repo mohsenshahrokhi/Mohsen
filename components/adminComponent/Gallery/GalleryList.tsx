@@ -3,26 +3,25 @@
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { startTransition, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { Box, Button, Checkbox } from "@mui/material";
 import Lootti from "@/components/publicComponents/Lootti";
 import { updateCategory } from "@/actions/category";
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
 import { TGallerySchema } from "@/ZSchemas/GallerySchema";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
+import { deleteImg } from "@/actions/gallery";
 
-function GalleryBase({
+function GalleryList({
   gallery,
   searchParams,
-  catId,
-  cat,
-  catProperty,
+  categoryString,
+  catField,
 }: {
   gallery: TGallerySchema[];
-  cat: TCategorySchema;
+  categoryString?: string;
+  catField?: "colorIcon" | "icon" | "images" | undefined;
   searchParams: string;
-  catId?: string;
-  catProperty?: "colorIcon" | "icon" | "images" | undefined;
 }) {
   const router = useRouter();
 
@@ -41,66 +40,40 @@ function GalleryBase({
 
   const accessToken = (session?.user && session?.user?.accessToken) || "";
 
+  const category = categoryString
+    ? (JSON.parse(categoryString || "") as TCategorySchema) || undefined
+    : null;
+
+  useEffect(() => {
+    if (category && catField === "images") setImages(category?.images);
+  }, [catField]);
+
   function handlePhoto(e: string) {
+    console.log(e);
+
     let oldImg = [...images];
     if (oldImg.includes(e)) {
       oldImg = oldImg.filter((old) => old !== e);
     } else {
-      if (
-        (catProperty === "icon" || catProperty === "colorIcon") &&
-        oldImg.length < 1
-      )
+      if ((catField === "icon" || "colorIcon") && oldImg.length < 1)
         oldImg.push(e);
 
-      catProperty === "images" && oldImg.push(e);
+      (catField === "images" || catField === undefined) && oldImg.push(e);
     }
 
     setImages(oldImg);
-  }
-
-  //   console.log("catProperty", catProperty, images, searchParams);
-
-  async function updateCat() {
-    let values = { ...cat };
-
-    if (catProperty === "icon") {
-      values.icon = images[0];
-    }
-
-    if (catProperty === "colorIcon") {
-      values.colorIcon = images[0];
-    }
-
-    if (catProperty === "images") {
-      values.images = images;
-    }
-
-    catProperty &&
-      catId &&
-      startTransition(() => {
-        updateCategory({ _id: catId, values, accessToken }).then((data) => {
-          console.log(data);
-
-          if (data.success === true) {
-            HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-
-            router.push(
-              `/dashboard/siteSettings/settingsProperties/${catId}?${searchParams}`
-            );
-          } else {
-            HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
-          }
-        });
-      });
   }
 
   const imageSvgContainer = (image: TGallerySchema) => {
     return (
       <Box
         component={"div"}
-        className=" flex text-center justify-center"
+        className=" flex text-center justify-center cursor-pointer"
         // onClick={() => handlePhoto(image._id)}
-        onClick={() => handlePhoto(`${image.type}/${image.url}`)}
+        onClick={() =>
+          handlePhoto(`${catField ? `${image.type}/${image.url}` : image._id}`)
+        }
+        // onClick={() => handlePhoto(`${image.type}/${image.url}`)}
       >
         <Box component={"div"} className="flex flex-col border">
           <Box component={"div"} className="p-2 md:flex-shrink-0">
@@ -123,7 +96,10 @@ function GalleryBase({
               <Box component={"div"} className=" absolute left-0 top-0">
                 <Checkbox
                   id={image._id}
-                  checked={images.includes(`${image.type}/${image.url}`)}
+                  checked={
+                    images.includes(`${image._id}`) ||
+                    images.includes(`${image.type}/${image.url}`)
+                  }
                   color="info"
                 />
               </Box>
@@ -212,6 +188,56 @@ function GalleryBase({
     );
   };
 
+  console.log("galleryList", images, category);
+
+  async function actionImgs() {
+    if (catField) {
+      let values = { ...category };
+      const catId = values._id;
+      delete values._id;
+      if (catField === "icon") {
+        values.icon = images[0];
+      }
+
+      if (catField === "colorIcon") {
+        values.colorIcon = images[0];
+      }
+
+      if (catField === "images") {
+        values.images = images;
+      }
+      console.log("actionImgs images", catField, values);
+      startTransition(() => {
+        updateCategory({ _id: catId, values, accessToken }).then((data) => {
+          if (data.success === true) {
+            HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+
+            router.push(
+              `/dashboard/siteSettings/settingsProperties/${catId}?${searchParams}`
+            );
+          } else {
+            HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+          }
+        });
+      });
+    } else {
+      console.log("actionImgs images", catField, images);
+
+      // startTransition(() => {
+      //   deleteImg({ img: images, accessToken }).then((data) => {
+
+      //     if (data.success === true) {
+      //       HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+
+      //       router.push(`/dashboard/siteSettings/gallery?${searchParams}`);
+      //     } else {
+      //       HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+      //     }
+      //   });
+      // });
+    }
+  }
+
   return (
     <Box component={"div"} className="flex flex-col mt-2">
       <Box component={"div"} className=" flex py-10 h-32">
@@ -220,9 +246,25 @@ function GalleryBase({
             color="warning"
             variant="contained"
             size="small"
-            onClick={updateCat}
+            onClick={actionImgs}
           >
-            به روز رسانی محصول
+            {catField ? (
+              catField === "colorIcon" || catField === "icon" ? (
+                catField === "colorIcon" ? (
+                  <span>
+                    به روز رسانی آیکون رنگی دسته بندی {category?.name}
+                  </span>
+                ) : (
+                  <span>
+                    به روز رسانی آیکون سیاه و سفید دسته بندی {category?.name}
+                  </span>
+                )
+              ) : (
+                <span>به روز رسانی گالری دسته بندی {category?.name}</span>
+              )
+            ) : (
+              <span> پاک کردن عکس های انتخاب شده</span>
+            )}
           </Button>
         )}
       </Box>
@@ -276,4 +318,4 @@ function GalleryBase({
   );
 }
 
-export default GalleryBase;
+export default GalleryList;

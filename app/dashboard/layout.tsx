@@ -2,6 +2,7 @@
 
 import AdminNavbar from "@/components/adminComponent/Navbar/AdminNavbar";
 import AdminSidebar from "@/components/adminComponent/Sidebar/AdminSidebar";
+import { verifyJwt } from "@/lib/jwt";
 import CircularProgress from "@mui/material/CircularProgress";
 import moment from "moment";
 import { useSession } from "next-auth/react";

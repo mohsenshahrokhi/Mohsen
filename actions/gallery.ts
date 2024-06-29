@@ -1,7 +1,7 @@
 'use server'
 
 import { deleteCategory } from "@/lib/controllers/categoryController"
-import { createGalleryImages, getAllGallery, getGalleryById } from "@/lib/controllers/galleryController"
+import { createGalleryImages, deleteImage, getAllGallery, getGalleryById } from "@/lib/controllers/galleryController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose from "mongoose"
 import queryString from "query-string"
@@ -117,10 +117,10 @@ export const getImage = async (_id: string) => {
     return { success: true, category }
 }
 
-export const deleteCat = async ({ id, accessToken }: { id: string, accessToken: string | undefined }) => {
+export const deleteImg = async ({ img, accessToken }: { img: string[], accessToken: string | undefined }) => {
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && (verify?.role) === '2') {
-        const { acknowledged } = await deleteCategory(id) as mongoose.mongo.DeleteResult
+        const { acknowledged } = await deleteImage(img) as mongoose.mongo.DeleteResult
         return {
             success: acknowledged ? true : false,
             msg: acknowledged ? 'دسته بندی با موفقیت حذف شد !' : 'دسته بندی با موفقیت حذف نشد !'

@@ -31,7 +31,10 @@ export default function Home() {
           loop
           className=" flex h-full w-full object-cover fixed"
         >
-          <source type="video/mp4" src="./bgVideo/v-bg.mp4" />
+          <source
+            type="video/mp4"
+            src="./uploads/video/mp4/1719399842916@v-bg.mp4"
+          />
         </video>
       </section>
 
