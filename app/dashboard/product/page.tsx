@@ -54,8 +54,9 @@ export default async function Product({ searchParams }: Props) {
   const accessToken = session?.user.accessToken;
   // const verify = (accessToken && verifyJwt(accessToken)) || null;
   // let page = 1;
-
   let page = parseInt(searchParams.page || "1", 10);
+  delete searchParams.id;
+  delete searchParams.catId;
   delete searchParams.page;
   delete searchParams.pId;
   const stringified = queryString.stringify(searchParams);
@@ -102,34 +103,24 @@ export default async function Product({ searchParams }: Props) {
       <Box component={"div"} className="flex flex-col no-scrollbar mt-6">
         <Box
           component={"div"}
-          className="-mx-4 -my-2 overflow-x-auto no-scrollbar sm:-mx-6 lg:-mx-8"
+          className="overflow-hidden no-scrollbar border md:rounded-lg"
         >
-          <Box
-            component={"div"}
-            className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8"
-          >
-            <Box
-              component={"div"}
-              className="overflow-hidden no-scrollbar border md:rounded-lg"
-            >
-              {outOfRange ? (
-                <Box component={"div"}>این صفحه وجود ندارد</Box>
-              ) : (
-                <Box component={"div"}>
-                  <ProductList
-                    stringProducts={JSON.stringify(products)}
-                    accessToken={accessToken!}
-                    stringified={stringified}
-                  />
-                  <Pagination
-                    page={page}
-                    stringified={stringified}
-                    totalPage={totalPage}
-                  />
-                </Box>
-              )}
+          {outOfRange ? (
+            <Box component={"div"}>این صفحه وجود ندارد</Box>
+          ) : (
+            <Box component={"div"}>
+              <ProductList
+                stringProducts={JSON.stringify(products)}
+                accessToken={accessToken!}
+                stringified={stringified}
+              />
+              <Pagination
+                page={page}
+                stringified={stringified}
+                totalPage={totalPage}
+              />
             </Box>
-          </Box>
+          )}
         </Box>
       </Box>
     </Box>

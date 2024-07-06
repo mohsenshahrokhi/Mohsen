@@ -113,7 +113,11 @@ async function Gallery({ params, searchParams }: Props) {
             </Box>
           </Box>
 
-          <GalleryList gallery={gallerys} searchParams={stringified} />
+          <GalleryList
+            gallery={gallerys}
+            searchParams={stringified}
+            defaultImg={[""]}
+          />
 
           <Pagination
             page={page}

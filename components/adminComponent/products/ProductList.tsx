@@ -38,6 +38,8 @@ import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
 import { deleteP } from "@/actions/product";
 import { ModalProps } from "@/ZSchemas";
 import DeleteModal from "@/components/ui/DeleteModal";
+import { digitsEnToFa, addCommas } from "@persian-tools/persian-tools";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 type Props = {
   stringProducts: string;
@@ -138,7 +140,9 @@ export default function ProductList({
                       </Box>
                     </Box>
                   </TableCell>
-                  <TableCell>{product.price}</TableCell>
+                  <TableCell>
+                    {digitsEnToFa(addCommas(product.price))}
+                  </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
                       {product.type === true ? (
@@ -148,7 +152,9 @@ export default function ProductList({
                       )}
                     </Stack>
                   </TableCell>
-                  <TableCell>{product.stock}</TableCell>
+                  <TableCell>
+                    {digitsEnToFa(addCommas(product.stock))}
+                  </TableCell>
                   <TableCell>{product?.description}</TableCell>
                   <TableCell>{product?.category?.name}</TableCell>
                   <TableCell>{product?.author?.displayName}</TableCell>
@@ -170,12 +176,12 @@ export default function ProductList({
                   </TableCell>
                   <TableCell>
                     {!!product?.images?.length &&
-                      product.images.map((image) => {
+                      product.images.map((image, index) => {
                         return (
                           <Box
                             component={"div"}
                             className="relative flex flex-col h-20 w-20 aspect-video col-span-4"
-                            key={image}
+                            key={index}
                           >
                             <Image
                               src={`/uploads/${image}`}
@@ -192,42 +198,71 @@ export default function ProductList({
                   <TableCell>
                     <Box
                       component={"div"}
-                      className=" flex sm:flex-col sm:max-h-20 w-full gap-3 justify-around items-center"
+                      className=" flex sm:flex-col sm:max-h-20 w-full justify-around items-center"
                     >
-                      <Tooltip
-                        title={`ویرایش ${product.title}`}
-                        placement="top"
+                      <Box
+                        component={"div"}
+                        className=" flex gap-x-4 w-full justify-around items-center"
                       >
-                        <IconButton color="warning" className=" flex w-5">
-                          <Link
-                            id={`edit-${product._id}`}
-                            href={`/dashboard/product/addProduct/${product?._id}?${stringified}`}
-                            className=" "
-                          >
-                            <HiOutlinePencilSquare color="orange" />
-                          </Link>
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title={"عکس ها"} placement="top">
-                        <IconButton color="warning" className=" flex w-5">
-                          <Link
-                            id={`gallery-${product._id}`}
-                            href={`/dashboard/product/gallery/${product?._id}?${stringified}`}
-                            className=" "
-                          >
-                            <HiOutlinePhoto color="blue" />
-                          </Link>
-                        </IconButton>
-                      </Tooltip>
-
-                      <DeleteModal
-                        deleteProduct={(id) => deleteProduct(id)}
-                        ref={modalRef}
-                        label={<CloseIcon />}
-                        disc={`آیا از حذف محصول ${product.title} مطمئن هستید ؟`}
-                        id={product._id}
-                        ModalTitle={` حذف ${product.title}`}
-                      />
+                        <Tooltip
+                          title={`ویرایش ${product.title}`}
+                          placement="top"
+                        >
+                          <IconButton color="warning" className=" flex w-5">
+                            <Link
+                              id={`edit-${product._id}`}
+                              href={`/dashboard/product/addProduct/${product?._id}?${stringified}`}
+                              className=" "
+                            >
+                              <HiOutlinePencilSquare color="orange" />
+                            </Link>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title={"عکس ها"} placement="top">
+                          <IconButton color="warning" className=" flex w-5">
+                            <Link
+                              id={`gallery-${product._id}`}
+                              href={`/dashboard/product/gallery/productImg?PId=${
+                                product?._id
+                              }&defaultImg=${JSON.stringify(
+                                product.images
+                              )}&title=${
+                                product.title
+                              }&callback=${stringified}`}
+                              className=" "
+                            >
+                              <HiOutlinePhoto color="blue" />
+                            </Link>
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                      <Box
+                        component={"div"}
+                        className=" flex gap-x-4 w-full justify-around items-center"
+                      >
+                        <Tooltip
+                          title={`کپی از ${product.title}`}
+                          placement="top"
+                        >
+                          <IconButton color="warning" className=" flex w-5">
+                            <Link
+                              id={`edit-${product._id}`}
+                              href={`product/addProduct/${product._id}?type=copy_product&&${stringified}`}
+                              className=" "
+                            >
+                              <ContentCopyIcon color="info" />
+                            </Link>
+                          </IconButton>
+                        </Tooltip>
+                        <DeleteModal
+                          deleteProduct={(id) => deleteProduct(id)}
+                          ref={modalRef}
+                          label={<CloseIcon />}
+                          disc={`آیا از حذف محصول ${product.title} مطمئن هستید ؟`}
+                          id={product._id}
+                          ModalTitle={` حذف ${product.title}`}
+                        />
+                      </Box>
                     </Box>
                   </TableCell>
                 </TableRow>

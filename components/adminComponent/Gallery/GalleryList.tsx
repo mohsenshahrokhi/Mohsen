@@ -9,18 +9,29 @@ import Lootti from "@/components/publicComponents/Lootti";
 import { updateCategory } from "@/actions/category";
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
 import { TGallerySchema } from "@/ZSchemas/GallerySchema";
-import { TCategorySchema } from "@/ZSchemas/CategorySchema";
+import {
+  TCategorySchema,
+  TEditCategorySchema,
+} from "@/ZSchemas/CategorySchema";
 import { deleteImg } from "@/actions/gallery";
+import { updateProduct } from "@/actions/product";
+import { TEditProductSchema } from "@/ZSchemas/ProductSchema";
 
 function GalleryList({
   gallery,
   searchParams,
-  categoryString,
+  _id,
+  imageFor,
+  defaultImg,
+  title,
   catField,
 }: {
   gallery: TGallerySchema[];
-  categoryString?: string;
-  catField?: "colorIcon" | "icon" | "images" | undefined;
+  imageFor?: string;
+  _id?: string;
+  defaultImg: string[];
+  title?: string;
+  catField?: "colorIcon" | "icon" | "images" | "productImg" | undefined;
   searchParams: string;
 }) {
   const router = useRouter();
@@ -34,31 +45,39 @@ function GalleryList({
     },
   });
 
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>(
+    defaultImg.includes("") ? [] : defaultImg
+  );
+  // const [images, setImages] = useState<string[]>(
+  //   (defaultImg&&defaultImg.includes("")) ? [] : defaultImg
+  // );
 
   // const userId = session?.user?.id
 
   const accessToken = (session?.user && session?.user?.accessToken) || "";
 
-  const category = categoryString
-    ? (JSON.parse(categoryString || "") as TCategorySchema) || undefined
-    : null;
+  // const category = categoryString
+  //   ? (JSON.parse(categoryString || "") as TCategorySchema) || undefined
+  //   : null;
 
-  useEffect(() => {
-    if (category && catField === "images") setImages(category?.images);
-  }, [catField]);
+  // useEffect(() => {
+  //   if (category && catField === "images") setImages(category?.images);
+  // }, [catField, category]);
 
   function handlePhoto(e: string) {
-    console.log(e);
-
     let oldImg = [...images];
     if (oldImg.includes(e)) {
       oldImg = oldImg.filter((old) => old !== e);
     } else {
-      if ((catField === "icon" || "colorIcon") && oldImg.length < 1)
+      console.log("oldImg", oldImg, e);
+      if (
+        (catField === "icon" || catField === "colorIcon") &&
+        oldImg.length === 0
+      ) {
         oldImg.push(e);
+      }
 
-      (catField === "images" || catField === undefined) && oldImg.push(e);
+      (catField === "images" || catField === "productImg") && oldImg.push(e);
     }
 
     setImages(oldImg);
@@ -188,53 +207,71 @@ function GalleryList({
     );
   };
 
-  console.log("galleryList", images, category);
+  console.log("galleryList", catField, images);
 
   async function actionImgs() {
     if (catField) {
-      let values = { ...category };
-      const catId = values._id;
-      delete values._id;
-      if (catField === "icon") {
-        values.icon = images[0];
+      let values: any = {};
+
+      switch (catField) {
+        case "colorIcon":
+          values.colorIcon = images[0];
+          break;
+        case "icon":
+          values.icon = images[0];
+          break;
+        case "images":
+          values.images = images;
+          break;
+        case "productImg":
+          values.images = images;
+          break;
+        default:
+          break;
       }
 
-      if (catField === "colorIcon") {
-        values.colorIcon = images[0];
-      }
+      console.log("actionImgs up images", catField, values);
+      catField !== "productImg" &&
+        startTransition(() => {
+          updateCategory({ _id, values, accessToken }).then((data) => {
+            if (data.success === true) {
+              HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
 
-      if (catField === "images") {
-        values.images = images;
-      }
-      console.log("actionImgs images", catField, values);
+              router.push(
+                `/dashboard/siteSettings/settingsProperties/${_id}?${searchParams}`
+              );
+            } else {
+              HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+            }
+          });
+        });
+
+      catField === "productImg" &&
+        startTransition(() => {
+          updateProduct({ _id, values, accessToken }).then((data) => {
+            if (data.success === true) {
+              HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+
+              router.push(`/dashboard/product?${searchParams}`);
+            } else {
+              HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+            }
+          });
+        });
+    } else {
+      console.log("actionImgs images", catField);
+
       startTransition(() => {
-        updateCategory({ _id: catId, values, accessToken }).then((data) => {
+        deleteImg({ img: images, accessToken }).then((data) => {
           if (data.success === true) {
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
 
-            router.push(
-              `/dashboard/siteSettings/settingsProperties/${catId}?${searchParams}`
-            );
+            router.push(`/dashboard/siteSettings/gallery?${searchParams}`);
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
           }
         });
       });
-    } else {
-      console.log("actionImgs images", catField, images);
-
-      // startTransition(() => {
-      //   deleteImg({ img: images, accessToken }).then((data) => {
-
-      //     if (data.success === true) {
-      //       HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-
-      //       router.push(`/dashboard/siteSettings/gallery?${searchParams}`);
-      //     } else {
-      //       HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
-      //     }
-      //   });
-      // });
     }
   }
 
@@ -251,16 +288,12 @@ function GalleryList({
             {catField ? (
               catField === "colorIcon" || catField === "icon" ? (
                 catField === "colorIcon" ? (
-                  <span>
-                    به روز رسانی آیکون رنگی دسته بندی {category?.name}
-                  </span>
+                  <span>به روز رسانی آیکون رنگی دسته بندی {title}</span>
                 ) : (
-                  <span>
-                    به روز رسانی آیکون سیاه و سفید دسته بندی {category?.name}
-                  </span>
+                  <span>به روز رسانی آیکون سیاه و سفید دسته بندی {title}</span>
                 )
               ) : (
-                <span>به روز رسانی گالری دسته بندی {category?.name}</span>
+                <span>به روز رسانی گالری دسته بندی {title}</span>
               )
             ) : (
               <span> پاک کردن عکس های انتخاب شده</span>

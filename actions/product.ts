@@ -1,6 +1,6 @@
 'use server'
 
-import { EditProductSchema, RegisterProductSchema, TEditProductSchema, TProductSchema, TRegisterProductSchema } from "@/ZSchemas/ProductSchema"
+import { EditProductSchema, RegisterProductSchema , TEditProductSchema, TProductSchema, TRegisterProductSchema } from "@/ZSchemas/ProductSchema"
 import { createNewProduct, deleteProduct, getAllProduct, getProductBy, updateP } from "@/lib/controllers/productController"
 import { verifyJwt } from "@/lib/jwt"
 import mongoose, { UpdateWriteOpResult } from "mongoose"
@@ -63,12 +63,13 @@ export const createProduct = async (
         } */
         const newP =await createNewProduct({
             ...validatedFields.data
-        }) as TProductSchema
+        }) as TEditProductSchema
 
         if (newP._id) {
             return {
-                success: true,
-              msg: 'حساب کاربری با موفقیت ایجاد شد'
+              success: true,
+                msg: 'حساب کاربری با موفقیت ایجاد شد',
+              product:newP
             }
         }
 
@@ -91,20 +92,20 @@ export const updateProduct = async (
         accessToken
     }: {
         _id: string | undefined
-        values: TRegisterProductSchema,
+        values: any,
         accessToken: string
     }
 ) => {
-    const validatedFields = EditProductSchema.safeParse(values)
+    // const validatedFields = EditProductSchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
     if (accessToken && verify?.role === '2') {
 
         const update = await updateP({
             _id,
             values
-        }) as UpdateWriteOpResult
+        }) as TProductSchema
 
-        if (!update?.acknowledged) {
+        if (!update?._id) {
             return {
                 error: true,
                 msg: 'به روز رسانی انجام نشد !'

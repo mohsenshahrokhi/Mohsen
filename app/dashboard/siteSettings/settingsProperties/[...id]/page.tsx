@@ -10,12 +10,13 @@ import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Image from "next/image";
 import PropertiesDetile from "@/components/adminComponent/Categories/PropertiesDetile";
+import { TCategorySchema } from "@/ZSchemas/CategorySchema";
 
 type Props = {
   params: {
     id: string[] | string;
   };
-  searchParams: { [key: string]: string | undefined };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 async function getData(catId: string, accessToken: string) {
@@ -38,12 +39,17 @@ async function getCatData(catId: string) {
 }
 
 async function CatProperties({ params, searchParams }: Props) {
-  // console.log("catIdd", searchParams);
-  delete searchParams.catId;
-  // console.log("catIdd", searchParams);
   const stringifyParams = queryString.stringify(searchParams);
 
   const { category } = await getCatData(params.id.slice(-1)[0]);
+
+  const catImg = {
+    _id: category._id,
+    colorIcon: category.colorIcon,
+    icon: category.icon,
+    images: category.images,
+    title: category.name,
+  };
 
   return (
     <Box className="w-full items-center justify-between">
@@ -56,12 +62,9 @@ async function CatProperties({ params, searchParams }: Props) {
             component={"span"}
             className=" flex w-full items-center justify-center my-4"
           >
-            عکس های مرربوط به {category.name}
+            {category.name}
           </Box>
-          <PropertiesDetile
-            categoryString={JSON.stringify(category)}
-            stringifyParams={stringifyParams}
-          />
+          <PropertiesDetile catImg={catImg} stringifyParams={stringifyParams} />
         </Box>
       </Box>
     </Box>

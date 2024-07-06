@@ -20,6 +20,7 @@ import {
   TextFieldElement,
   TextareaAutosizeElement,
 } from "react-hook-form-mui";
+import { addCommas, digitsEnToFa } from "@persian-tools/persian-tools";
 
 type Props = {
   catsString: string;
@@ -100,8 +101,6 @@ function AddProductForm({
   // }, [product]);
 
   const onSubmit = (values: TRegisterProductSchema) => {
-    console.log("values", values);
-
     add_new_product &&
       startTransition(() => {
         createProduct({ values, accessToken }).then((data) => {
@@ -130,10 +129,10 @@ function AddProductForm({
       });
   };
 
-  console.log("add_new_product", add_new_product);
-  console.log("pOptions", pSelectOp);
-  console.log("newFields", newFields);
-  console.log("newCat", newCat);
+  // console.log("add_new_product", add_new_product);
+  // console.log("pOptions", pSelectOp);
+  // console.log("newFields", newFields);
+  // console.log("newCat", newCat);
 
   return (
     <Box
@@ -156,27 +155,31 @@ function AddProductForm({
               name={"title"}
               label={"نام محصول"}
               control={control}
-              // required
+              required
               fullWidth
             />
             <TextFieldElement
               name={"price"}
               label={"قیمت محصول"}
               control={control}
-              // required
+              // type="number"
+              required
               fullWidth
             />
             <TextFieldElement
               name={"stock"}
               label={"تعداد محصول"}
               control={control}
-              // required
+              // type="number"
+              required
               fullWidth
             />
             <TextFieldElement
               name={"discount"}
               label={"تخفیف محصول"}
               control={control}
+              // type="number"
+              required
               fullWidth
             />
             <TextareaAutosizeElement
@@ -184,7 +187,7 @@ function AddProductForm({
               label={"توضیحات محصول"}
               control={control}
               rows={3}
-              // required
+              required
               fullWidth
             />
             <TextareaAutosizeElement
@@ -200,7 +203,7 @@ function AddProductForm({
               label={"دسته بندی"}
               control={control}
               options={catOptions}
-              // required
+              required
               fullWidth
             />
             {pSelectOp &&

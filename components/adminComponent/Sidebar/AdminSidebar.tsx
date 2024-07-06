@@ -26,12 +26,19 @@ const AdminSidebar = () => {
       : params.set("sidebarControl", "true");
     params.set("theme", theme);
     params.set("sidebarVisible", "true");
+    params.delete("id");
+    params.delete("pId");
+    params.delete("catId");
+    params.delete("page");
     router.push(`${pathName}?${params}`);
   };
   const resetParams = params;
   resetParams.set("sidebarControl", "false");
   resetParams.set("sidebarVisible", "false");
   resetParams.delete("page");
+  resetParams.delete("id");
+  resetParams.delete("pId");
+  resetParams.delete("catId");
   resetParams.set("theme", theme);
 
   return (

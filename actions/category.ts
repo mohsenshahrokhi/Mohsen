@@ -91,21 +91,24 @@ export const updateCategory = async (
         accessToken
     }: {
         _id: string | undefined
-        values: any,
+        values: TEditCategorySchema,
         accessToken: string
     }
 ) => {
-    const validatedFields = RegisterCategorySchema.safeParse(values)
+    // const validatedFields = RegisterCategorySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
   
-    if (accessToken && verify?.role === '2' && validatedFields.success) {
+    if (accessToken && verify?.role === '2') {
+    // if (accessToken && verify?.role === '2' && validatedFields.success) {
+        
+    const update = await updateCat({
+        _id,
+        values
+        // values: validatedFields.data
+    }) as TCategorySchema
+    console.log(_id,values,update);
 
-        const update = await updateCat({
-            _id,
-            values: validatedFields.data
-        }) as mongoose.UpdateWriteOpResult
-
-        if (!update?.acknowledged) {
+        if (!update?._id) {
             return {
                 error: true,
                 msg: 'به روز رسانی انجام نشد !'

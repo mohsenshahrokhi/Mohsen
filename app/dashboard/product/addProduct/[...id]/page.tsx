@@ -1,13 +1,18 @@
 import { TOptionSchema } from "@/ZSchemas";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
-import { TEditProductSchema, TProductSchema } from "@/ZSchemas/ProductSchema";
+import {
+  TEditProductSchema,
+  TProductSchema,
+  TRegisterProductSchema,
+} from "@/ZSchemas/ProductSchema";
 import { TUserSchema } from "@/ZSchemas/UserSchema";
 import { getCategories } from "@/actions/category";
-import { getPBy } from "@/actions/product";
+import { createProduct, getPBy } from "@/actions/product";
 import { getAllU } from "@/actions/register";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import AddProductForm from "@/components/adminComponent/Products/AddProductForm";
 import { Box } from "@mui/material";
+import { log } from "handlebars/runtime";
 import { getServerSession } from "next-auth";
 import queryString from "query-string";
 import React from "react";
@@ -61,6 +66,7 @@ async function AddProduct({ params, searchParams }: Props) {
   const callbackUrl = searchParams.callbackUrl;
   const { id } = params;
   const add_new_product = id[0] === "add_new_product" ? true : false;
+  const copy_new_product = searchParams.type === "copy_product" ? true : false;
 
   let product: TEditProductSchema;
 
@@ -80,6 +86,19 @@ async function AddProduct({ params, searchParams }: Props) {
         createdAt: new Date(),
       })
     : (product = await getP(id[0]));
+
+  if (copy_new_product) {
+    const old = {
+      ...product,
+      category: product.category.toString(),
+      author: product.author?.toString(),
+    } as any;
+    delete old._id;
+    delete old.createdAt;
+    delete old.ratings;
+    const newProduct = await createProduct({ values: old, accessToken });
+    if (newProduct.success && newProduct.product) product = newProduct.product;
+  }
 
   const { categories, users } = await getData();
   const catOptions: TOptionSchema[] = [];

@@ -19,20 +19,28 @@ export const CategorySchema = z.object({
 export type TCategorySchema = z.infer<typeof CategorySchema>
 
 export const EditCategorySchema = z.object({
-    // _id: z.string(),
-    name: z.string(),
-    latinName: z.string(),
-    slug: z.string(),
-    colorIcon: z.string().optional(),
-    icon: z.string().optional(),
-    images: z.array(z.string()).default([]),
+    name: z.string().optional().default(''),
+    latinName: z.string().optional().default(''),
+    slug: z.string().optional().default(''),
+    colorIcon: z.string().optional().default(''),
+    icon: z.string().optional().default(''),
+    images: z.array(z.string()).optional().default([]),
     type: z.boolean().optional().default(false),
-    parent: z.string().optional(),
-    author: z.string().optional(),
-    propertys: z.array(z.object({ name: z.string(), values:  z.string() })).default([]).optional()
+    parent: z.string().optional().default(''),
+    author: z.string().optional().default(''),
+    propertys: z.array(z.object({ name: z.string(), values:  z.string() })).optional().default([])
 
 })
 export type TEditCategorySchema = z.infer<typeof EditCategorySchema>
+
+export const EditImgCategorySchema = z.object({
+    colorIcon: z.string().optional(),
+    icon: z.string().optional(),
+    images: z.array(z.string()).default([]),
+    catId:  z.string().optional(),
+
+})
+export type TEditImgCategorySchema = z.infer<typeof EditImgCategorySchema>
 
 export const RegisterCategorySchema = z.object({
     name: z.string().min(4, {

@@ -1,5 +1,5 @@
 import { Box, Button } from "@mui/material";
-import React from "react";
+import React, { startTransition } from "react";
 import Image from "next/image";
 import { updateCategory } from "@/actions/category";
 import HandleEnqueueSnackbar from "@/utils/HandleEnqueueSnackbar";
@@ -7,17 +7,26 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   TCategorySchema,
+  TEditCategorySchema,
   TRegisterCategorySchema,
 } from "@/ZSchemas/CategorySchema";
+import { updateProduct } from "@/actions/product";
 
 type Props = {
-  cat: TCategorySchema;
-  image: string;
-  property: "colorIcon" | "icon" | "images" | undefined;
+  PId: string;
+  img: string;
+  album?: string[];
+  property: "colorIcon" | "icon" | "images" | "productImg" | undefined;
   stringifyParams: string;
 };
 
-function ControlledImage({ image, cat, property, stringifyParams }: Props) {
+function ControlledImage({
+  PId,
+  img,
+  property,
+  album,
+  stringifyParams,
+}: Props) {
   const router = useRouter();
 
   const { data: session } = useSession({
@@ -31,35 +40,70 @@ function ControlledImage({ image, cat, property, stringifyParams }: Props) {
 
   const accessToken = user?.accessToken || "";
 
-  function handleDelete(catId: string, property: string, image: string): void {
-    const values = { ...cat } as TRegisterCategorySchema;
+  function handleDelete({
+    PId,
+    catField,
+    image,
+  }: {
+    PId: string;
+    catField: string;
+    image: string;
+  }): void {
+    console.log("ControlledImage", PId, catField, image, album);
+    let values: TEditCategorySchema = {};
 
-    if (property === "icon") {
-      values.icon = "";
+    switch (catField) {
+      case "colorIcon":
+        values.colorIcon = "";
+        break;
+      case "icon":
+        values.icon = "";
+        break;
+      case "images":
+        const oldImg = album!;
+        const filter = oldImg.filter((img) => image !== img);
+        values.images = filter;
+        break;
+
+      case "productImg":
+        const oldImg1 = album!;
+        const filter1 = oldImg1.filter((img) => image !== img);
+        values.images = filter1;
+        break;
+
+      default:
+        break;
     }
 
-    if (property === "colorIcon") {
-      values.colorIcon = "";
-    }
+    console.log("actionImgs up images", catField, values);
+    catField !== "productImg" &&
+      startTransition(() => {
+        // updateCategory({ _id: PId, values, accessToken }).then((data) => {
+        //   if (data.success === true) {
+        //     HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+        //     router.push(
+        //       `/dashboard/siteSettings/settingsProperties/${PId}?${stringifyParams}`
+        //     );
+        //   } else {
+        //     HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+        //   }
+        // });
+      });
 
-    if (property === "images") {
-      const oldImg = [...cat.images!];
-      const filter = oldImg.filter((img) => image !== img);
-      values.images = filter;
-    }
-    // console.log("values", values);
-
-    updateCategory({ _id: catId, values, accessToken }).then((data) => {
-      if (data.success === true) {
-        HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-
-        router.push(
-          `/dashboard/siteSettings/settingsProperties/${catId}?${stringifyParams}`
-        );
-      } else {
-        HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
-      }
-    });
+    catField === "productImg" &&
+      startTransition(() => {
+        updateProduct({ _id: PId, values, accessToken }).then((data) => {
+          if (data.success === true) {
+            HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+            router.push(`/dashboard/product?${stringifyParams}`);
+            // router.push(
+            //   `/dashboard/siteSettings/settingsProperties/${PId}?${stringifyParams}`
+            // );
+          } else {
+            HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+          }
+        });
+      });
   }
 
   return (
@@ -72,11 +116,11 @@ function ControlledImage({ image, cat, property, stringifyParams }: Props) {
         className="relative overflow-hidden flex flex-col justify-center items-center p-2 rounded-md"
       >
         <Image
-          src={`/uploads/${image}`}
+          src={`/uploads/${img}`}
           width="100"
           height="100"
           priority={true}
-          alt={image}
+          alt={img}
           className="rounded-lg flex w-20 h-20"
         />
         <Box
@@ -87,7 +131,9 @@ function ControlledImage({ image, cat, property, stringifyParams }: Props) {
             <Button
               variant="contained"
               color="error"
-              onClick={() => handleDelete(cat._id, property!, image)}
+              onClick={() =>
+                handleDelete({ PId: PId!, catField: property!, image: img })
+              }
             >
               حذف
             </Button>

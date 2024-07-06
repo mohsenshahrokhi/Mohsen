@@ -9,7 +9,13 @@ import ControlledImage from "./ControlledImage";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
 
 type Props = {
-  categoryString: string;
+  catImg: {
+    _id?: string;
+    colorIcon?: string;
+    icon?: string;
+    images?: string[];
+    title?: string;
+  };
   stringifyParams: string;
 };
 
@@ -24,13 +30,12 @@ const styles = {
   },
 };
 
-function PropertiesDetile({ categoryString, stringifyParams }: Props) {
-  const category = JSON.parse(categoryString);
+function PropertiesDetile({ catImg, stringifyParams }: Props) {
   const handleDelete = (propertys: string, image: string) => {
-    // console.log("pdetile", category._id, propertys, image);
+    console.log(catImg._id, propertys, image);
   };
-
-  console.log(category);
+  const catId = catImg._id!;
+  console.log("PropertiesDetile", catImg);
 
   return (
     <Box
@@ -41,7 +46,7 @@ function PropertiesDetile({ categoryString, stringifyParams }: Props) {
         component={"div"}
         className=" flex w-full justify-around mb-5 items-center py-3"
       >
-        {!category.icon ? (
+        {!catImg.icon ? (
           <Button
             id="icon"
             size="medium"
@@ -50,7 +55,9 @@ function PropertiesDetile({ categoryString, stringifyParams }: Props) {
             aria-label="add"
           >
             <Link
-              href={`/dashboard/gallery/addIcon/icon?catId=${category?._id}&${stringifyParams}`}
+              href={`/dashboard/gallery/addIcon/icon?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
+                [catImg.icon]
+              )}&title=${catImg.title}&${stringifyParams}`}
             >
               اضافه کردن ایکون سیاه و سفید
               <AddIcon sx={{ ml: 1 }} />
@@ -62,14 +69,14 @@ function PropertiesDetile({ categoryString, stringifyParams }: Props) {
               آیکون سیاه و سفید
             </Box>
             <ControlledImage
-              image={category.icon}
-              cat={category}
               property={"icon"}
               stringifyParams={stringifyParams}
+              img={catImg.icon!}
+              PId={catImg._id!}
             />
           </Box>
         )}
-        {!category.colorIcon ? (
+        {!catImg.colorIcon ? (
           <Button
             id="colorIcon"
             size="medium"
@@ -78,7 +85,9 @@ function PropertiesDetile({ categoryString, stringifyParams }: Props) {
             aria-label="add"
           >
             <Link
-              href={`/dashboard/gallery/addIcon/colorIcon?catId=${category?._id}&${stringifyParams}`}
+              href={`/dashboard/gallery/addIcon/colorIcon?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
+                [catImg.colorIcon]
+              )}&title=${catImg.title}&${stringifyParams}`}
             >
               اضافه کردن آیکون رنگی
               <AddIcon sx={{ ml: 1 }} />
@@ -90,8 +99,8 @@ function PropertiesDetile({ categoryString, stringifyParams }: Props) {
               آیکون رنگی
             </Box>
             <ControlledImage
-              image={category.colorIcon}
-              cat={category}
+              img={catImg.colorIcon!}
+              PId={catImg._id!}
               property={"colorIcon"}
               stringifyParams={stringifyParams}
             />
@@ -99,7 +108,6 @@ function PropertiesDetile({ categoryString, stringifyParams }: Props) {
         )}
       </Box>
 
-      {/* {!(category.images && category.images.length > 0) ? ( */}
       <Button
         id="images"
         size="medium"
@@ -108,41 +116,44 @@ function PropertiesDetile({ categoryString, stringifyParams }: Props) {
         aria-label="add"
       >
         <Link
-          href={`/dashboard/gallery/addIcon/images?catId=${category?._id}&${stringifyParams}`}
+          href={`/dashboard/gallery/addIcon/images?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
+            catImg.images
+          )}&title=${catImg.title}&${stringifyParams}`}
         >
           اضافه کردن آلبوم عکس
           <AddIcon sx={{ ml: 1 }} />
         </Link>
       </Button>
-      {/* ) : ( */}
-      <Box className=" flex flex-col w-full justify-between items-center h-1/3">
-        <Box
-          className="flex flex-col w-full h-20 justify-center items-center"
-          component={"p"}
-        >
-          آلبوم عکس این زیر دسته
+      {catImg.images && catImg.images.length > 0 && (
+        <Box className=" flex flex-col w-full justify-between items-center h-1/3">
+          <Box
+            className="flex flex-col w-full h-20 justify-center items-center"
+            component={"p"}
+          >
+            آلبوم عکس این زیر دسته
+          </Box>
+          <Box
+            component={"div"}
+            className=" flex w-full justify-start gap-3 p-3 items-center"
+          >
+            {catImg.images.map((img) => (
+              <Box
+                key={img}
+                className=" flex w-32 h-32 items-center justify-center"
+                component={"div"}
+              >
+                <ControlledImage
+                  img={img!}
+                  PId={catImg._id!}
+                  album={catImg.images}
+                  stringifyParams={stringifyParams}
+                  property={"images"}
+                />
+              </Box>
+            ))}
+          </Box>
         </Box>
-        <Box
-          component={"div"}
-          className=" flex w-full justify-start gap-3 p-3 items-center"
-        >
-          {category.images.map((img: string, index: number) => (
-            <Box
-              key={index}
-              className=" flex w-32 h-32 items-center justify-center"
-              component={"div"}
-            >
-              <ControlledImage
-                image={img}
-                cat={category}
-                stringifyParams={stringifyParams}
-                property={"images"}
-              />
-            </Box>
-          ))}
-        </Box>
-      </Box>
-      {/* )} */}
+      )}
     </Box>
   );
 }

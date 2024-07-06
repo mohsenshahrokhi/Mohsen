@@ -130,7 +130,10 @@ async function Gallery({ params, searchParams }: Props) {
   const perPage = 20;
 
   // const catId = params.id[0];
-  const _id = searchParams.catId;
+  const _id = searchParams.PId;
+  const imageFor = searchParams.imageFor;
+  const title = searchParams.title;
+  const defaultImg = JSON.parse(searchParams.defaultImg || "");
   const gallerys = await GalleryData({
     page: page,
     perPage: perPage,
@@ -156,122 +159,14 @@ async function Gallery({ params, searchParams }: Props) {
     if (i >= 1 && i <= totalPage) pageNumber.push(i);
   }
 
-  const catField = params.id[0] as "colorIcon" | "icon" | "images" | undefined;
+  const catField = params.id[0] as
+    | "colorIcon"
+    | "icon"
+    | "images"
+    | "productImg"
+    | undefined;
 
-  // console.log("addIcon", catField, _id);
-
-  const imageSvgContainer = (image: TGallerySchema) => {
-    return (
-      <Box component={"div"} className=" flex text-center justify-center">
-        <Box component={"div"} className="flex flex-col border">
-          <Box component={"div"} className="p-2 md:flex-shrink-0">
-            <Box
-              component={"div"}
-              className="relative overflow-hidden bg-cover bg-no-repeat"
-            >
-              <Image
-                src={`/uploads/${image.type}/${image.url}`}
-                width="148"
-                height="199"
-                priority={true}
-                alt={"galler"}
-                className="rounded-lg"
-              />
-              <Box
-                component={"div"}
-                className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"
-              ></Box>
-              <Box component={"div"} className=" absolute right-1 top-1">
-                <Checkbox
-                  id={image._id}
-                  checked={false}
-                  // setCheck={() => handleSelected(galler.url)}
-                />
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    );
-  };
-
-  const videoContainer = (image: TGallerySchema, key: string) => {
-    return (
-      <Box
-        key={key}
-        component={"div"}
-        className=" flex text-center justify-center"
-      >
-        <Box component={"div"} className="flex flex-col border">
-          <Box component={"div"} className="p-2 md:flex-shrink-0">
-            <Box
-              component={"div"}
-              className="relative overflow-hidden bg-cover bg-no-repeat"
-            >
-              <video
-                autoPlay
-                muted
-                loop
-                className=" flex h-20 w-20 object-cover fixed"
-              >
-                <source
-                  type={image.type}
-                  src={`./uploads/${image.type}/${image.url}`}
-                />
-              </video>
-              <Box
-                component={"div"}
-                className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"
-              ></Box>
-              <Box component={"div"} className=" absolute right-1 top-1">
-                {/* <Checkbox
-                                                                    id={galler._id}
-                                                                    checked={false}
-                                                                    setCheck={() => handleSelected(galler.url)}
-                                                                />  */}
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    );
-  };
-
-  const svgContainer = async (image: TGallerySchema) => {
-    console.log("path:", `./public/uploads/${image.type}/${image.url}`);
-    // const DynamicComponent = dynamic(() => import(`@/public/uploads/${image.type}/${image.url}`));
-
-    // const { default: data } = await import(`@/public/uploads/${image.type}/${image.url}`, { assert: { type: "json" } });
-    return (
-      <Box component={"div"} className=" flex text-center justify-center">
-        {/* {<DynamicComponent />} */}
-        <Box component={"div"} className="flex flex-col border">
-          <Box component={"div"} className="p-2 md:flex-shrink-0">
-            <Box
-              component={"div"}
-              className="relative overflow-hidden bg-cover bg-no-repeat"
-            >
-              <Lootti
-                animationData={`./public/uploads/${image.type}/${image.url}`}
-                loop={true}
-              />
-              <Box
-                component={"div"}
-                className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"
-              ></Box>
-              <Box component={"div"} className=" absolute right-1 top-1">
-                {/* <Checkbox
-                                                                    id={galler._id}
-                                                                    checked={false}
-                                                                    setCheck={() => handleSelected(galler.url)}
-                                                                />  */}
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    );
-  };
+  console.log("addIcon", catField, _id, JSON.parse(defaultImg));
 
   return (
     <Box component={"div"} className="flex flex-col w-full">
@@ -304,7 +199,10 @@ async function Gallery({ params, searchParams }: Props) {
           <GalleryList
             gallery={gallerys.gallerys}
             catField={catField}
-            categoryString={JSON.stringify(category)}
+            title={title}
+            defaultImg={JSON.parse(defaultImg)}
+            imageFor={imageFor}
+            _id={_id}
             searchParams={stringified}
           />
           {/* <GalleryBase

@@ -70,7 +70,6 @@ export const createNewProduct = async (params: TRegisterProductSchema) => {
     try {
         connectToMongodb()
         const product = await Product.create({ ...params })
-        console.log('product',product);
         const updatePId = {
             ...product._doc, _id: product._doc._id.toString()
         }
@@ -83,7 +82,7 @@ export const createNewProduct = async (params: TRegisterProductSchema) => {
 export const updateP = async ({ _id, values }: { _id: string | undefined, values: TRegisterProductSchema }) => {
     try {
         connectToMongodb()
-        const product = await Product.updateOne({ _id }, { ...values })
+        const product = await Product.findByIdAndUpdate({ _id }, { ...values })
         return product
     } catch (err) {
         return err
