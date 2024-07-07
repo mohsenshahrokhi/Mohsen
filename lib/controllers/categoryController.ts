@@ -82,7 +82,7 @@ export const createNewCategory = async (params: TRegisterCategorySchema) => {
   }
 }
 
-export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TEditCategorySchema }) => {
+export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TRegisterCategorySchema }) => {
   try {
     // if (values.parent === '') {
     //   delete values.parent

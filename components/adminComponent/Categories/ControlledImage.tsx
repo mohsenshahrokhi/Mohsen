@@ -78,16 +78,16 @@ function ControlledImage({
     console.log("actionImgs up images", catField, values);
     catField !== "productImg" &&
       startTransition(() => {
-        // updateCategory({ _id: PId, values, accessToken }).then((data) => {
-        //   if (data.success === true) {
-        //     HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-        //     router.push(
-        //       `/dashboard/siteSettings/settingsProperties/${PId}?${stringifyParams}`
-        //     );
-        //   } else {
-        //     HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
-        //   }
-        // });
+        updateCategory({ _id: PId, values, accessToken }).then((data) => {
+          if (data.success === true) {
+            HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
+            router.push(
+              `/dashboard/siteSettings/settingsProperties/${PId}?${stringifyParams}`
+            );
+          } else {
+            HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
+          }
+        });
       });
 
     catField === "productImg" &&

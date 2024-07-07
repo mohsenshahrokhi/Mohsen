@@ -54,7 +54,7 @@ function AddCategoryForm({
 
   const form = useForm<TCategorySchema>({
     mode: "all",
-    resolver: zodResolver(CategorySchema),
+    resolver: zodResolver(RegisterCategorySchema),
     defaultValues: {
       ...cat,
     },
@@ -67,6 +67,8 @@ function AddCategoryForm({
   });
 
   const onSubmit = (values: TRegisterCategorySchema): void => {
+    console.log(values);
+
     add_new_cat &&
       startTransition(() => {
         createCategory({ values, accessToken }).then((data) => {

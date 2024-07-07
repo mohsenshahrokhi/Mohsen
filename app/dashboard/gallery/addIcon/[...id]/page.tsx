@@ -133,7 +133,10 @@ async function Gallery({ params, searchParams }: Props) {
   const _id = searchParams.PId;
   const imageFor = searchParams.imageFor;
   const title = searchParams.title;
-  const defaultImg = JSON.parse(searchParams.defaultImg || "");
+  const d = searchParams.defaultImg;
+  const defaultI = d ? JSON.parse(searchParams.defaultImg || "") : [];
+  const defaultImg = defaultI.includes("") ? [] : defaultI;
+
   const gallerys = await GalleryData({
     page: page,
     perPage: perPage,
@@ -166,7 +169,7 @@ async function Gallery({ params, searchParams }: Props) {
     | "productImg"
     | undefined;
 
-  console.log("addIcon", catField, _id, JSON.parse(defaultImg));
+  console.log("addIcon", catField, _id, defaultImg);
 
   return (
     <Box component={"div"} className="flex flex-col w-full">
@@ -200,7 +203,7 @@ async function Gallery({ params, searchParams }: Props) {
             gallery={gallerys.gallerys}
             catField={catField}
             title={title}
-            defaultImg={JSON.parse(defaultImg)}
+            defaultImg={defaultImg}
             imageFor={imageFor}
             _id={_id}
             searchParams={stringified}

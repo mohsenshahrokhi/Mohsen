@@ -1,14 +1,26 @@
-import { CAT } from '@/type'
-import NavItem from './NavItem'
+import { TCategorySchema } from "@/ZSchemas/CategorySchema";
+import NavItem from "./NavItem";
+import queryString from "query-string";
+import { getCategories } from "@/actions/category";
 
-async function getData() {
-    const res = await fetch(`${process.env.BASE_URL}/api/category`)
-    return res.json()
+async function getData(cId: string) {
+  const params = {
+    parent: cId,
+  };
+  const stringifyParams = queryString.stringify(params);
+
+  const { categories, success } = await getCategories({
+    stringifyParams,
+  });
+
+  return categories as TCategorySchema[];
 }
 
 const NavigationFoodMenu = async () => {
-    const { categorys: categories } = await getData()
-    const menuCategories = categories?.filter(((c: CAT) => c.type === '1'))
-    return <NavItem menuCategories={menuCategories} />
-}
-export default NavigationFoodMenu
+  const categories = await getData("6673f94fceba3a6ae38dd878");
+  const menuCategories = categories?.filter(
+    (c: TCategorySchema) => c.type === true
+  );
+  return <NavItem menuCategoriesString={JSON.stringify(menuCategories)} />;
+};
+export default NavigationFoodMenu;

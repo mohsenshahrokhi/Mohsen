@@ -13,7 +13,6 @@ import { getProducts } from "@/actions/product";
 import ProductList from "@/components/adminComponent/Products/ProductList";
 import Pagination from "@/components/adminComponent/Pagination";
 import { TProductSchema } from "@/ZSchemas/ProductSchema";
-import { useRef } from "react";
 
 type Data = {
   products: TProductSchema[];
@@ -21,15 +20,7 @@ type Data = {
   qtt: number;
 };
 
-async function getData({
-  page,
-  perPage,
-  accessToken,
-}: {
-  page: number;
-  perPage: number;
-  accessToken: string;
-}) {
+async function getData({ page, perPage }: { page: number; perPage: number }) {
   const params = {
     limit: perPage,
     skip: perPage * (page - 1),
@@ -66,7 +57,6 @@ export default async function Product({ searchParams }: Props) {
   const { products, qtt } = await getData({
     page: page,
     perPage: perPage,
-    accessToken: accessToken!,
   });
 
   const totalPage = Math.ceil(qtt / perPage);
