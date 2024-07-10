@@ -1,12 +1,13 @@
 import { TSessionType } from "@/ZSchemas/UserSchema"
 import jwt, { JwtPayload } from "jsonwebtoken"
+import { signOut } from "next-auth/react"
 
 interface SignOptions {
   expiresIn: string | number
 }
 
 const defaultOp: SignOptions = {
-  expiresIn: '1d'
+  expiresIn: 1*60*62
 }
 
 export function signJwtAccessToken(payload: JwtPayload, options: SignOptions = defaultOp) {
@@ -16,12 +17,13 @@ export function signJwtAccessToken(payload: JwtPayload, options: SignOptions = d
 }
 
 export function verifyJwt(token: string) {
+  
   try {
     const secret_key = process.env.JWT_KEY!
     const decoded = jwt.verify(token, secret_key)
     return decoded as TSessionType
   } catch (error) {
-    console.log(error)
+    console.log('verifyJwt',error)
     return null
 
   }

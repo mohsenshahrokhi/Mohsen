@@ -14,11 +14,13 @@ import { TLoginMailSchema, TLoginSmsSchema, TLoginUsernameSchema, TUserSchema } 
 
 export const authOptions: NextAuthOptions = {
     jwt: {
-        maxAge: 1 * 24 * 60 * 60 // 1 days
+        maxAge: 1 * 1 * 60 * 60 // 1 min
+        // maxAge: 1 * 24 * 60 * 60 // 1 days
     },
     session: {
         strategy: 'jwt',
-        maxAge: 1 * 24 * 60 * 60 // 1 days
+        maxAge: 1 * 1 * 60 * 60 // 1 days
+        // maxAge: 1 * 24 * 60 * 60 // 1 days
     },
     providers: [
         CredentialsProvider({
@@ -43,12 +45,7 @@ export const authOptions: NextAuthOptions = {
                 if (!passwordMatch) throw Error('ایمیل یا گذرواژه اشتباه است!')
                 const accessToken = signJwtAccessToken(user)
                 return {
-                    _id: user._id,
-                    role: user.role,
-                    email: user.email,
-                    username: user.username,
-                    accessToken: accessToken,
-                    displayName: user.displayName,
+                   ...user,accessToken:accessToken
                 }
             },
         }),
@@ -73,11 +70,7 @@ export const authOptions: NextAuthOptions = {
                 if (!passwordMatch) throw Error('username/password mismatch')
                 const accessToken = signJwtAccessToken(user)
                 return {
-                    _id: user._id,
-                    email: user.email,
-                    username: user.username,
-                    role: user.role,
-                    accessToken: accessToken
+                   ...user,accessToken:accessToken
                 }
             },
         }),
@@ -114,7 +107,15 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
+        async signIn({ user, account, profile, email, credentials }) {
+    return true
+  },
+  async redirect({ url, baseUrl }) {
+    return baseUrl
+  },
         async jwt({ token, user, session, trigger, account, profile }) {
+           
+            
             if (trigger === 'update' && session.user) {
                 return {
                     ...token,
@@ -131,6 +132,9 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token, user, trigger, newSession }) {
             session.user = token as any
+            if (trigger === "update" && newSession?.user) {
+                session.user = newSession.user
+            }
             return session
         }
     },

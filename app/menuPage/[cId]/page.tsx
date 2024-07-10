@@ -10,10 +10,6 @@ type Props = {
   };
 };
 
-/* async function getData(cId: string) {
-  const p = await axios.get(`${process.env.BASE_URL}/api/product/${cId}`);
-  return { products: p.data.products };
-} */
 type Data = {
   products: TProductSchema[];
   success: boolean;
@@ -36,9 +32,7 @@ async function getData(cId: string) {
 
 async function productPage({ params: { cId } }: Props) {
   const products = await getData(cId);
-  console.log("cId", products);
-
-  return <BodyFoodMenu productsString={JSON.stringify(products)} />;
+  return <BodyFoodMenu products={JSON.parse(JSON.stringify(products))} />;
 }
 
 export default productPage;

@@ -1,13 +1,9 @@
-import AuthForm from '@/components/auth/auth-form'
-import React from 'react'
+import AuthForm from "@/components/auth/auth-form";
+import React from "react";
 
-function AuthLayout({ children }: { children: React.ReactNode }) {
 
-    return (
-        <AuthForm >
-            {children}
-        </AuthForm>
-    )
+async function AuthLayout({ children }: { children: React.ReactNode }) {
+  return <AuthForm>{children}</AuthForm>;
 }
 
-export default AuthLayout
+export default AuthLayout;

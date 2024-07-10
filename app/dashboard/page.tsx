@@ -14,12 +14,7 @@ export default function Dashboard({ searchParams }: Props) {
 
   const stringified = queryString.stringify(searchParams);
 
-  const { status, data: session } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.push(`/phone?${stringified}`);
-    },
-  });
+  const { data: session } = useSession();
 
   return (
     <div>

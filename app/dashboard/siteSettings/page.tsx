@@ -10,7 +10,7 @@ import { getCategories } from "@/actions/category";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
 import CatList from "@/components/adminComponent/Categories/CatList";
 
-async function getData(accessToken: string) {
+async function getData() {
   const params = {
     parent: "null",
   };
@@ -31,11 +31,12 @@ type Props = {
 async function settingsProperties({ searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken;
-  const verify = (accessToken && verifyJwt(accessToken)) || null;
+  const verify = accessToken && verifyJwt(accessToken)?._id;
+
   delete searchParams.page;
   const stringifyParams = queryString.stringify(searchParams);
   let categories: TCategorySchema[] = [];
-  if (verify) categories = await getData(accessToken!);
+  if (verify) categories = await getData();
 
   return (
     <Box

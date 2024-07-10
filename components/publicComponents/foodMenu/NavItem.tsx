@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import queryString from "query-string";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
@@ -12,9 +12,6 @@ type Props = {
 
 function NavItem({ menuCategoriesString }: Props) {
   const router = useRouter();
-  // const search = useSearchParams()
-  // console.log(search.toString());
-
   const [active, setActive] = useState<string>("");
   const menuCategories = JSON.parse(menuCategoriesString) as TCategorySchema[];
   const act = useCallback(
@@ -28,7 +25,6 @@ function NavItem({ menuCategoriesString }: Props) {
       };
       const stringified = queryString.stringify(parsed);
       setActive(category);
-      // router.push(`/menuPage/?${stringified}`);
       router.push(
         `/menuPage/${category}?select=title,price,category,recipe&category=${category}&populate=category.name,category.images&stock>1`
       );
@@ -40,7 +36,6 @@ function NavItem({ menuCategoriesString }: Props) {
     menuCategories && setActive(menuCategories[0]._id || "");
     menuCategories && act(menuCategories[0]._id || "");
   }, []);
-  console.log("NavItem", menuCategories, active);
 
   return (
     <>

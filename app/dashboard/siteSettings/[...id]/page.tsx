@@ -18,7 +18,7 @@ type Props = {
   searchParams: { [key: string]: string | undefined };
 };
 
-async function getData(cId: string, accessToken: string) {
+async function getData(cId: string) {
   const params = {
     parent: cId,
     populate: "parent.name,author",
@@ -38,7 +38,7 @@ async function Category({ params, searchParams }: Props) {
   delete searchParams.id;
   const { id } = params;
 
-  const categories = await getData(id.slice(-1)[0], accessToken!);
+  const categories = await getData(id.slice(-1)[0]);
 
   const stringifyParams = queryString.stringify(params);
 

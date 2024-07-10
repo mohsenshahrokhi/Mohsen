@@ -2,10 +2,15 @@ import Banner from "./Banner";
 import AnimateCharacter from "./AnimateCharacter";
 import AnimateWord from "./AnimateWord";
 import { TProductSchema } from "@/ZSchemas/ProductSchema";
-import { digitsEnToFa } from "@persian-tools/persian-tools";
+import {
+  addCommas,
+  digitsEnToFa,
+  halfSpace,
+} from "@persian-tools/persian-tools";
+import { Box } from "@mui/material";
 
-const BodyFoodMenu = ({ productsString }: { productsString: string }) => {
-  const products = JSON.parse(productsString) as TProductSchema[];
+const BodyFoodMenu = ({ products }: { products: TProductSchema[] }) => {
+  // const products = productsString;
   if (products?.length === 0) {
     return <h3>loading...</h3>;
   }
@@ -18,10 +23,12 @@ const BodyFoodMenu = ({ productsString }: { productsString: string }) => {
           products[0]?.category &&
           products[0]?.category.images &&
           products[0]?.category.images.length > 0 && (
-            <Banner
-              banner={products[0]?.category?.images[0]}
-              item={products[0]?.category?.latinName}
-            />
+            <Box className=" flex w-full justify-center items-center">
+              <Banner
+                banner={products[0]?.category?.images[0]}
+                item={products[0]?.category?.latinName}
+              />
+            </Box>
           )}
         {/* <div className=' flex w-full h-screen'>
                     slide down
@@ -33,14 +40,14 @@ const BodyFoodMenu = ({ productsString }: { productsString: string }) => {
               <div className="" key={product._id}>
                 <div className=" flex justify-between items-center px-3">
                   <AnimateWord
-                    text={digitsEnToFa(product.title)}
+                    text={halfSpace(digitsEnToFa(product.title))}
                     textClassName=" inline-flex"
                     className=" text-zinc-700"
                     el="span"
                   />
                   <span className=" flex flex-col whitespace-nowrap rounded-full bg-success-100 px-[1em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[1.2em] font-bold leading-none text-success-700">
                     <AnimateCharacter
-                      text={digitsEnToFa(product.price)}
+                      text={digitsEnToFa(addCommas(product.price))}
                       el="span"
                       textClassName=" inline-flex float-left"
                       className=" text-lg flex flex-col"
@@ -51,7 +58,7 @@ const BodyFoodMenu = ({ productsString }: { productsString: string }) => {
                 <hr className="my-1 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-20 dark:opacity-100" />
                 <div className=" flex w-full">
                   <AnimateWord
-                    text={digitsEnToFa(product.recipe) || ""}
+                    text={halfSpace(digitsEnToFa(product.recipe)) || ""}
                     textClassName=" text-sm text-zinc-500"
                     className=" text-zinc-700"
                     el="p"

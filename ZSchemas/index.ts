@@ -6,6 +6,12 @@ declare module 'next-auth' {
         user: TUserSchema
     }
 }
+// declare module 'next-auth/jwt' {
+//   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
+//   interface JWT {
+//     user?: TUserSchema
+//   }
+// }
 
 export type ModalProps = {
   handleClose: () => void;

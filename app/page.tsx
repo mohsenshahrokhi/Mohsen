@@ -4,23 +4,31 @@ import Link from "next/link";
 import junkfood from "@/public/icons/json/junk-food.json";
 import working from "@/public/icons/json/working.json";
 import Lootti from "@/components/publicComponents/Lootti";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
+import { useSession } from "next-auth/react";
+import { verifyJwt } from "@/lib/jwt";
+import { Button, IconButton, Tooltip } from "@mui/material";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 
 export default function Home() {
   const router = useRouter();
-
-  // const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-  // useEffect(() => {
-  //   const stringified = queryString.stringify({
-  //     theme,
-  //     sidebarVisible: false,
-  //     sidebarControl: true,
-  //   });
-  //   router.push(`/?${stringified}`);
-  //   localStorage.setItem("theme", theme);
-  // }, [router, theme]);
+  // const { status, data } = useSession();
+  // const accessToken = data?.user.accessToken;
+  // const verify = accessToken && verifyJwt(accessToken)?._id;
+  // if (verify === undefined) {
+  // }
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  useEffect(() => {
+    const stringified = queryString.stringify({
+      theme,
+      sidebarVisible: false,
+      sidebarControl: true,
+    });
+    router.push(`/?${stringified}`);
+    localStorage.setItem("theme", theme);
+  }, [router, theme]);
 
   return (
     <main className=" flex h-screen w-full">
@@ -48,6 +56,14 @@ export default function Home() {
         >
           <Lootti animationData={working} loop={true} />
         </Link>
+        {/* <Tooltip title={`ویرایش`} placement="top"> */}
+        {/* <Link
+          className=" flex w-5"
+          href={`./dashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
+        >
+          <Lootti animationData={working} loop={true} />
+        </Link> */}
+        {/* </Tooltip> */}
       </section>
     </main>
   );

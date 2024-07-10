@@ -11,14 +11,10 @@ type Props = {
 
 function Banner({ banner, item }: Props) {
   return (
-    <Box className=" relative flex w-full h-60 justify-center items-center rounded-sm overflow-hidden shadow-sm">
+    <Box className=" relative flex w-full sm:w-1/2 lg:w-3/12 h-60 justify-center sm:my-4 items-center sm:rounded overflow-hidden sm:shadow-sm">
       <Image
         src={`/uploads/${banner}`}
-        // fill={true}
-        width="548"
-        height="599"
-        // placeholder="blur"
-        // blurDataURL="data:image/jpeg..."
+        fill={true}
         priority={true}
         alt={banner}
       />

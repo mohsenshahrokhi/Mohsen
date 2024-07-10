@@ -6,7 +6,12 @@ import { verifyJwt } from "@/lib/jwt";
 import CircularProgress from "@mui/material/CircularProgress";
 import moment from "moment";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  redirect,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import queryString from "query-string";
 import { useEffect } from "react";
 
@@ -23,6 +28,17 @@ export default function RootLayout({
   const sidebarControl =
     searchParams.get("sidebarControl") === "true" ? true : false;
   const params = new URLSearchParams(searchParams);
+  const { status, data } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push(`/phone?${stringified}`);
+    },
+  });
+  // const accessToken = data?.user.accessToken;
+  // const verify = accessToken && verifyJwt(accessToken)?._id;
+  // if (verify === undefined) {
+  //   // redirect(`/`);
+  // }
 
   let theme = searchParams.get("theme") || "dark";
   // let theme = localStorage.getItem("theme") || "dark";
@@ -37,13 +53,6 @@ export default function RootLayout({
     // router.push(`/dashboard?${stringified}`);
     localStorage.setItem("theme", theme);
   }, [theme, router]);
-
-  const { status, data } = useSession({
-    required: true,
-    onUnauthenticated() {
-      router.push(`/phone?${stringified}`);
-    },
-  });
 
   if (data?.user && parseInt(data.user.role) < 1) {
     router.push(`/phone?${stringified}`);

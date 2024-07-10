@@ -11,6 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Image from "next/image";
 import PropertiesDetile from "@/components/adminComponent/Categories/PropertiesDetile";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
+import { headers } from "next/headers";
 
 type Props = {
   params: {
