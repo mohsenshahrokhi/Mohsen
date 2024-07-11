@@ -25,7 +25,10 @@ type Props = {
   catString?: string;
   options: TOptionSchema[];
   add_new_cat: boolean;
-  searchParams: string;
+  searchParams: {
+    parentCat: string;
+    callbackUrl: string;
+  };
   callbackUrl: string;
 };
 
@@ -52,7 +55,7 @@ function AddCategoryForm({
 
   const accessToken = user?.accessToken || "";
 
-  const form = useForm<TCategorySchema>({
+  const form = useForm<TRegisterCategorySchema>({
     mode: "all",
     resolver: zodResolver(RegisterCategorySchema),
     defaultValues: {
@@ -67,7 +70,7 @@ function AddCategoryForm({
   });
 
   const onSubmit = (values: TRegisterCategorySchema): void => {
-    console.log(values);
+    console.log("AddCategoryForm", values);
 
     add_new_cat &&
       startTransition(() => {
@@ -128,7 +131,7 @@ function AddCategoryForm({
             />
             <SelectElement
               name={"parent"}
-              label={"دسته بندی"}
+              label={"دسته بندی اصلی"}
               control={control}
               options={options}
               fullWidth

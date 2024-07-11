@@ -23,7 +23,7 @@ export const getAllGallerys = async (
     }
 ) => {
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
+    if (accessToken && verify?.role === '11') {
         let gallerys: All
         gallerys = await getAllGallery(stringifyParams) as All
         return { success: gallerys.qtt > 0, gallerys: gallerys.gallery, qtt: gallerys.qtt }
@@ -42,7 +42,7 @@ export const createGallery = async (
     }
 ) => {
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
+    if (accessToken && verify?.role === '11') {
         const entryValues = Array.from(image)
         for (const formDataEntryValue of entryValues) {
             const file: File | null = formDataEntryValue[1] as unknown as File
@@ -80,7 +80,7 @@ export const updateImgGallery = async (
 ) => {
     // const validatedFields = RegisterGallerySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
+    if (accessToken && verify?.role === '11') {
 
         const entryValues = Array.from(image)
 
@@ -119,7 +119,7 @@ export const getImage = async (_id: string) => {
 
 export const deleteImg = async ({ img, accessToken }: { img: string[], accessToken: string | undefined }) => {
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && (verify?.role) === '2') {
+    if (accessToken && (verify?.role) === '11') {
         const { acknowledged } = await deleteImage(img) as mongoose.mongo.DeleteResult
         return {
             success: acknowledged ? true : false,

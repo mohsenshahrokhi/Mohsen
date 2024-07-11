@@ -29,7 +29,7 @@ export const createCategory = async (
 ) => {
     const validatedFields = RegisterCategorySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
+    if (accessToken && verify?.role === '11') {
         if (!validatedFields.success) {
             return {
                 error: true,
@@ -98,7 +98,7 @@ export const updateCategory = async (
     // const validatedFields = RegisterCategorySchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
   
-    if (accessToken && verify?.role === '2') {
+    if (accessToken && verify?.role === '11') {
     // if (accessToken && verify?.role === '2' && validatedFields.success) {
         
     const update = await updateCat({
@@ -136,7 +136,7 @@ export const getCBy = async (stringifyParams: string) => {
 
 export const deleteCat = async ({ id, accessToken }: { id: string, accessToken: string | undefined }) => {
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && (verify?.role) === '2') {
+    if (accessToken && (verify?.role) === '11') {
 
          const existParams = {
             parent: id

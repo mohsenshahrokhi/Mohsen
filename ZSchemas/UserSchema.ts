@@ -24,6 +24,7 @@ export const UserSchema = z.object({
     address: z.string().optional(),
     description: z.string().optional(),
     verifyPhone: z.boolean().default(false),
+    active: z.boolean().default(true),
     verifyPKey: z.string(),
     verifyMail: z.boolean().default(false),
     verifyMKey: z.date(),

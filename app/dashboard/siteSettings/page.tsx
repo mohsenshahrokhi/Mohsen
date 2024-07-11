@@ -37,6 +37,7 @@ async function settingsProperties({ searchParams }: Props) {
   const stringifyParams = queryString.stringify(searchParams);
   let categories: TCategorySchema[] = [];
   if (verify) categories = await getData();
+  console.log("settingsProperties", categories);
 
   return (
     <Box

@@ -96,12 +96,17 @@ export const activateUser: ActiveUserSchema = async (jwtUserId) => {
         data: {
             verifyMKey: new Date(),
             verifyMail: true,
-            role: '2'
+            role: '11'
         }
     })
 
     return 'success'
 
+}
+
+type All = {
+    users: TUserSchema[]
+    qtt: number
 }
 
 export const getAllU = async (
@@ -114,9 +119,9 @@ export const getAllU = async (
         }
 ) => {
 
-    const users = await getAllUsers(stringifyParams) as TUserSchema[]
+    const {users,qtt} = await getAllUsers(stringifyParams) as All
 
-    return { success: users.length > 0, users }
+    return { success: users.length > 0, users,qtt }
 
 }
 
@@ -195,7 +200,7 @@ export const sendSms = async (values: TLoginPhoneSchema) => {
     const updatedUser = await updateUser(user._id, {
         data: {
             verifyPKey: await bcrypt.hash(JSON.stringify(key), salt),
-            role: '2'
+            role: '11'
         }
     })
 

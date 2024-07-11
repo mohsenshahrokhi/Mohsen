@@ -51,7 +51,7 @@ export default withAuth(
                 // console.log('token',verifyJwt(token?.accessToken));
                 
             //   if(verifyJwt(token?.user?.accessToken)) return true
-              if (token?.role === "2") return true
+              if (token?.role === "11") return true
               return false
             },
         },

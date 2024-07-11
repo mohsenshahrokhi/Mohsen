@@ -31,9 +31,10 @@ async function getData(cId: string) {
   return category;
 }
 
-async function getCats(accessToken: string) {
+async function getCats() {
   const params = {
     // populate: 'parent.name,author'
+    limit: 2000,
   };
   const stringifyParams = queryString.stringify(params);
   const { categories, success } = await getCategories({
@@ -45,7 +46,7 @@ async function getCats(accessToken: string) {
 async function AddSetting({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken;
-  const catId = searchParams.parentCat ? searchParams.parentCat : "";
+  const parentCat = searchParams.parentCat ? searchParams.parentCat : "";
   const stringifyParams = queryString.stringify(searchParams);
   const callbackUrl = searchParams.callbackUrl;
   const { id } = params;
@@ -59,18 +60,21 @@ async function AddSetting({ params, searchParams }: Props) {
         latinName: "",
         slug: "",
         type: false,
-        parent: catId,
+        parent: parentCat,
         images: [],
         propertys: [],
         author: session?.user._id,
       })
     : (category = await getData(id[0]));
-  const categories = await getCats(accessToken!);
+  const categories = await getCats();
   const catString = JSON.stringify(category);
   const options: TOptionSchema[] = [];
-  categories?.map((cat: TCategorySchema) => {
+  categories?.map((cat: TCategorySchema, index: number) => {
+    index === 0 && options.push({ id: "null", label: "دسته اصلی" });
     options.push({ id: cat._id, label: cat.name });
   });
+  console.log("AddSetting", category);
+
   return (
     <Box
       component="div"
@@ -100,7 +104,8 @@ async function AddSetting({ params, searchParams }: Props) {
           add_new_cat={add_new_cat}
           options={options}
           callbackUrl={callbackUrl}
-          searchParams={stringifyParams}
+          searchParams={searchParams}
+          // searchParams={stringifyParams}
         />
       </Box>
     </Box>

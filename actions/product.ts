@@ -32,7 +32,7 @@ export const createProduct = async (
 ) => {
     const validatedFields = RegisterProductSchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
+    if (accessToken && verify?.role === '11') {
         if (!validatedFields.success) {
             return {
                 error: true,
@@ -98,7 +98,7 @@ export const updateProduct = async (
 ) => {
     // const validatedFields = EditProductSchema.safeParse(values)
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && verify?.role === '2') {
+    if (accessToken && verify?.role === '11') {
 
         const update = await updateP({
             _id,
@@ -134,7 +134,7 @@ export const getPBy = async (stringifyParams: string) => {
 
 export const deleteP = async ({ id, accessToken }: { id: string, accessToken: string | undefined }) => {
     const verify = accessToken && verifyJwt(accessToken) || null
-    if (accessToken && (verify?.role) === '2') {
+    if (accessToken && (verify?.role) === '11') {
         const { acknowledged } = await deleteProduct(id) as mongoose.mongo.DeleteResult
         return {
             success: acknowledged ? true : false,

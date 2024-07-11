@@ -46,7 +46,10 @@ async function Category({ params, searchParams }: Props) {
 
   const { url, backUrl } = HandleURL(id);
 
-  const stringified = queryString.stringify({ parentCat: params.id.slice(-1) });
+  const stringified = queryString.stringify({
+    parentCat: params.id.slice(-1),
+    callbackUrl: url,
+  });
 
   return (
     <Box
@@ -65,7 +68,7 @@ async function Category({ params, searchParams }: Props) {
           aria-label="add"
         >
           <Link
-            href={`/dashboard/siteSettings/addSetting/add_new_cat?${stringified}&callbackUrl=${url}`}
+            href={`/dashboard/siteSettings/addSetting/add_new_cat?${stringified}`}
           >
             اضافه کردن ویژگی جدید
             <AddIcon sx={{ ml: 1 }} />

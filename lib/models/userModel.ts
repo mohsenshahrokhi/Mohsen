@@ -59,6 +59,10 @@ export const UserSchema = new Schema<TUserSchema, {}, Methods>({
         type: 'boolean',
         default: false
     },
+     active: {
+        type: 'boolean',
+        default: true
+    },
     verifyMKey: {
         type: 'date'
     },

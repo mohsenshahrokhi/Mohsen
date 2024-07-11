@@ -84,9 +84,9 @@ export const createNewCategory = async (params: TRegisterCategorySchema) => {
 
 export const updateCat = async ({ _id, values }: { _id: string | undefined, values: TRegisterCategorySchema }) => {
   try {
-    // if (values.parent === '') {
-    //   delete values.parent
-    // }
+    if (values.parent === 'null') {
+      delete values.parent
+    }
     connectToMongodb()
     const category = await Category.findOneAndUpdate({ _id: _id }, { ...values })
     return category

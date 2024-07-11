@@ -40,7 +40,7 @@ export const CategorySchema = new Schema<TCategorySchema>({
     parent: {
         type: Schema.Types.ObjectId,
         ref: 'categories',
-        default: null
+        default: 'null'
     },
     propertys: [
         {

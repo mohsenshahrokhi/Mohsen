@@ -10,7 +10,7 @@ export const CategorySchema = z.object({
     icon: z.string().uuid().optional(),
     images: z.array(z.string()).default([]),
     type: z.boolean().optional().default(false),
-    parent: z.string().optional(),
+    parent: z.string().optional().nullable(),
     author: z.string().optional(),
     propertys: z.array(z.object({ name: z.string(), values: z.string() })).default([]).optional(),
     createdAt: z.date().optional()
@@ -26,7 +26,7 @@ export const EditCategorySchema = z.object({
     icon: z.string().optional().default(''),
     images: z.array(z.string()).optional().default([]),
     type: z.boolean().optional().default(false),
-    parent: z.string().optional().default(''),
+    parent: z.string().optional().nullable(),
     author: z.string().optional().default(''),
     propertys: z.array(z.object({ name: z.string(), values:  z.string() })).optional().default([])
 
@@ -54,7 +54,7 @@ export const RegisterCategorySchema = z.object({
     icon: z.string().optional(),
     images: z.array(z.string()).optional(),
     type: z.boolean().default(false).optional(),
-    parent: z.string().optional(),
+    parent: z.string().optional().nullable(),
     author: z.string().optional(),
     propertys: z.array(z.object({ name: z.string(), values: z.string() })).default([]).optional()
 }).superRefine((data, ctx) => {

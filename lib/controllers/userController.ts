@@ -9,18 +9,20 @@ export const getAllUsers = async (req: any) => {
         connectToMongodb()
 
         const parser = new MongooseQueryParser()
+        const qtt = await Users.find().countDocuments({})
         const parsed = parser.parse(req)
         const users = await Users
             .find(parsed.filter)
-            .sort(parsed.sort).
-            limit(parsed.limit || 10)
             .populate(parsed.populate)
+            .sort(parsed.sort)
+            .limit(parsed.limit || 10)
+            .skip(parsed.skip || 0)
             .select(parsed.select)
-
+            .exec()
         const updateUId = users.map(user => ({
             ...user?._doc, _id: user?._doc._id.toString()
         }))
-        return updateUId
+        return {users:updateUId,qtt}
     } catch (error) {
         return error
     }
