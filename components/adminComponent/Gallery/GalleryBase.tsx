@@ -85,7 +85,7 @@ function GalleryBase({
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
 
             router.push(
-              `/dashboard/siteSettings/settingsProperties/${catId}?${searchParams}`
+              `/siteSettings/settingsProperties/${catId}?${searchParams}`
             );
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });

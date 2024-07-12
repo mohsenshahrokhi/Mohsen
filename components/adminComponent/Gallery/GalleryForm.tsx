@@ -47,7 +47,7 @@ function GalleryForm({ img, add }: Props) {
 
             HandleEnqueueSnackbar({ variant: 'success', msg: upload.msg })
 
-            router.push('/dashboard/gallery')
+            router.push('/gallery')
         } else {
 
             HandleEnqueueSnackbar({ variant: 'error', msg: upload.msg })

@@ -102,8 +102,8 @@ function ProductForm({ add, searchParams, productInfo }: Props) {
             //             HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
 
             //             // parent ?
-            //             //     router.push(`/dashboard/siteSettings/`) :
-            //             //     router.push(`/dashboard/siteSettings`)
+            //             //     router.push(`/siteSettings/`) :
+            //             //     router.push(`/siteSettings`)
             //         } else {
 
             // HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })
@@ -121,8 +121,8 @@ function ProductForm({ add, searchParams, productInfo }: Props) {
             //             HandleEnqueueSnackbar({ variant: 'success', msg: data.msg })
 
             //             parent ?
-            //                 router.push(`/dashboard/siteSettings/`) :
-            //                 router.push(`/dashboard/siteSettings`)
+            //                 router.push(`/siteSettings/`) :
+            //                 router.push(`/siteSettings`)
             //         } else {
 
             //             HandleEnqueueSnackbar({ variant: 'error', msg: data.msg })

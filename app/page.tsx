@@ -51,7 +51,7 @@ export default function Home() {
           <Lootti animationData={junkfood} loop={true} />
         </Link>
         <Link
-          href={`./dashboard`}
+          href={`./userDashboard`}
           // href={`./dashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
         >
           <Lootti animationData={working} loop={true} />

@@ -82,7 +82,7 @@ function ControlledImage({
           if (data.success === true) {
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
             router.push(
-              `/dashboard/siteSettings/settingsProperties/${PId}?${stringifyParams}`
+              `/siteSettings/settingsProperties/${PId}?${stringifyParams}`
             );
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
@@ -95,9 +95,9 @@ function ControlledImage({
         updateProduct({ _id: PId, values, accessToken }).then((data) => {
           if (data.success === true) {
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-            router.push(`/dashboard/product?${stringifyParams}`);
+            router.push(`/product?${stringifyParams}`);
             // router.push(
-            //   `/dashboard/siteSettings/settingsProperties/${PId}?${stringifyParams}`
+            //   `/siteSettings/settingsProperties/${PId}?${stringifyParams}`
             // );
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });

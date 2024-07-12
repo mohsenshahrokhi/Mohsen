@@ -1,4 +1,3 @@
-"use client";
 import LoginPhoneForm from "@/components/auth/login-phone-form";
 import { signOut } from "next-auth/react";
 

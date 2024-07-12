@@ -77,7 +77,7 @@ function AddCategoryForm({
         createCategory({ values, accessToken }).then((data) => {
           if (data.success === true) {
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-            router.push(`/dashboard/siteSettings/${callbackUrl}`);
+            router.push(`/siteSettings/${callbackUrl}`);
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
           }
@@ -89,7 +89,7 @@ function AddCategoryForm({
         updateCategory({ _id: cat._id, values, accessToken }).then((data) => {
           if (data.success === true) {
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-            router.push(`/dashboard/siteSettings/${callbackUrl}`);
+            router.push(`/siteSettings/${callbackUrl}`);
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
           }

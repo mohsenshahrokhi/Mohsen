@@ -238,7 +238,7 @@ function GalleryList({
               HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
 
               router.push(
-                `/dashboard/siteSettings/settingsProperties/${_id}?${searchParams}`
+                `/siteSettings/settingsProperties/${_id}?${searchParams}`
               );
             } else {
               HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
@@ -252,7 +252,7 @@ function GalleryList({
             if (data.success === true) {
               HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
 
-              router.push(`/dashboard/product?${searchParams}`);
+              router.push(`/product?${searchParams}`);
             } else {
               HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
             }
@@ -266,7 +266,7 @@ function GalleryList({
           if (data.success === true) {
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
 
-            router.push(`/dashboard/siteSettings/gallery?${searchParams}`);
+            router.push(`/siteSettings/gallery?${searchParams}`);
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
           }

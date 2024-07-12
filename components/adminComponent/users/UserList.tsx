@@ -80,14 +80,16 @@ export default function UserList({
           <TableHead>
             <TableRow>
               <TableCell>نام</TableCell>
-              {/* <TableCell>نام</TableCell> */}
               <TableCell>نام نمایشی</TableCell>
+              <TableCell>تلفن همراه</TableCell>
               <TableCell>ایمیل</TableCell>
-              <TableCell>وضعیت</TableCell>
               <TableCell>سطح دسترسی</TableCell>
+              <TableCell>وضعیت</TableCell>
               <TableCell>تأیید تلفن</TableCell>
               <TableCell>تأیید ایمیل</TableCell>
-              <TableCell>عکس</TableCell>
+              <TableCell>عکس شناسه</TableCell>
+              <TableCell>آدرس</TableCell>
+              <TableCell>توضیحات</TableCell>
               <TableCell>عملیات</TableCell>
             </TableRow>
           </TableHead>
@@ -102,6 +104,7 @@ export default function UserList({
                 >
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.displayName}</TableCell>
+                  <TableCell>{user.phone}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
@@ -118,6 +121,26 @@ export default function UserList({
                   </TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={1}>
+                      {user.active === true ? (
+                        <Chip label="فعال" color="success" />
+                      ) : (
+                        <Chip label="غیر فعال" color="primary" />
+                      )}
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    <Stack direction="row" spacing={1}>
+                      {user.verifyPhone === true ? (
+                        <Chip label="فعال" color="success" />
+                      ) : (
+                        <Chip label="غیر فعال" color="primary" />
+                      )}
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    <Stack direction="row" spacing={1}>
                       {user.verifyMail === true ? (
                         <Chip label="فعال" color="success" />
                       ) : (
@@ -125,28 +148,9 @@ export default function UserList({
                       )}
                     </Stack>
                   </TableCell>
-                  <TableCell>
-                    {" "}
-                    <Stack direction="row" spacing={1}>
-                      {user.verifyPhone === true ? (
-                        <Chip label="فعال" color="success" />
-                      ) : (
-                        <Chip label="غیر فعال" color="primary" />
-                      )}
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    {" "}
-                    <Stack direction="row" spacing={1}>
-                      {user.verifyPhone === true ? (
-                        <Chip label="فعال" color="success" />
-                      ) : (
-                        <Chip label="غیر فعال" color="primary" />
-                      )}
-                    </Stack>
-                  </TableCell>
                   <TableCell></TableCell>
-
+                  <TableCell>{user.address}</TableCell>
+                  <TableCell>{user.description}</TableCell>
                   <TableCell>
                     <Box
                       component={"div"}
@@ -163,57 +167,13 @@ export default function UserList({
                           <IconButton color="warning" className=" flex w-5">
                             <Link
                               id={`edit-${user._id}`}
-                              href={`/dashboard/user/addUser/${user?._id}?${stringified}`}
+                              href={`/users/addUser/${user?._id}?${stringified}`}
                               className=" "
                             >
                               <HiOutlinePencilSquare color="orange" />
                             </Link>
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title={"عکس ها"} placement="top">
-                          <IconButton color="warning" className=" flex w-5">
-                            <Link
-                              id={`gallery-${user._id}`}
-                              href={`/dashboard/user/gallery/productImg?PId=${
-                                user?._id
-                              }&defaultImg=${JSON.stringify(
-                                user.image
-                              )}&title=${
-                                user.displayName
-                              }&callback=${stringified}`}
-                              className=" "
-                            >
-                              <HiOutlinePhoto color="blue" />
-                            </Link>
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                      <Box
-                        component={"div"}
-                        className=" flex gap-x-4 w-full justify-around items-center"
-                      >
-                        <Tooltip
-                          title={`کپی از ${user.displayName}`}
-                          placement="top"
-                        >
-                          <IconButton color="warning" className=" flex w-5">
-                            <Link
-                              id={`edit-${user._id}`}
-                              href={`user/addUser/${user._id}?type=copy_product&&${stringified}`}
-                              className=" "
-                            >
-                              <ContentCopyIcon color="info" />
-                            </Link>
-                          </IconButton>
-                        </Tooltip>
-                        {/* <DeleteModal
-                          deleteUser={(id) => deleteUser(id)}
-                          ref={modalRef}
-                          label={<CloseIcon />}
-                          disc={`آیا از حذف محصول ${user.displayName} مطمئن هستید ؟`}
-                          id={user._id}
-                          ModalTitle={` حذف ${user.displayName}`}
-                        /> */}
                       </Box>
                     </Box>
                   </TableCell>

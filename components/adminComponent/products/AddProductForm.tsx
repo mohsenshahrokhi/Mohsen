@@ -106,7 +106,7 @@ function AddProductForm({
         createProduct({ values, accessToken }).then((data) => {
           if (data.success === true) {
             HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-            router.push(`/dashboard/product`);
+            router.push(`/product`);
           } else {
             HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
           }
@@ -120,7 +120,7 @@ function AddProductForm({
 
             if (data.success === true) {
               HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
-              router.push(`/dashboard/product`);
+              router.push(`/product`);
             } else {
               HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
             }

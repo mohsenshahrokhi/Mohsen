@@ -55,7 +55,7 @@ function PropertiesDetile({ catImg, stringifyParams }: Props) {
             aria-label="add"
           >
             <Link
-              href={`/dashboard/gallery/addIcon/icon?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
+              href={`/gallery/addIcon/icon?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
                 [catImg.icon]
               )}&title=${catImg.title}&${stringifyParams}`}
             >
@@ -85,7 +85,7 @@ function PropertiesDetile({ catImg, stringifyParams }: Props) {
             aria-label="add"
           >
             <Link
-              href={`/dashboard/gallery/addIcon/colorIcon?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
+              href={`/gallery/addIcon/colorIcon?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
                 [catImg.colorIcon]
               )}&title=${catImg.title}&${stringifyParams}`}
             >
@@ -116,7 +116,7 @@ function PropertiesDetile({ catImg, stringifyParams }: Props) {
         aria-label="add"
       >
         <Link
-          href={`/dashboard/gallery/addIcon/images?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
+          href={`/gallery/addIcon/images?PId=${catId}&imageFor=category&defaultImg=${JSON.stringify(
             catImg.images
           )}&title=${catImg.title}&${stringifyParams}`}
         >

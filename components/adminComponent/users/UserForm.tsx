@@ -106,7 +106,7 @@ function UserForm({ userId }: Use) {
 
         setIsLoading(false)
 
-        router.push('/dashboard/user')
+        router.push('/user')
 
     }
 

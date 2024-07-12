@@ -1,14 +1,16 @@
 "use client";
 
-// import { useAppSelector } from '@/store/hooks'
 import { useSession } from "next-auth/react";
-import { GrGallery, GrUserAdmin } from "react-icons/gr";
-import { LiaFileInvoiceDollarSolid, LiaProductHunt } from "react-icons/lia";
-import { CiSettings, CiUser } from "react-icons/ci";
-import { BiCategory } from "react-icons/bi";
-import { TfiPanel } from "react-icons/tfi";
 import Link from "next/link";
-import React from "react";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import CollectionsOutlinedIcon from "@mui/icons-material/CollectionsOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import ContactPageOutlinedIcon from "@mui/icons-material/ContactPageOutlined";
+import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionManufacturingOutlined";
 
 type Props = {
   title: boolean;
@@ -16,13 +18,10 @@ type Props = {
 };
 
 import { usePathname } from "next/navigation";
-import { AiOutlineDashboard } from "react-icons/ai";
 
 const SidebarItems = ({ title, params }: Props) => {
-  const carentRoute = usePathname();
-
-  // const { color } = useAppSelector((store) => store.themeMode.theme)
-
+  const route = usePathname();
+  const currentRoute = route.split("/").splice(1);
   const { data: session } = useSession();
 
   const accessRole = (session?.user && session?.user?.role) || "";
@@ -34,44 +33,51 @@ const SidebarItems = ({ title, params }: Props) => {
         {
           title: "Dashboard",
           accessRoles: ["11"],
-          icon: <GrUserAdmin />,
-          href: "/dashboard?",
+          icon: <DashboardOutlinedIcon />,
+          href: "/userDashboard",
+          key: "userDashboard",
         },
         {
           title: "Settings",
           accessRoles: ["11"],
-          icon: <CiSettings />,
-          href: "/dashboard/siteSettings?",
+          icon: <SettingsOutlinedIcon />,
+          href: "/siteSettings",
+          key: "siteSettings",
         },
         {
           title: "Products",
           accessRoles: ["11"],
-          icon: <LiaProductHunt />,
-          href: "/dashboard/product?",
+          icon: <PrecisionManufacturingOutlinedIcon />,
+          href: "/product",
+          key: "product",
         },
         {
           title: "Invoice",
           accessRoles: ["11"],
-          icon: <LiaFileInvoiceDollarSolid />,
-          href: "/dashboard/invoice?",
+          icon: <ReceiptOutlinedIcon />,
+          href: "/invoice",
+          key: "invoice",
         },
         {
           title: "Users",
           accessRoles: ["11"],
-          icon: <CiUser />,
-          href: "/dashboard/users?",
+          icon: <GroupOutlinedIcon />,
+          href: "/users",
+          key: "users",
         },
         {
           title: "Category",
           accessRoles: ["11"],
-          icon: <BiCategory />,
-          href: "/dashboard/category?",
+          icon: <CategoryOutlinedIcon />,
+          href: "/category",
+          key: "category",
         },
         {
           title: "Gallery",
           accessRoles: ["11"],
-          icon: <GrGallery />,
-          href: "/dashboard/gallery?page=1",
+          icon: <CollectionsOutlinedIcon />,
+          href: "/gallery",
+          key: "gallery",
         },
       ],
     },
@@ -81,14 +87,16 @@ const SidebarItems = ({ title, params }: Props) => {
         {
           title: "userDashboard",
           accessRoles: ["مدیر کل", "کاربر"],
-          icon: <AiOutlineDashboard />,
+          icon: <PersonOutlineOutlinedIcon />,
           href: "/userDashboard?",
+          key: "userDashboard",
         },
         {
           title: "userSettings",
           accessRoles: ["مدیر کل", "کاربر"],
-          icon: <TfiPanel />,
+          icon: <ContactPageOutlinedIcon />,
           href: "#",
+          key: "#",
         },
         {
           title: "Products",
@@ -110,6 +118,7 @@ const SidebarItems = ({ title, params }: Props) => {
             </svg>
           ),
           href: "#",
+          key: "#",
         },
         {
           title: "Users",
@@ -131,6 +140,7 @@ const SidebarItems = ({ title, params }: Props) => {
             </svg>
           ),
           href: "#",
+          key: "#",
         },
         {
           title: "Options",
@@ -152,6 +162,7 @@ const SidebarItems = ({ title, params }: Props) => {
             </svg>
           ),
           href: "#",
+          key: "#",
         },
       ],
     },
@@ -173,11 +184,11 @@ const SidebarItems = ({ title, params }: Props) => {
           {sidebarItem.items?.map((i, index) => (
             <div
               className={`flex text-center items-center justify-center mb-1 rounded-md transition-colors duration-300 transform hover:bg-zinc-300 hover:text-zinc-800 ${
-                i.href === carentRoute ? "bg-sky-200 " : ""
+                currentRoute.includes(i.key) ? "bg-sky-200 " : ""
               } ${i.accessRoles.includes(accessRole) ? "" : "hidden"}`}
               key={index}
             >
-              <Link href={`${i.href}&${params}`} className=" flex w-full">
+              <Link href={`${i.href}?&${params}`} className=" flex w-full">
                 {i.icon}
                 {title && (
                   <span className="mx-2 text-sm font-medium">{i.title}</span>

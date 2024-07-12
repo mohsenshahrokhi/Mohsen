@@ -2,7 +2,7 @@ import Users from "@/lib/models/userModel"
 import connectToMongodb from "../mongodb"
 import { NextResponse } from "next/server"
 import { MongooseQueryParser } from "mongoose-query-parser"
-import { TRegisterUserSchema } from "@/ZSchemas/UserSchema"
+import { TRegisterUserFormSchema, TRegisterUserSchema } from "@/ZSchemas/UserSchema"
 
 export const getAllUsers = async (req: any) => {
     try {
@@ -32,6 +32,25 @@ export const getUserByEmail = async (email: string) => {
     try {
         connectToMongodb()
         const user = await Users.findOne({ email }).select('+password')
+        const updateId = {
+            ...user?._doc, _id: user?._doc._id.toString()
+        }
+        return updateId
+    } catch (error) {
+        return error
+    }
+}
+
+export const getUserBy = async (stringifyParams: string) => {
+    try {
+        connectToMongodb()
+        const parser = new MongooseQueryParser()
+        const parsed = parser.parse(stringifyParams)
+        const user = await Users
+            .findOne(parsed.filter)
+            .populate(parsed.populate)
+            .select(parsed.select)
+            .exec()
         const updateId = {
             ...user?._doc, _id: user?._doc._id.toString()
         }
@@ -106,12 +125,10 @@ export const registerUser = async (user: TRegisterUserSchema) => {
     }
 }
 
-export const updateUser = async (_id: string, params: any) => {
+export const updateU = async ({ _id, values }:{_id: string, values: TRegisterUserFormSchema}) => {
     try {
         connectToMongodb()
-        const { data } = params
-        const updatedUser = await Users.updateOne({ _id }, { ...data })
-
+        const updatedUser = await Users.findByIdAndUpdate({ _id }, { ...values })
         return updatedUser
     } catch (err) {
         return err

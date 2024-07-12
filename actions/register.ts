@@ -5,6 +5,7 @@ import {
     RegisterUserSchema,
     TForgetPassSchema,
     TLoginPhoneSchema,
+    TRegisterUserFormSchema,
     TRegisterUserSchema,
     TUserSchema
 } from "@/ZSchemas/UserSchema"
@@ -14,8 +15,9 @@ import {
     getUserByPhone,
     getUserByUsernamePass,
     registerUser,
-    updateUser,
-    getAllUsers
+    getAllUsers,
+    getUserBy,
+    updateU
 } from "@/lib/controllers/userController"
 import { signJwtAccessToken, verifyJwt } from "@/lib/jwt"
 import { compileActivaionThemplate, compileResetPasswordThemplate, sendMail } from "@/lib/mail"
@@ -91,14 +93,13 @@ export const activateUser: ActiveUserSchema = async (jwtUserId) => {
     if (!user) return 'userNotExist'
 
     if (user.verifyMail === true) return 'alreadyActivated'
+console.log('activateUser');
 
-    await updateUser(userId, {
-        data: {
+    await updateU({userId, values:{
             verifyMKey: new Date(),
             verifyMail: true,
-            role: '11'
-        }
-    })
+            role: '1'
+    }})
 
     return 'success'
 
@@ -123,6 +124,53 @@ export const getAllU = async (
 
     return { success: users.length > 0, users,qtt }
 
+}
+
+export const getUBy = async (stringifyParams: string) => {
+
+
+    const user = await getUserBy(stringifyParams) as TUserSchema
+
+    return { success: true, user }
+}
+
+export const updateUser = async (
+    {
+        _id,
+        values,
+        accessToken
+    }: {
+        _id: string 
+        values: TRegisterUserFormSchema,
+        accessToken: string
+    }
+) => {
+    // const validatedFields = EditProductSchema.safeParse(values)
+    const verify = accessToken && verifyJwt(accessToken) || null
+    if (accessToken && verify?.role === '11') {
+
+        const update = await updateU({
+            _id,
+            values
+        }) as TUserSchema
+
+        if (!update?._id) {
+            return {
+                error: true,
+                msg: 'به روز رسانی انجام نشد !'
+            }
+        }
+
+        return {
+            success: true,
+            msg: 'حساب کاربری با موفقیت ایجاد شد'
+        }
+    } else {
+        return {
+            success: false,
+            msg: 'شما دسترسی های لازم را ندارید !'
+        }
+    }
 }
 
 export async function forgetPassword({ email }: TForgetPassSchema) {
@@ -168,11 +216,9 @@ export const resetPassword: ResetPasswordSchema = async (jwtUserId, password) =>
     if (!user) return 'userNotExist'
 
     const salt = await bcrypt.genSalt(10)
-    const updatedUser = await updateUser(userId, {
-        data: {
+    const updatedUser = await updateU({_id:userId, values:{
             password: await bcrypt.hash(password, salt)
-        }
-    })
+    }})
 
     if (updatedUser) return 'success'
     else throw new Error('سرور مشکل دارد')
@@ -196,13 +242,11 @@ export const sendSms = async (values: TLoginPhoneSchema) => {
     var key = Math.floor(1000 + Math.random() * 9000)
 
     const salt = await bcrypt.genSalt(10)
-
-    const updatedUser = await updateUser(user._id, {
-        data: {
-            verifyPKey: await bcrypt.hash(JSON.stringify(key), salt),
-            role: '11'
-        }
-    })
+ 
+    const updatedUser = await updateU({_id:user._id,values: {
+            verifyPKey: `${await bcrypt.hash(JSON.stringify(key), salt)}`,
+            role: user.role
+    }})
 
     if (!updatedUser) {
         return { error: true, msg: 'این شماره تلفن قبلا ثبت شده است' }

@@ -211,7 +211,7 @@ export default function ProductList({
                           <IconButton color="warning" className=" flex w-5">
                             <Link
                               id={`edit-${product._id}`}
-                              href={`/dashboard/product/addProduct/${product?._id}?${stringified}`}
+                              href={`/product/addProduct/${product?._id}?${stringified}`}
                               className=" "
                             >
                               <HiOutlinePencilSquare color="orange" />
@@ -222,7 +222,7 @@ export default function ProductList({
                           <IconButton color="warning" className=" flex w-5">
                             <Link
                               id={`gallery-${product._id}`}
-                              href={`/dashboard/product/gallery/productImg?PId=${
+                              href={`/product/gallery/productImg?PId=${
                                 product?._id
                               }&defaultImg=${JSON.stringify(
                                 product.images

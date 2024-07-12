@@ -2,7 +2,7 @@ import {
     getUserByEmail,
     getUserByPhone,
     getUserByUsernamePass,
-    updateUser
+    updateU
 } from "@/lib/controllers/userController"
 import { signJwtAccessToken } from "@/lib/jwt"
 import connectToMongodb from "@/lib/mongodb"
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
             id: 'UserPhoneCredentials',
             name: 'UserPhone credentials',
             credentials: {},
-            async authorize(credentials, req) {
+            async authorize(credentials) {
                 const { phone, verifyPKey } = credentials as TLoginSmsSchema
                 connectToMongodb()
                 const user = await getUserByPhone({ phone }) as TUserSchema
@@ -87,19 +87,20 @@ export const authOptions: NextAuthOptions = {
                     return null
                 }
                 if (!user) throw Error('password mismatch')
-                const passwordMatch = await bcrypt.compare(verifyPKey, user.verifyPKey)
+                const passwordMatch =  bcrypt.compare(verifyPKey, user.verifyPKey!)
+                
                 if (!passwordMatch) {
                     // HandleEnqueueSnackbar({ msg: 'password mismatch', variant: 'error' })
                     return null
                 }
                 if (!passwordMatch) throw Error('password mismatch')
 
-                user.verifyPhone === false && await updateUser(user._id, {
-                    data: {
+                user.verifyPhone === false && await updateU({_id:user._id, values:{
                         verifyPhone: true
-                    }
-                })
+                }})
                 const accessToken = signJwtAccessToken(user)
+                console.log('CredentialsProvider',user);
+                
                 return {
                  ...user,accessToken:accessToken
                 }
@@ -143,7 +144,7 @@ export const authOptions: NextAuthOptions = {
         error: '/mail',
         signOut: '/',
         verifyRequest: '/',
-        newUser: '/dashboard'
+        newUser: '/userDashboard'
     },
     secret: process.env.NEXTAUTH_CECRET
 

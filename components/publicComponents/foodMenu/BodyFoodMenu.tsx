@@ -42,7 +42,7 @@ const BodyFoodMenu = ({ products }: { products: TProductSchema[] }) => {
                   <AnimateWord
                     text={halfSpace(digitsEnToFa(product.title))}
                     textClassName=" inline-flex"
-                    className=" text-zinc-700"
+                    className=""
                     el="span"
                   />
                   <span className=" flex flex-col whitespace-nowrap rounded-full bg-success-100 px-[1em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[1.2em] font-bold leading-none text-success-700">
@@ -60,7 +60,7 @@ const BodyFoodMenu = ({ products }: { products: TProductSchema[] }) => {
                   <AnimateWord
                     text={halfSpace(digitsEnToFa(product.recipe)) || ""}
                     textClassName=" text-sm text-zinc-500"
-                    className=" text-zinc-700"
+                    className=" text-zinc-500"
                     el="p"
                     // once
                   />

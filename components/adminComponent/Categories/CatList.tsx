@@ -31,7 +31,7 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
           HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
           //  handleClose();
 
-          // router.push(`/dashboard/siteSettings/${callbackUrl}`);
+          // router.push(`/siteSettings/${callbackUrl}`);
         } else {
           HandleEnqueueSnackbar({ variant: "error", msg: data.msg });
         }

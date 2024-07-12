@@ -25,14 +25,14 @@ export const UserSchema = z.object({
     description: z.string().optional(),
     verifyPhone: z.boolean().default(false),
     active: z.boolean().default(true),
-    verifyPKey: z.string(),
+    verifyPKey: z.string().optional(),
     verifyMail: z.boolean().default(false),
-    verifyMKey: z.date(),
+    verifyMKey: z.date().optional(),
     role: z.string().default('0'),
     payment: z.string().optional(),
     image: z.string().optional(),
     basketId: z.string().cuid().optional(),
-    accessToken: z.string()
+    accessToken: z.string().optional()
 })
 export type TUserSchema = z.infer<typeof UserSchema>
 
@@ -119,33 +119,12 @@ export const LoginMailSchema = z.object({
 })
 export type TLoginMailSchema = z.infer<typeof LoginMailSchema>
 
-
-// const phoneRegExp = new RegExp(/^(\+?98[\-\s]?|0)9[0-39]\d[\-\s]?\d{3}[\-\s]?\d{4}$/)
-
 export const LoginPhoneSchema = z.object({
-    // phone: z.string().min(6, {
-    //     message: 'حداقل ۶ حرف را وارد کنید'
-    // }).max(15, {
-    //     message: 'حداکثر ۱۵ حرف را وارد کنید'
-    // }),
     phone: z.string().regex(phoneRegExp, 'یک شماره تلفن معتبر وارد کنید'),
-    // phone: z.string().refine(validator.isMobilePhone, 'یک شماره تلفن معتبر وارد کنید'),
-    // phone: z.string().regex(new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/, 'از حروف غیر مجاز استفاده شده است')),
-
-    // password: z.string().min(6, {
-    //     message: 'حداقل ۶ حرف را وارد کنید'
-    // }).max(15, {
-    //     message: 'حداکثر ۱۵ حرف را وارد کنید'
-    // })
 })
 export type TLoginPhoneSchema = z.infer<typeof LoginPhoneSchema>
 
 export const LoginSmsSchema = z.object({
-    // phone: z.string().min(6, {
-    //     message: 'حداقل ۶ حرف را وارد کنید'
-    // }).max(15, {
-    //     message: 'حداکثر ۱۵ حرف را وارد کنید'
-    // }),
     phone: z.string().regex(phoneRegExp, 'یک شماره تلفن معتبر وارد کنید'),
     // phone: z.string().refine(validator.isMobilePhone, 'یک شماره تلفن معتبر وارد کنید'),
     // phone: z.string().regex(new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/, 'از حروف غیر مجاز استفاده شده است')),
@@ -157,9 +136,7 @@ export type TLoginSmsSchema = z.infer<typeof LoginSmsSchema>
 export const LoginUsernameSchema = z.object({
     username: z.string().min(6, {
         message: 'حداقل ۶ حرف را وارد کنید'
-    })
-    // }).regex(new RegExp("^[a-zA-Z]+$", 'از حروف غیر مجاز استفاده شده است'))
-    ,
+    }) ,
     password: z.string().min(6, {
         message: 'حداقل ۶ حرف را وارد کنید'
     }).max(15, {
@@ -188,9 +165,11 @@ export const RegisterUserSchema = z.object({
 
     verifyPhone: z.boolean().default(false),
     verifyMail: z.boolean().default(false),
+    verifyMKey: z.date().optional(),
     role: z.string().default('0'),
     payment: z.string().optional(),
     image: z.string().optional(),
+    
 })
 export type TRegisterUserSchema = z.infer<typeof RegisterUserSchema>
 
@@ -203,7 +182,7 @@ export const RegisterUserFormSchema = z.object({
     }).max(30, {
         message: 'نام کاربری باید کمتر از ۳۰ حرف باشد'
     }).regex(new RegExp("^[a-zA-Z0-9]+$"), 'از حروف غیر مجاز استفاده شده است'),
-    password: z.string().min(6, {
+  /*   password: z.string().min(6, {
         message: 'حداقل ۶ حرف را وارد کنید'
     }).max(15, {
         message: 'حداکثر ۱۵ حرف را وارد کنید'
@@ -212,16 +191,22 @@ export const RegisterUserFormSchema = z.object({
         message: 'حداقل ۶ حرف را وارد کنید'
     }).max(15, {
         message: 'حداکثر ۱۵ حرف را وارد کنید'
-    }),
+    }), */
+    password:z.string().optional(),
     phone: z.string().regex(phoneRegExp, 'یک شماره تلفن معتبر وارد کنید'),
     verifyPhone: z.boolean().default(false),
     verifyMail: z.boolean().default(false),
     role: z.string().default('0'),
     payment: z.string().optional(),
     image: z.string().optional(),
-}).refine(data => data.password === data.confirmPassword, {
-    message: "گذرواژه ها یکسان نیستند",
-    path: ["confirmPassword"]
+    displayName: z.string().optional(),
+    address: z.string().optional(),
+    description: z.string().optional(),
+    active: z.boolean().default(true),
+    verifyPKey: z.string().optional(),
+    verifyMKey: z.string().optional(),
+    basketId: z.string().cuid().optional(),
+    accessToken: z.string().optional()
 })
 
 export type TRegisterUserFormSchema = z.infer<typeof RegisterUserFormSchema>
