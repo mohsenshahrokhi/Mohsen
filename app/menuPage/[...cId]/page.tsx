@@ -30,9 +30,17 @@ async function getData(cId: string) {
   return products;
 }
 
-async function productPage({ params: { cId } }: Props) {
-  const products = await getData(cId);
-  return <BodyFoodMenu products={JSON.parse(JSON.stringify(products))} />;
+async function MenuCatPage({ params: { cId } }: Props) {
+  const catId = cId[0];
+  const products = await getData(catId);
+  console.log("productPage", catId);
+
+  return (
+    <BodyFoodMenu
+      activeCat={catId}
+      products={JSON.parse(JSON.stringify(products))}
+    />
+  );
 }
 
-export default productPage;
+export default MenuCatPage;

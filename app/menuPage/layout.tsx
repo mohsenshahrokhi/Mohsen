@@ -1,4 +1,4 @@
-import NavigationFoodMenu from "@/components/publicComponents/foodMenu/NavigationFoodMenu";
+import { Box } from "@mui/material";
 
 export const metadata = {
   title: "Food Menu",
@@ -11,11 +11,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className=" flex flex-col w-full h-screen justify-between dark:bg-zinc-900 dark:text-zinc-100">
-      <div className=" flex-1">{children}</div>
-      <ul className="h-20 flex justify-start items-center overflow-x-auto bg-slate-400">
-        <NavigationFoodMenu />
-      </ul>
-    </div>
+    <Box
+      component={"div"}
+      className=" flex flex-col w-full h-screen justify-between dark:bg-zinc-900 dark:text-zinc-100"
+    >
+      <Box
+      component={"div"} className=" flex-1">{children}</Box>
+    </Box>
   );
 }

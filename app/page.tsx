@@ -4,13 +4,10 @@ import Link from "next/link";
 import junkfood from "@/public/icons/json/junk-food.json";
 import working from "@/public/icons/json/working.json";
 import Lootti from "@/components/publicComponents/Lootti";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
-import { useSession } from "next-auth/react";
-import { verifyJwt } from "@/lib/jwt";
-import { Button, IconButton, Tooltip } from "@mui/material";
-import EditNoteIcon from "@mui/icons-material/EditNote";
+import { Tooltip } from "@mui/material";
 
 export default function Home() {
   const router = useRouter();
@@ -19,7 +16,7 @@ export default function Home() {
   // const verify = accessToken && verifyJwt(accessToken)?._id;
   // if (verify === undefined) {
   // }
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const theme = localStorage.getItem("theme") || "light";
   useEffect(() => {
     const stringified = queryString.stringify({
       theme,
@@ -47,23 +44,30 @@ export default function Home() {
       </section>
 
       <section className=" left-5 py-5 absolute z-20 flex flex-col h-full w-28 items-center justify-between">
-        <Link href="./menuPage?theme=light">
+        {/* <Link href="./menuPage?theme=light">
           <Lootti animationData={junkfood} loop={true} />
-        </Link>
-        <Link
-          href={`./userDashboard`}
-          // href={`./dashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
-        >
-          <Lootti animationData={working} loop={true} />
-        </Link>
-        {/* <Tooltip title={`ویرایش`} placement="top"> */}
+        </Link> */}
+        <Tooltip title={`منو فست فود`} placement="bottom">
+          <Link
+            // className=" flex w-5"
+            href={`./menuPage?theme=${theme}`}
+          >
+            <Lootti animationData={junkfood} loop={true} />
+          </Link>
+        </Tooltip>
         {/* <Link
-          className=" flex w-5"
-          href={`./dashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
+          href={`./userDashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
         >
           <Lootti animationData={working} loop={true} />
         </Link> */}
-        {/* </Tooltip> */}
+        <Tooltip title={`پنل کاربری`} placement="top">
+          <Link
+            // className=" flex w-5"
+            href={`./userDashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
+          >
+            <Lootti animationData={working} loop={true} />
+          </Link>
+        </Tooltip>
       </section>
     </main>
   );
