@@ -21,10 +21,7 @@ const BodyFoodMenu = ({
     return <h3>loading...</h3>;
   }
   return (
-    <Box
-      component={"div"}
-      className="flex flex-col w-full h-screen justify-between"
-    >
+    <Box component={"div"} className="flex flex-col w-full ">
       <Box
         component={"div"}
         className="relative overflow-hidden bg-cover bg-no-repeat"
@@ -92,12 +89,12 @@ const BodyFoodMenu = ({
             ))}
         </Box>
       </Box>
-      <Box
+      {/* <Box
         component={"ul"}
-        className="h-20 flex justify-start items-center overflow-x-auto bg-slate-400"
+        className="max-h-20 w-full flex justify-start items-center overflow-x-auto bg-slate-400"
       >
         <NavigationFoodMenu activeCat={activeCat} />
-      </Box>
+      </Box> */}
     </Box>
   );
 };

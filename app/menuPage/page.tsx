@@ -28,13 +28,8 @@ export default async function MenuPage({
 }) {
   // const { products } = await getData();
   const categories = await getData("6673f94fceba3a6ae38dd878");
-  console.log("MenuPage", categories);
+  // console.log("MenuPage", categories);
 
   const catString = JSON.stringify(categories);
-  return (
-    <Box
-      component={"div"} className="flex-1">
-      <FoodMenuCats catString={catString} />
-    </Box>
-  );
+  return <FoodMenuCats catString={catString} />;
 }

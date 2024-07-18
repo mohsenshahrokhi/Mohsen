@@ -16,7 +16,14 @@ type Props = {
 function FoodMenuCats({ catString }: Props) {
   const cats = JSON.parse(catString) as TCategorySchema[];
   return (
-    <Box className=" flex gap-2 p-2">
+    <Box
+      sx={{
+        display: "flex",
+        gap: 2,
+        padding: 2,
+      }}
+      // className=" flex gap-2 p-2"
+    >
       {cats &&
         cats.map((cat: TCategorySchema, index: number) => (
           <Link href={`/menuPage/${cat._id}`} key={index}>
@@ -28,14 +35,14 @@ function FoodMenuCats({ catString }: Props) {
                   image={`/uploads/${cat.colorIcon}`}
                   alt="green iguana"
                 />
-                <CardContent>
+                {/* <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {cat.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  </Typography> */}
+                {/* <Typography variant="body2" color="text.secondary">
                     {cat.latinName}
-                  </Typography>
-                </CardContent>
+                  </Typography> */}
+                {/* </CardContent> */}
               </CardActionArea>
             </Card>
           </Link>

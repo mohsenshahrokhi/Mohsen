@@ -14,11 +14,15 @@ const config: Config = {
       // fontFamily: {
       //   deacon: ['VazirmatnRegular', 'sans-serif'],
       // },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
+      // backgroundImage: {
+      //   "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+      //   "gradient-conic":
+      //     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      // },
+       boxShadow: {
+        'menuShadow': '5px -5px 60px 0 0 rgba(0, 0, 0, 0.3)',
+      }
+  
     },
   },
   plugins: [],

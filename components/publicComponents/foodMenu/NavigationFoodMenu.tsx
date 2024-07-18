@@ -16,14 +16,13 @@ async function getData(cId: string) {
   return categories as TCategorySchema[];
 }
 
-const NavigationFoodMenu = async ({ activeCat }: { activeCat: string }) => {
+const NavigationFoodMenu = async () => {
   const categories = await getData("6673f94fceba3a6ae38dd878");
   const menuCategories = categories?.filter(
     (c: TCategorySchema) => c.type === true
   );
   return (
     <NavItem
-      activeCat={activeCat}
       menuCategories={JSON.parse(JSON.stringify(menuCategories))}
     />
   );

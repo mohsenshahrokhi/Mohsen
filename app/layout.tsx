@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html dir="rtl" lang="fa-IR">
-      <body className="flex h-screen w-full">
+      <body className="flex h-screen w-screen">
         <ThemeDirection>
           <AuthProvider>
             <ToustProvider>{children}</ToustProvider>

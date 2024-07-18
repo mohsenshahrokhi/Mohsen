@@ -1,35 +1,57 @@
+"use client";
 import Image from "next/image";
 import { TCategorySchema } from "@/ZSchemas/CategorySchema";
 import Link from "next/link";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Slide, Zoom } from "@mui/material";
+import { useParams } from "next/navigation";
 
 type Props = {
   menuCategories: TCategorySchema[];
-  activeCat: string;
 };
 
-function NavItem({ menuCategories, activeCat }: Props) {
+function NavItem({ menuCategories }: Props) {
+  const params = useParams();
+  const activeCat = params.cId;
   return (
-    <Box component={"div"} className=" flex">
+    <Box
+      sx={{
+        display: "flex",
+        height: "100%",
+        width: "100%",
+        marginLeft: 1,
+        position: "relative",
+      }}
+      component={"div"}
+    >
       {menuCategories?.length > 0 &&
         menuCategories.map((item: TCategorySchema) => (
-          <Box
-            component={"li"}
+          <Zoom
+            style={{ transitionDelay: activeCat.length > 0 ? "200ms" : "0ms" }}
             key={item._id}
-            className={`flex min-w-fit mr-3`}
+            in={activeCat.length > 0}
           >
-            <Link
-              href={`/menuPage/${item._id}?select=title,price,category,recipe&category=${item._id}&populate=category.name,category.images&stock>1`}
-              className=" duration-700"
+            <Box
+              sx={{
+                display: "flex",
+                marginRight: 3,
+                width: "3rem",
+                cursor: "pointer",
+              }}
+              component={"li"}
             >
-              <Box component={"div"} className=" cursor-pointer">
-                <Box
-                  component={"div"}
-                  className={`${
-                    activeCat === item._id ? "opacity-0 hidden" : "opacity-1"
-                  }`}
+              <Link
+                href={`/menuPage/${item._id}?select=title,price,category,recipe&category=${item._id}&populate=category.name,category.images&stock>1`}
+              >
+                <Slide
+                  mountOnEnter
+                  unmountOnExit
+                  direction="down"
+                  in={activeCat !== item._id}
+                  style={{
+                    transitionDelay: activeCat !== item._id ? "50ms" : "0ms",
+                  }}
                 >
-                  <IconButton aria-label="delete">
+                  <IconButton>
                     <Image
                       priority
                       src={`/uploads/${item.icon}`}
@@ -38,29 +60,40 @@ function NavItem({ menuCategories, activeCat }: Props) {
                       alt={item.latinName}
                     />
                   </IconButton>
-                </Box>
+                </Slide>
 
-                <Box
-                  component={"div"}
-                  className={` ${
-                    activeCat === item._id
-                      ? "opacity-1 flex scale-150"
-                      : "opacity-0 hidden "
-                  }`}
+                <Slide
+                  mountOnEnter
+                  unmountOnExit
+                  direction="up"
+                  in={activeCat === item._id}
+                  style={{
+                    transitionDelay: activeCat === item._id ? "200ms" : "0ms",
+                  }}
                 >
-                  <IconButton aria-label="delete">
+                  <IconButton
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      display: "flex",
+                      position: "absolute",
+                      marginBottom: 6,
+                      top: -40,
+                      bgcolor: "background.default",
+                    }}
+                  >
                     <Image
                       priority
                       src={`/uploads/${item.colorIcon}`}
-                      height={40}
-                      width={40}
+                      height={80}
+                      width={80}
                       alt={item.latinName}
                     />
                   </IconButton>
-                </Box>
-              </Box>
-            </Link>
-          </Box>
+                </Slide>
+              </Link>
+            </Box>
+          </Zoom>
         ))}
     </Box>
   );
