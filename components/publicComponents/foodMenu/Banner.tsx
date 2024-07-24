@@ -3,6 +3,7 @@
 import Image from "next/image";
 import AnimateCharacter from "./AnimateCharacter";
 import { Box } from "@mui/material";
+import useWidth from "@/utils/useWidth";
 
 type Props = {
   banner: string;
@@ -11,7 +12,15 @@ type Props = {
 
 function Banner({ banner, item }: Props) {
   return (
-    <Box className=" relative flex w-full sm:w-1/2 lg:w-3/12 h-60 justify-center sm:my-4 items-center sm:rounded overflow-hidden sm:shadow-sm">
+    <Box
+      sx={{
+        justifyContent: "center",
+        display: "flex",
+        alignItems: "center",
+        marginX: "auto",
+      }}
+      className=" relative flex w-full sm:w-1/2 lg:w-3/12 h-60 justify-center sm:my-4 items-center sm:rounded overflow-hidden sm:shadow-sm"
+    >
       <Image
         src={`/uploads/${banner}`}
         fill={true}

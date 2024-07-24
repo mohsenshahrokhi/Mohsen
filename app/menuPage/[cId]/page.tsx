@@ -33,8 +33,6 @@ async function getData(cId: string) {
 async function MenuCatPage({ params: { cId } }: Props) {
   const catId = cId;
   const products = await getData(catId);
-  console.log("productPage", catId);
-
   return (
     <BodyFoodMenu
       activeCat={catId}

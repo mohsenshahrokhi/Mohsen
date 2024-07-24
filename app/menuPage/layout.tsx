@@ -1,5 +1,6 @@
 import NavigationFoodMenu from "@/components/publicComponents/foodMenu/NavigationFoodMenu";
 import { Box, Container } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 export const metadata = {
   title: "Food Menu",
@@ -13,7 +14,7 @@ export default async function RootLayout({
 }) {
   return (
     <Container
-      maxWidth={"lg"}
+      maxWidth={"desktop"}
       sx={{
         justifyContent: "center",
         alignItems: "center",
@@ -37,10 +38,12 @@ export default async function RootLayout({
           width: "100%",
           borderLeft: 1,
           borderRight: 1,
-          borderTop: 2,
-          borderColor: "background.menuNavBg",
+          borderTop: 40,
+          borderColor: grey[300],
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
+          boxShadow: 3,
+          // marginTop: 3,
         }}
       >
         <Box
@@ -57,12 +60,10 @@ export default async function RootLayout({
           sx={{
             display: "flex",
             width: "100%",
-            // overflowX: "auto",
-            
-            bgcolor: "background.menuNavBg",
+            bgcolor: grey[300],
             height: "3rem",
           }}
-          component={"ul"}
+          component={"div"}
         >
           <NavigationFoodMenu />
         </Box>

@@ -7,7 +7,7 @@ import Lootti from "@/components/publicComponents/Lootti";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import queryString from "query-string";
-import { Tooltip } from "@mui/material";
+import { Button, Stack, Tooltip } from "@mui/material";
 
 export default function Home() {
   const router = useRouter();
@@ -44,25 +44,13 @@ export default function Home() {
       </section>
 
       <section className=" left-5 py-5 absolute z-20 flex flex-col h-full w-28 items-center justify-between">
-        {/* <Link href="./menuPage?theme=light">
-          <Lootti animationData={junkfood} loop={true} />
-        </Link> */}
         <Tooltip title={`منو فست فود`} placement="bottom">
-          <Link
-            // className=" flex w-5"
-            href={`./menuPage?theme=${theme}`}
-          >
+          <Link href={`./menuPage?theme=${theme}`}>
             <Lootti animationData={junkfood} loop={true} />
           </Link>
         </Tooltip>
-        {/* <Link
-          href={`./userDashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
-        >
-          <Lootti animationData={working} loop={true} />
-        </Link> */}
         <Tooltip title={`پنل کاربری`} placement="top">
           <Link
-            // className=" flex w-5"
             href={`./userDashboard?theme=${theme}&sidebarVisible=false&sidebarControl=false`}
           >
             <Lootti animationData={working} loop={true} />

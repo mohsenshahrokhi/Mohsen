@@ -1,3 +1,5 @@
+"use client";
+
 import Banner from "./Banner";
 import AnimateCharacter from "./AnimateCharacter";
 import AnimateWord from "./AnimateWord";
@@ -7,12 +9,11 @@ import {
   digitsEnToFa,
   halfSpace,
 } from "@persian-tools/persian-tools";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import NavigationFoodMenu from "./NavigationFoodMenu";
 
 const BodyFoodMenu = ({
   products,
-  activeCat,
 }: {
   products: TProductSchema[];
   activeCat: string;
@@ -20,34 +21,61 @@ const BodyFoodMenu = ({
   if (products?.length === 0) {
     return <h3>loading...</h3>;
   }
+
   return (
-    <Box component={"div"} className="flex flex-col w-full ">
-      <Box
-        component={"div"}
-        className="relative overflow-hidden bg-cover bg-no-repeat"
+    <Box
+      component={"div"}
+      sx={{
+        // position: "relative",
+        width: "100%",
+        // display: "block",
+        // justifyContent: "space-between",
+      }}
+    >
+      {products?.length > 0 && products[0]?.category?.images?.length > 0 && (
+        <Banner
+          banner={products[0]?.category?.images[0]}
+          item={products[0]?.category?.latinName}
+        />
+      )}
+
+      <Grid
+        container
+        // spacing={{ mobile: 1, tablet: 3 }}
+        // columns={{ mobile: 1, tablet: 1, desktop: 1 }}
+        sx={{ marginTop: "1rem", flexDirection: "row", margin: 0 }}
       >
         {products?.length > 0 &&
-          products[0]?.category &&
-          products[0]?.category.images &&
-          products[0]?.category.images.length > 0 && (
-            <Box className=" flex w-full justify-center items-center">
-              <Banner
-                banner={products[0]?.category?.images[0]}
-                item={products[0]?.category?.latinName}
-              />
-            </Box>
-          )}
-
-        <Box
-          component={"div"}
-          className=" grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-2 p-2"
-        >
-          {products?.length > 0 &&
-            products.map((product: TProductSchema) => (
-              <Box component={"div"} className="" key={product._id}>
+          products.map((product: TProductSchema) => (
+            <Grid
+              // direction="column"
+              // alignItems="center"
+              // // spacing={2}
+              mobile={12}
+              tablet={6}
+              desktop={4}
+              // justifyContent="center"
+              key={product._id}
+              // sx={{ marginTop: "1rem", flexDirection: "row", margin: 0 }}
+            >
+              <Box
+                component={"div"}
+                sx={{
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 1,
+                  flexDirection: "row",
+                }}
+              >
                 <Box
                   component={"div"}
-                  className=" flex justify-between items-center px-3"
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "space-between",
+                  }}
+                  // className=" flex w-full justify-between items-center"
                 >
                   <AnimateWord
                     text={halfSpace(digitsEnToFa(product.title))}
@@ -57,7 +85,17 @@ const BodyFoodMenu = ({
                   />
                   <Box
                     component={"span"}
-                    className=" flex flex-col whitespace-nowrap rounded-full bg-success-100 px-[1em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[1.2em] font-bold leading-none text-success-700"
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      padding: "0.35rem",
+                      textAlign: "center",
+                      // fontWeight: "bold",
+                      bgcolor: "success.main",
+                      color: "defaultText.main",
+                      marginBottom: 1,
+                      borderRadius: 2,
+                    }}
                   >
                     <AnimateCharacter
                       text={digitsEnToFa(addCommas(product.price))}
@@ -67,12 +105,11 @@ const BodyFoodMenu = ({
                     />
                   </Box>
                 </Box>
-
                 <Box
                   component={"hr"}
-                  className="my-1 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-20 dark:opacity-100"
+                  className="my-1 w-full h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-90 dark:opacity-100"
                 />
-                <Box component={"div"} className=" flex w-full">
+                <Box component={"span"} className=" flex w-full ">
                   <AnimateWord
                     text={halfSpace(digitsEnToFa(product.recipe)) || ""}
                     textClassName=" text-sm text-zinc-500"
@@ -83,18 +120,12 @@ const BodyFoodMenu = ({
                 </Box>
                 <Box
                   component={"hr"}
-                  className="my-5 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-90 dark:opacity-100"
+                  className="my-5 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-white to-transparent opacity-90 dark:opacity-100"
                 />
               </Box>
-            ))}
-        </Box>
-      </Box>
-      {/* <Box
-        component={"ul"}
-        className="max-h-20 w-full flex justify-start items-center overflow-x-auto bg-slate-400"
-      >
-        <NavigationFoodMenu activeCat={activeCat} />
-      </Box> */}
+            </Grid>
+          ))}
+      </Grid>
     </Box>
   );
 };
