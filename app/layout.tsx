@@ -4,7 +4,6 @@ import "./globals.css";
 import ThemeDirection from "@/utils/ThemeProvider";
 import AuthProvider from "@/utils/AuthProvider";
 import ToustProvider from "@/utils/ToustProvider";
-import { Container } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 

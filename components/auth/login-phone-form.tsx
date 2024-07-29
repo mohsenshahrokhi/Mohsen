@@ -9,10 +9,11 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  Stack,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendSms } from "@/actions/register";
 import { VariantType, enqueueSnackbar } from "notistack";
@@ -25,6 +26,7 @@ import {
   TLoginSmsSchema,
   TUserSchema,
 } from "@/ZSchemas/UserSchema";
+import { TextFieldElement } from "react-hook-form-mui";
 
 function LoginPhoneForm() {
   const searchParams = useSearchParams();
@@ -43,10 +45,28 @@ function LoginPhoneForm() {
   const smsForm = useForm<TLoginSmsSchema>({
     resolver: zodResolver(LoginSmsSchema),
     defaultValues: {
-      phone: user?.phone,
+      phone: user?.phone || "",
       verifyPKey: "",
     },
   });
+
+  const {
+    formState: { defaultValues },
+    reset,
+    control,
+  } = smsForm;
+
+  useEffect(() => {
+    // user?.phone &&
+    reset({
+      phone: user?.phone || "",
+      verifyPKey: "",
+    });
+    // console.log("useEffect", user?.phone);
+  }, [reset, user]);
+
+  // console.log("LoginPhoneForm", user);
+  // console.log("defaultValues", defaultValues);
 
   const handleClickVariant = (variant: VariantType, meg: string) => {
     enqueueSnackbar(meg, { variant });
@@ -67,6 +87,7 @@ function LoginPhoneForm() {
   };
 
   const onSmsSubmit = (values: TLoginSmsSchema) => {
+    console.log("LoginPhoneForm", values);
     startTransition(async () => {
       await signIn("UserPhoneCredentials", {
         ...values,
@@ -76,95 +97,36 @@ function LoginPhoneForm() {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
       {showPhoneCode ? (
-        <form onSubmit={smsForm.handleSubmit(onSmsSubmit)}>
-          <Controller
-            name="phone"
-            control={smsForm.control}
-            render={({ field, fieldState }) => (
-              <FormControl
-                component="div"
-                fullWidth
-                sx={{ my: 1 }}
-                variant="outlined"
-              >
-                <InputLabel htmlFor="phone">تلفن</InputLabel>
-                <OutlinedInput
-                  id="phone"
-                  {...field}
-                  autoComplete="tel-national"
-                  disabled={true}
-                  error={fieldState.error ? true : false}
-                  type={"text"}
-                  label="تلفن"
-                  fullWidth
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        edge="start"
-                      >
-                        {<PersonRoundedIcon />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-                <FormHelperText
-                  component={"p"}
-                  sx={{
-                    color: "error.main",
-                  }}
-                >
-                  {fieldState.error?.message ?? ""}
-                </FormHelperText>
-              </FormControl>
-            )}
+        <form
+          className=" flex flex-col w-full gap-3"
+          onSubmit={smsForm.handleSubmit(onSmsSubmit)}
+        >
+          <TextFieldElement
+            name={"phone"}
+            label={"تلفن"}
+            control={control}
+            // type="number"
+            required
+            disabled
+            fullWidth
           />
-          <Controller
-            name="verifyPKey"
-            control={smsForm.control}
-            render={({ field, fieldState }) => (
-              <FormControl
-                component="div"
-                fullWidth
-                sx={{ my: 1 }}
-                variant="outlined"
-              >
-                <InputLabel htmlFor="verifyPKey">گذرواژه دریافتی</InputLabel>
-                <OutlinedInput
-                  id="verifyPKey"
-                  {...field}
-                  autoFocus={true}
-                  autoComplete="off"
-                  disabled={isPending}
-                  error={fieldState.error ? true : false}
-                  type={"text"}
-                  label="گذرواژه دریافتی"
-                  fullWidth
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        edge="start"
-                      >
-                        {<PersonRoundedIcon />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-                <FormHelperText
-                  component={"p"}
-                  sx={{
-                    color: "error.main",
-                  }}
-                >
-                  {fieldState.error?.message ?? ""}
-                </FormHelperText>
-              </FormControl>
-            )}
+          <TextFieldElement
+            name={"verifyPKey"}
+            label={"گذرواژه دریافتی"}
+            control={control}
+            // type="number"
+            required
+            fullWidth
           />
-
           <Button
             type="submit"
             disabled={isPending}
@@ -176,48 +138,16 @@ function LoginPhoneForm() {
           </Button>
         </form>
       ) : (
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Controller
-            name="phone"
+        <form
+          className=" flex flex-col w-full gap-3"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <TextFieldElement
+            name={"phone"}
+            label={"تلفن"}
             control={form.control}
-            render={({ field, fieldState }) => (
-              <FormControl
-                component="div"
-                fullWidth
-                sx={{ my: 1 }}
-                variant="outlined"
-              >
-                <InputLabel htmlFor="phone">تلفن</InputLabel>
-                <OutlinedInput
-                  id="phone"
-                  {...field}
-                  autoComplete="tel-national"
-                  disabled={isPending}
-                  error={fieldState.error ? true : false}
-                  type={"text"}
-                  label="تلفن"
-                  fullWidth
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        edge="start"
-                      >
-                        {<PersonRoundedIcon />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                />
-                <FormHelperText
-                  component={"p"}
-                  sx={{
-                    color: "error.main",
-                  }}
-                >
-                  {fieldState.error?.message ?? ""}
-                </FormHelperText>
-              </FormControl>
-            )}
+            required
+            fullWidth
           />
 
           <Button

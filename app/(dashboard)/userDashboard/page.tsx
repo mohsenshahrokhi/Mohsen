@@ -11,13 +11,11 @@ export default async function Dashboard({ searchParams }: Props) {
   // const verify = accessToken && verifyJwt(accessToken)?._id;
 
   return (
-    <div>
-      <div>
-        داشبورد : {session?.user.displayName}
-        <Box component={"p"}>
-          <Button className=" font">داشبورد : {session?.user.role}</Button>
-        </Box>
-      </div>
-    </div>
+    <Box component={"div"}>
+      داشبورد : {session?.user.displayName}
+      <Box component={"p"}>
+        <Button className=" font">داشبورد : {session?.user.role}</Button>
+      </Box>
+    </Box>
   );
 }

@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 import React from "react";
 import { Box, PaletteMode } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
-import { grey } from "@mui/material/colors";
+import { deepPurple, grey, indigo } from "@mui/material/colors";
 // Create rtl cache
 const cacheRtl = createCache({
   key: "muirtl",
@@ -31,6 +31,8 @@ export default function ThemeDirection({
       defaultText: {
         main: "#f2f2f2",
       },
+      bgColor: { main: indigo },
+      bgColor1: { main: deepPurple },
     },
     typography: {
       fontFamily: "VazirmatnRegular",
@@ -46,18 +48,19 @@ export default function ThemeDirection({
   });
 
   const allTheme = React.useMemo(
-    () => createTheme(getDesignTokens(themeMode)),
+    () => createTheme({ ...getDesignTokens(themeMode), direction: "rtl" }),
     [themeMode]
   );
   return (
     <CacheProvider value={cacheRtl}>
       <ThemeProvider theme={allTheme}>
         <Box
+          component={"main"}
           sx={{
             display: "flex",
             width: "100%",
-            alignItems: "center",
-            justifyContent: "center",
+            maxHeight: "100%",
+            // padding: 1,
             bgcolor: "background.default",
             color: "text.primary",
           }}

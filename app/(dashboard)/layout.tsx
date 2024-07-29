@@ -1,6 +1,96 @@
 "use client";
 
 import AdminNavbar from "@/components/adminComponent/Navbar/AdminNavbar";
+import AdminLayout from "@/components/adminComponent/Sidebar/AdminLayout";
+import AdminSidebar from "@/components/adminComponent/Sidebar/AdminSidebar";
+import { verifyJwt } from "@/lib/jwt";
+import CircularProgress from "@mui/material/CircularProgress";
+import moment from "moment";
+import { useSession } from "next-auth/react";
+import {
+  redirect,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import queryString from "query-string";
+import { useEffect } from "react";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
+  const sidebarVisible =
+    searchParams.get("sidebarVisible") === "true" ? true : false;
+  const sidebarControl =
+    searchParams.get("sidebarControl") === "true" ? true : false;
+  const params = new URLSearchParams(searchParams);
+  const { status, data } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push(`/phone?${stringified}`);
+    },
+  });
+  // const accessToken = data?.user.accessToken;
+  // const verify = accessToken && verifyJwt(accessToken)?._id;
+  // if (verify === undefined) {
+  //   // redirect(`/`);
+  // }
+
+  let theme = searchParams.get("theme") || "dark";
+  // let theme = localStorage.getItem("theme") || "dark";
+
+  const stringified = queryString.stringify({
+    theme,
+    sidebarVisible: false,
+    sidebarControl: true,
+  });
+
+  useEffect(() => {
+    // router.push(`?${stringified}`);
+    localStorage.setItem("theme", theme);
+  }, [theme, router]);
+
+  if (data?.user && parseInt(data.user.role) < 1) {
+    router.push(`/phone?${stringified}`);
+    return null;
+  }
+
+  if (moment().isAfter(data?.expires)) {
+    router.push(`/phone?${stringified}`);
+    return null;
+  }
+
+  function closeSidebar() {
+    if (!sidebarControl) {
+      params.set("sidebarControl", "true");
+      router.push(`${pathName}?${params}`);
+    }
+  }
+
+  if (status !== "loading") {
+    return <AdminLayout>{children}</AdminLayout>;
+  }
+
+  return (
+    <div className=" flex h-screen w-screen justify-center items-center">
+      <CircularProgress
+        variant="indeterminate"
+        disableShrink
+        size={40}
+        thickness={4}
+      />
+    </div>
+  );
+}
+
+/* "use client";
+
+import AdminNavbar from "@/components/adminComponent/Navbar/AdminNavbar";
 import AdminSidebar from "@/components/adminComponent/Sidebar/AdminSidebar";
 import { verifyJwt } from "@/lib/jwt";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -115,3 +205,4 @@ export default function RootLayout({
     </div>
   );
 }
+ */

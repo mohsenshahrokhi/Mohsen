@@ -76,42 +76,62 @@ function AuthForm(props: any) {
     setValue({ newValue, path });
   };
 
+  const logOptions = [
+    {
+      title: "ورود با مبایل",
+      icon: <PhonelinkLockRoundedIcon />,
+      ariaLabel: "/phone",
+    },
+    {
+      title: "ورود با نام کاربری",
+      icon: <VpnKeyRoundedIcon />,
+      ariaLabel: "/username",
+    },
+    {
+      title: "ورود با ایمیل",
+      icon: <MailLockRoundedIcon />,
+      ariaLabel: "/mail",
+    },
+    {
+      title: "ایجاد حساب جدید",
+      icon: <PersonAddAlt1RoundedIcon />,
+      ariaLabel: "/register",
+    },
+  ];
+
   return (
-    <Box className=" flex flex-col h-full" sx={{ width: "100%" }}>
-      <Box sx={{ width: "100%", borderBottom: 1, borderColor: "divider" }}>
+    <Box
+      component={"div"}
+      sx={{
+        width: "100%",
+        display: "flex",
+        height: "100%",
+        flexDirection: "column",
+      }}
+    >
+      <Box
+        component={"div"}
+        sx={{
+          width: "100%",
+          borderBottom: 1,
+          borderColor: "divider",
+          justifyContent: "space-around",
+        }}
+      >
         <Tabs
           value={value.newValue}
           onChange={handleChange}
-          aria-label="icon tabs example"
+          aria-label="login icon tabs"
         >
-          <Tooltip title="ورود با مبایل" placement="top" arrow>
-            <Tab
-              icon={<PhonelinkLockRoundedIcon />}
-              aria-label="/phone"
-              {...a11yProps(0)}
-            />
-          </Tooltip>
-          <Tooltip title="ورود با نام کاربری" placement="top" arrow>
-            <Tab
-              icon={<VpnKeyRoundedIcon />}
-              aria-label="/username"
-              {...a11yProps(1)}
-            />
-          </Tooltip>
-          <Tooltip title="ورود با ایمیل" placement="top" arrow>
-            <Tab
-              icon={<MailLockRoundedIcon />}
-              aria-label="/mail"
-              {...a11yProps(2)}
-            />
-          </Tooltip>
-          <Tooltip title="ایجاد حساب جدید" placement="top" arrow>
-            <Tab
-              icon={<PersonAddAlt1RoundedIcon />}
-              aria-label="/register"
-              {...a11yProps(3)}
-            />
-          </Tooltip>
+          {logOptions.map((op, index) => (
+            <Tooltip key={index} title={op.title} placement="top" arrow>
+              <Tab
+                icon={op.icon}
+                aria-label={op.ariaLabel}
+                {...a11yProps(index)}
+              />
+            </Tooltip>
+          ))}
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>

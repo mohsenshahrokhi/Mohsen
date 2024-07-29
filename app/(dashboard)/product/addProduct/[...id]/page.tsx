@@ -62,7 +62,7 @@ async function AddProduct({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken || "";
   const pId = searchParams.pId ? searchParams.pId : "";
-  const stringifyParams = queryString.stringify(searchParams);
+
   const callbackUrl = searchParams.callbackUrl;
   const { id } = params;
   const add_new_product = id[0] === "add_new_product" ? true : false;
