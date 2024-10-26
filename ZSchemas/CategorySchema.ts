@@ -21,7 +21,8 @@ export type TCategorySchema = z.infer<typeof CategorySchema>
 export const EditCategorySchema = z.object({
     name: z.string().optional().default(''),
     latinName: z.string().optional().default(''),
-    slug: z.string().optional().default(''),
+    slug: z.string(),
+    // slug: z.string().optional().default(''),
     colorIcon: z.string().optional().default(''),
     icon: z.string().optional().default(''),
     images: z.array(z.string()).optional().default([]),

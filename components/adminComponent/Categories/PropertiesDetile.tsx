@@ -35,7 +35,7 @@ function PropertiesDetile({ catImg, stringifyParams }: Props) {
     console.log(catImg._id, propertys, image);
   };
   const catId = catImg._id!;
-  console.log("PropertiesDetile", catImg);
+  // console.log("PropertiesDetile", catImg);
 
   return (
     <Box

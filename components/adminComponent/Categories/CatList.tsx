@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { startTransition, useEffect, useRef } from "react";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import Link from "next/link";
@@ -15,18 +15,26 @@ import CollectionsIcon from "@mui/icons-material/Collections";
 type Props = {
   catString: string;
   stringifyParams: string;
+  searchParams: string;
   accessToken: string;
+  ids: string[] | undefined;
 };
 
-function CatList({ catString, stringifyParams, accessToken }: Props) {
+function CatList({
+  catString,
+  stringifyParams,
+  accessToken,
+  searchParams,
+  ids,
+}: Props) {
   const cat = JSON.parse(catString) as TCategorySchema;
   const path = cat.parent === null ? "siteSettings/" : "";
   const modalRef = useRef<ModalProps>(null);
 
   function deleteCategory(id: string) {
-    React.startTransition(() => {
+    startTransition(() => {
       deleteCat({ id, accessToken }).then((data) => {
-        console.log("data", data);
+        // console.log("data", data);
         if (data?.success === true) {
           HandleEnqueueSnackbar({ variant: "success", msg: data.msg });
           //  handleClose();
@@ -38,6 +46,8 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
       });
     });
   }
+
+  console.log("ids", ids);
 
   return (
     <Box
@@ -51,7 +61,7 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
             <Link
               href={`${path}addSetting/${encodeURIComponent(
                 cat._id
-              )}?${stringifyParams}`}
+              )}?${stringifyParams}&${searchParams}`}
             >
               <EditNoteIcon className=" flex w-5" color="info" />
             </Link>
@@ -62,7 +72,7 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
             <Link
               href={`${path}settingsProperties/${encodeURIComponent(
                 cat._id
-              )}?${stringifyParams}`}
+              )}?${stringifyParams}&${searchParams}`}
             >
               <CollectionsIcon className=" flex w-5" color="info" />
             </Link>
@@ -81,7 +91,9 @@ function CatList({ catString, stringifyParams, accessToken }: Props) {
         <Tooltip title={`زیر شاخه های ${cat.name}`} placement="top">
           <IconButton className=" flex w-5">
             <Link
-              href={`${path}${encodeURIComponent(cat._id)}?${stringifyParams}`}
+              href={`${
+                ids?.length === 0 ? `siteSettings/${cat._id}` : ""
+              }${ids?.join("/")}?${stringifyParams}&${searchParams}`}
             >
               <PreviewIcon color="info" />
             </Link>

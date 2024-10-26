@@ -125,7 +125,7 @@ export const LoginPhoneSchema = z.object({
 export type TLoginPhoneSchema = z.infer<typeof LoginPhoneSchema>
 
 export const LoginSmsSchema = z.object({
-    phone: z.string().regex(phoneRegExp, 'یک شماره تلفن معتبر وارد کنید'),
+    phone: z.string().regex(phoneRegExp, 'یک شماره تلفن معتبر وارد کنید').optional(),
     // phone: z.string().refine(validator.isMobilePhone, 'یک شماره تلفن معتبر وارد کنید'),
     // phone: z.string().regex(new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/, 'از حروف غیر مجاز استفاده شده است')),
 

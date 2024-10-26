@@ -16,12 +16,12 @@ const AdminNavbar = () => {
   const pathName = usePathname();
   const { data, status } = useSession();
   const isAuth = status === "authenticated";
-  const themeMode = searchParams.get("theme") === "dark" ? "dark" : "light";
-  const breadcrumbs = pathName.split("/");
+  const themeMode = searchParams?.get("theme") === "dark" ? "dark" : "light";
+  const breadcrumbs = pathName?.split("/");
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams || {});
         localStorage.setItem("theme", themeMode === "light" ? "dark" : "light");
         params.set("theme", themeMode === "light" ? "dark" : "light");
         router.push(`${pathName}?${params}`);
@@ -59,7 +59,7 @@ const AdminNavbar = () => {
       </div>
       <div role="presentation">
         <Breadcrumbs className=" flex px-2" aria-label="breadcrumb">
-          {breadcrumbs.map((path: string, index: number) => {
+          {breadcrumbs?.map((path: string, index: number) => {
             if (index > 0) href = href.concat("/", path);
 
             if (index < breadcrumbs.length)

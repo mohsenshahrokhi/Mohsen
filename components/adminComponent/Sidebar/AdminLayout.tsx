@@ -30,7 +30,12 @@ import { Button } from "@mui/material";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { signOut, useSession } from "next-auth/react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import HomeIcon from "@mui/icons-material/Home";
+import AdminNavbar2 from "../Navbar/AdminNavbar2";
+import SidebarItems2 from "./SidebarItems2";
+import { auto } from "@/node_modules00/@popperjs/core";
+import moment from "moment";
 
 const drawerWidth = 240;
 
@@ -112,14 +117,48 @@ export default function AdminLayout({
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
-  const { data, status } = useSession();
-  const isAuth = status === "authenticated";
+  // const { data, status } = useSession();
+  // const isAuth = status === "authenticated";
+  const [userTheme, setUserTheme] = useState("dark");
   const sidebarVisible =
-    searchParams.get("sidebarVisible") === "true" ? true : false;
+    searchParams && searchParams.get("sidebarVisible") === "true"
+      ? true
+      : false;
   const sidebarMiddle =
-    searchParams.get("sidebarMiddle") === "true" ? true : false;
-  const userTheme = localStorage.getItem("theme") || "light";
-  const params: URLSearchParams = new URLSearchParams(searchParams);
+    searchParams && searchParams.get("sidebarMiddle") === "true" ? true : false;
+  // const userTheme = localStorage.getItem("theme") || "light";
+  // if (typeof window !== undefined) {
+  //   setUserTheme(localStorage.getItem("theme") || "light");
+  // }
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      // if (localStorage.getItem("theme") !== null) {
+      //   setUserTheme(localStorage.getItem("theme") || "dark");
+      // } else {
+      // localStorage.setItem("theme", userTheme);
+      // setUserTheme(userTheme);
+      // }
+    }
+  }, [userTheme]);
+  const params: URLSearchParams = new URLSearchParams(searchParams || {});
+  const resetParams = params;
+  resetParams.set("sidebarMiddle", "false");
+  resetParams.set("sidebarVisible", "false");
+  // resetParams.delete("page");
+  // resetParams.delete("id");
+  // resetParams.delete("pId");
+  // resetParams.delete("catId");
+  resetParams.set("theme", userTheme);
+  const { status, data } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push(`/phone?${JSON.stringify(resetParams)}`);
+    },
+  });
+  // useEffect(() => {
+  //   // router.push(`?${stringified}`);
+  //   localStorage.setItem("theme", userTheme);
+  // }, [theme, router, userTheme]);
 
   const handleDrawerToggle = () => {
     if (sidebarVisible) {
@@ -145,7 +184,14 @@ export default function AdminLayout({
     sidebarMiddle && params.set("sidebarMiddle", "true");
     router.push(`${pathName}?${params}`);
   };
-
+  if (data?.user && parseInt(data.user.role) < 1) {
+    router.push(`/phone?${JSON.stringify(resetParams)}`);
+    return null;
+  }
+  if (moment().isAfter(data?.expires)) {
+    router.push(`/phone?${JSON.stringify(resetParams)}`);
+    return null;
+  }
   type Items = {
     label: string;
     items: {
@@ -158,52 +204,52 @@ export default function AdminLayout({
   };
   const adminSidebarItems: Items[] = [
     {
-      label: "Admin",
+      label: "مدیر",
       items: [
         {
-          title: "Dashboard",
+          title: "داشبورد",
           accessRoles: ["11"],
           href: "/userDashboard",
           key: "userDashboard",
           icon: <DashboardOutlinedIcon />,
         },
         {
-          title: "Settings",
+          title: "تنظیمات",
           accessRoles: ["11"],
           href: "/siteSettings",
           key: "siteSettings",
           icon: <SettingsOutlinedIcon />,
         },
         {
-          title: "Products",
+          title: "محصولات",
           accessRoles: ["11"],
           href: "/product",
           key: "product",
           icon: <PrecisionManufacturingOutlinedIcon />,
         },
         {
-          title: "Invoice",
+          title: "فاکتور ها",
           accessRoles: ["11"],
           href: "/invoice",
           key: "invoice",
           icon: <ReceiptOutlinedIcon />,
         },
         {
-          title: "Users",
+          title: "کاربران",
           accessRoles: ["11"],
           href: "/users",
           key: "users",
           icon: <GroupOutlinedIcon />,
         },
         {
-          title: "Category",
+          title: "دسته بندی ها",
           accessRoles: ["11"],
           href: "/category",
           key: "category",
           icon: <CategoryOutlinedIcon />,
         },
         {
-          title: "Gallery",
+          title: "بارگذاری شده",
           accessRoles: ["11"],
           href: "/gallery",
           key: "gallery",
@@ -213,90 +259,33 @@ export default function AdminLayout({
     },
   ];
 
-  const resetParams = params;
-  resetParams.set("sidebarMiddle", "false");
-  resetParams.set("sidebarVisible", "false");
-  resetParams.delete("page");
-  resetParams.delete("id");
-  resetParams.delete("pId");
-  resetParams.delete("catId");
-  resetParams.set("theme", userTheme);
-
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () => {
-        const params = new URLSearchParams(searchParams);
-        localStorage.setItem("theme", userTheme === "light" ? "dark" : "light");
-        params.set("theme", userTheme === "light" ? "dark" : "light");
-        router.push(`${pathName}?${params}`);
-      },
-    }),
-    [pathName, router, searchParams, userTheme]
-  );
-  console.log(pathName);
-
+  // const colorMode = useMemo(
+  //   () => ({
+  //     toggleColorMode: () => {
+  //       const params = new URLSearchParams(searchParams);
+  //       localStorage.setItem("theme", userTheme === "light" ? "dark" : "light");
+  //       params.set("theme", userTheme === "light" ? "dark" : "light");
+  //       router.push(`${pathName}?${params}`);
+  //     },
+  //   }),
+  //   [pathName, router, searchParams, userTheme]
+  // );
   return (
     <Box
       component={"div"}
       sx={{
         display: "flex",
         flexDirection: "column",
-        // width: "100%",
+        width: "100%",
+        maxWidth: theme.breakpoints.values.desktop,
         heigh: "100%",
+        marginX: auto,
+        padding: 2,
       }}
     >
       <CssBaseline />
       <AppBar color="info" position="fixed" open={sidebarVisible}>
-        <Toolbar
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-            edge="start"
-            sx={{
-              marginRight: 5,
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Box component={"div"}>
-            <IconButton
-              sx={{ ml: 1 }}
-              onClick={colorMode.toggleColorMode}
-              color="inherit"
-            >
-              {userTheme === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-          </Box>
-          <Box component={"div"} className=" flex w-130">
-            {isAuth ? (
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                name="logout"
-              >
-                خروج {data?.user?.displayName || data?.user?.username}
-              </Button>
-            ) : (
-              <Button
-                variant="outlined"
-                color="secondary"
-                href="/username"
-                name="login"
-              >
-                ورود
-              </Button>
-            )}
-          </Box>
-        </Toolbar>
+        <AdminNavbar2 handleDrawerToggle={handleDrawerToggle} />
       </AppBar>
       <Drawer
         variant={`${
@@ -318,81 +307,40 @@ export default function AdminLayout({
           </IconButton>
         </DrawerHeader>
         <Divider />
+        <Link href={`/?${resetParams}`}>
+          <ListItem divider disablePadding sx={[{ display: "block" }]}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: sidebarVisible ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                className="itemIcon"
+                sx={{
+                  minWidth: 0,
+                  mr: sidebarVisible ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"خانه"}
+                sx={{ opacity: sidebarVisible ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Divider />
         <List>
-          {adminSidebarItems.map((black, index) => (
-            <Box component={"div"} key={index}>
-              {sidebarVisible && (
-                <Box component={"div"}>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      // display: "flex",
-                      // flexDirection: "column",
-                      // width: "100%",
-                      padding: 3,
-                    }}
-                  >
-                    {black.label}
-                  </Typography>
-                  <Divider />
-                </Box>
-              )}
-              {black.items.map((item, index) => (
-                <Link key={index} href={`${item.href}?${resetParams}`}>
-                  <ListItem
-                    divider
-                    disablePadding
-                    sx={[
-                      { display: "block" },
-                      pathName === item.href && {
-                        bgcolor: theme.palette.grey[100],
-                        color: theme.palette.grey[900],
-                        "& .itemIcon": {
-                          color: theme.palette.grey[700],
-                        },
-                        // "&:hover": {
-                        //   bgcolor: theme.palette.bgColor2,
-                        //   color: "white",
-                        //   "& .itemIcon": {
-                        //     color: "white",
-                        //   },
-                        // },
-                      },
-                    ]}
-                  >
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: sidebarVisible ? "initial" : "center",
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        className="itemIcon"
-                        sx={{
-                          minWidth: 0,
-                          mr: sidebarVisible ? 3 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {item.icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.title}
-                        sx={{ opacity: sidebarVisible ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-              ))}
-            </Box>
-          ))}
+          <SidebarItems2 sidebarVisible={sidebarVisible} params={params} />
         </List>
-        {/* <Divider /> */}
       </Drawer>
       <DrawerHeader />
       <Box
-        onClick={handleDrawerClose}
+        // onClick={handleDrawerClose}
         component="div"
         sx={{
           display: "flex",

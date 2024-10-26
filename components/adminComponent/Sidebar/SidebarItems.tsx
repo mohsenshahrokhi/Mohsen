@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation";
 
 const SidebarItems = ({ title, params }: Props) => {
   const route = usePathname();
-  const currentRoute = route.split("/").splice(1);
+  const currentRoute = route?.split("/").splice(1);
   const { data: session } = useSession();
 
   const accessRole = (session?.user && session?.user?.role) || "";
@@ -31,49 +31,49 @@ const SidebarItems = ({ title, params }: Props) => {
       label: "Admin",
       items: [
         {
-          title: "Dashboard",
+          title: "داشبورد",
           accessRoles: ["11"],
           icon: <DashboardOutlinedIcon />,
           href: "/userDashboard",
           key: "userDashboard",
         },
         {
-          title: "Settings",
+          title: "تنظیمات",
           accessRoles: ["11"],
           icon: <SettingsOutlinedIcon />,
           href: "/siteSettings",
           key: "siteSettings",
         },
         {
-          title: "Products",
+          title: "محصولات",
           accessRoles: ["11"],
           icon: <PrecisionManufacturingOutlinedIcon />,
           href: "/product",
           key: "product",
         },
         {
-          title: "Invoice",
+          title: "فاکتور ها",
           accessRoles: ["11"],
           icon: <ReceiptOutlinedIcon />,
           href: "/invoice",
           key: "invoice",
         },
         {
-          title: "Users",
+          title: "کاربران",
           accessRoles: ["11"],
           icon: <GroupOutlinedIcon />,
           href: "/users",
           key: "users",
         },
         {
-          title: "Category",
+          title: "دسته بندی",
           accessRoles: ["11"],
           icon: <CategoryOutlinedIcon />,
           href: "/category",
           key: "category",
         },
         {
-          title: "Gallery",
+          title: "بارگذاری شده",
           accessRoles: ["11"],
           icon: <CollectionsOutlinedIcon />,
           href: "/gallery",
@@ -85,14 +85,14 @@ const SidebarItems = ({ title, params }: Props) => {
       label: "User",
       items: [
         {
-          title: "userDashboard",
+          title: "پنل کاربری",
           accessRoles: ["مدیر کل", "کاربر"],
           icon: <PersonOutlineOutlinedIcon />,
           href: "/userDashboard?",
           key: "userDashboard",
         },
         {
-          title: "userSettings",
+          title: "تنظیمات کاربر",
           accessRoles: ["مدیر کل", "کاربر"],
           icon: <ContactPageOutlinedIcon />,
           href: "#",
@@ -184,7 +184,7 @@ const SidebarItems = ({ title, params }: Props) => {
           {sidebarItem.items?.map((i, index) => (
             <div
               className={`flex text-center items-center justify-center mb-1 rounded-md transition-colors duration-300 transform hover:bg-zinc-300 hover:text-zinc-800 ${
-                currentRoute.includes(i.key) ? "bg-sky-200 " : ""
+                currentRoute?.includes(i.key) ? "bg-sky-200 " : ""
               } ${i.accessRoles.includes(accessRole) ? "" : "hidden"}`}
               key={index}
             >

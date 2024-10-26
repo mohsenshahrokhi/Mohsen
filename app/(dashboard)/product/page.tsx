@@ -52,7 +52,7 @@ export default async function Product({ searchParams }: Props) {
   delete searchParams.pId;
   const stringified = queryString.stringify(searchParams);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 10;
+  const perPage = 2;
 
   const { products, qtt } = await getData({
     page: page,

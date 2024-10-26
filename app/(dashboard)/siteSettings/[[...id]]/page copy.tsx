@@ -13,7 +13,7 @@ import CatList from "@/components/adminComponent/Categories/CatList";
 
 type Props = {
   params: {
-    id: string[] | string;
+    id: string[] | undefined;
   };
   searchParams: { [key: string]: string | undefined };
 };
@@ -36,30 +36,34 @@ async function Category({ params, searchParams }: Props) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.user.accessToken;
   delete searchParams.id;
-  const { id } = params;
+  var { id } = params;
+  id = id?.filter(function (item, index, inputArray) {
+    return inputArray.indexOf(item) == index;
+  });
 
-  const categories = await getData(id.slice(-1)[0]);
+  const ids: string[] = id ? [...id] : [];
+  // id&ids=[...id]
+
+  const categories = await getData(id?.at(-1) || "null");
+  console.log("Category", id);
 
   const stringifyParams = queryString.stringify(params);
 
   const parseSearchParams = queryString.stringify(searchParams);
 
-  const { url, backUrl } = HandleURL(id);
+  // const { url, backUrl } = HandleURL(id);
 
   const stringified = queryString.stringify({
-    parentCat: params.id.slice(-1),
-    callbackUrl: url,
+    parentCat: id?.slice(-1),
+    // callbackUrl: url,
   });
-
+  id?.splice(-1);
   return (
-    <Box
-      component="div"
-      sx={{ m: "2px", width: "100%", justifyContent: "center" }}
-    >
+    <Box component="div" sx={{ width: "100%", justifyContent: "center" }}>
       <Box
         className="flex w-full items-center justify-between"
         component="div"
-        sx={{ m: "2px", width: "100%" }}
+        sx={{ width: "100%" }}
       >
         <Button
           size="medium"
@@ -67,7 +71,11 @@ async function Category({ params, searchParams }: Props) {
           color="secondary"
           aria-label="add"
         >
-          <Link href={`/siteSettings/addSetting/add_new_cat?${stringified}`}>
+          <Link
+            href={`/siteSettings/addSetting/add_new_cat?${stringified}&${queryString.stringify(
+              searchParams
+            )}`}
+          >
             اضافه کردن ویژگی جدید
             <AddIcon sx={{ ml: 1 }} />
           </Link>
@@ -78,7 +86,11 @@ async function Category({ params, searchParams }: Props) {
           color="secondary"
           aria-label="add"
         >
-          <Link href={`/siteSettings/${backUrl}?${parseSearchParams}`}>
+          <Link
+            href={`/siteSettings/${id?.join("/")}?${queryString.stringify(
+              searchParams
+            )}`}
+          >
             برگشت
             <UndoIcon sx={{ ml: 1 }} />
           </Link>
@@ -87,11 +99,9 @@ async function Category({ params, searchParams }: Props) {
       <Box
         component={"div"}
         sx={{
-          p: 2,
           bgcolor: "background.default",
           display: "grid",
           gap: 2,
-          m: 2,
         }}
       >
         {
@@ -108,8 +118,10 @@ async function Category({ params, searchParams }: Props) {
               categories.map((cat: TCategorySchema) => (
                 <CatList
                   key={cat._id}
+                  ids={ids}
                   catString={JSON.stringify(cat)}
                   stringifyParams={stringifyParams}
+                  searchParams={queryString.stringify(searchParams)}
                   accessToken={accessToken!}
                 />
               ))}

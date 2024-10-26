@@ -21,7 +21,7 @@ export default function ThemeDirection({
   children: React.ReactNode;
 }) {
   const searchParams = useSearchParams();
-  const themeMode = searchParams.get("theme") === "dark" ? "dark" : "light";
+  const themeMode = searchParams?.get("theme") === "dark" ? "dark" : "light";
   const getDesignTokens = (mode: PaletteMode) => ({
     palette: {
       mode,

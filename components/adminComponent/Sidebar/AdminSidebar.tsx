@@ -15,10 +15,10 @@ const AdminSidebar = () => {
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const sidebarControl =
-    searchParams.get("sidebarControl") === "true" ? true : false;
-  const theme = searchParams.get("theme") || "light";
+    searchParams?.get("sidebarControl") === "true" ? true : false;
+  const theme = searchParams?.get("theme") || "light";
 
-  const params: URLSearchParams = new URLSearchParams(searchParams);
+  const params: URLSearchParams = new URLSearchParams(searchParams || {});
 
   const toggleSidebar = () => {
     sidebarControl
@@ -35,10 +35,10 @@ const AdminSidebar = () => {
   const resetParams = params;
   resetParams.set("sidebarControl", "false");
   resetParams.set("sidebarVisible", "false");
-  resetParams.delete("page");
-  resetParams.delete("id");
-  resetParams.delete("pId");
-  resetParams.delete("catId");
+  // resetParams.delete("page");
+  // resetParams.delete("id");
+  // resetParams.delete("pId");
+  // resetParams.delete("catId");
   resetParams.set("theme", theme);
 
   return (

@@ -54,19 +54,12 @@ function LoginPhoneForm() {
     formState: { defaultValues },
     reset,
     control,
+    setValue,
   } = smsForm;
 
-  useEffect(() => {
-    // user?.phone &&
-    reset({
-      phone: user?.phone || "",
-      verifyPKey: "",
-    });
-    // console.log("useEffect", user?.phone);
-  }, [reset, user]);
-
-  // console.log("LoginPhoneForm", user);
-  // console.log("defaultValues", defaultValues);
+  // useEffect(() => {
+  //   user?.phone && setValue("phone", user?.phone);
+  // }, [setValue, user]);
 
   const handleClickVariant = (variant: VariantType, meg: string) => {
     enqueueSnackbar(meg, { variant });
@@ -78,6 +71,7 @@ function LoginPhoneForm() {
         if (data.success) {
           handleClickVariant("success", data.msg);
           setUser(data.userUp);
+          user?.phone && setValue("phone", user?.phone);
           setPhoneCode(true);
         } else {
           handleClickVariant("error", data.msg);
@@ -87,11 +81,14 @@ function LoginPhoneForm() {
   };
 
   const onSmsSubmit = (values: TLoginSmsSchema) => {
-    console.log("LoginPhoneForm", values);
+    const updateVal = {
+      ...values,
+      phone: user?.phone,
+    };
     startTransition(async () => {
       await signIn("UserPhoneCredentials", {
-        ...values,
-        callbackUrl: params || "/userDashboard",
+        ...updateVal,
+        callbackUrl: `/userDashboard?${searchParams.toString()}`,
       });
     });
   };

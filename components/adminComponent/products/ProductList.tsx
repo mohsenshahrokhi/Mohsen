@@ -6,6 +6,7 @@ import {
   Checkbox,
   Chip,
   IconButton,
+  // Link,
   Paper,
   Stack,
   Table,
@@ -16,7 +17,6 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import Link from "next/link";
 import {
   HiOutlinePencilSquare,
   HiOutlinePhoto,
@@ -40,6 +40,7 @@ import { ModalProps } from "@/ZSchemas";
 import DeleteModal from "@/components/ui/DeleteModal";
 import { digitsEnToFa, addCommas } from "@persian-tools/persian-tools";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import Link from "next/link";
 
 type Props = {
   stringProducts: string;
@@ -95,7 +96,7 @@ export default function ProductList({
           </TableHead>
           <TableBody>
             {products?.length > 0 &&
-              products.map((product, index) => (
+              products.map((product: TProductSchema, index: number) => (
                 <TableRow
                   key={index}
                   sx={{
@@ -212,7 +213,6 @@ export default function ProductList({
                             <Link
                               id={`edit-${product._id}`}
                               href={`/product/addProduct/${product?._id}?${stringified}`}
-                              className=" "
                             >
                               <HiOutlinePencilSquare color="orange" />
                             </Link>
@@ -229,7 +229,6 @@ export default function ProductList({
                               )}&title=${
                                 product.title
                               }&callback=${stringified}`}
-                              className=" "
                             >
                               <HiOutlinePhoto color="blue" />
                             </Link>
